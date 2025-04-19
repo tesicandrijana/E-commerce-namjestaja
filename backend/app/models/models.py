@@ -1,167 +1,157 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, Date, ForeignKey, Numeric, CheckConstraint, TIMESTAMP
-from sqlalchemy.orm import relationship
-from app.database import Base
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
+from datetime import date, datetime
+from decimal import Decimal
 
-# Consolidated models for the furniture store
+# Models using SQLModel
 
-class User(Base):
+class User(SQLModel, table=True):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(Text, nullable=False)
-    email = Column(Text, nullable=False, unique=True)
-    password = Column(Text, nullable=False)
-    role = Column(Text, nullable=False)
-    is_active = Column(Boolean, default=True, nullable=False)
-    phone = Column(Text)
-    address = Column(Text)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    email: str = Field(unique=True)
+    password: str
+    role: str = Field(sa_column_kwargs={"nullable": False})
+    is_active: bool = Field(default=True)
+    phone: Optional[str] = None
+    address: Optional[str] = None
 
-    __table_args__ = (
-        CheckConstraint("role IN ('administrator','manager','customer','support','delivery')", name="check_user_role"),
-    )
+    orders: List["Order"] = Relationship(back_populates="customer")
+    reviews: List["Review"] = Relationship(back_populates="customer")
+    deliveries: List["Delivery"] = Relationship(back_populates="delivery_person")
+    messages_sent: List["Message"] = Relationship(back_populates="sender", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
+    messages_received: List["Message"] = Relationship(back_populates="receiver", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 
-    # Relationships
-    orders = relationship("Order", back_populates="customer")
-    reviews = relationship("Review", back_populates="customer")
-    deliveries = relationship("Delivery", back_populates="delivery_person")
-    messages_sent = relationship("Message", foreign_keys="Message.sender_id", back_populates="sender")
-    messages_received = relationship("Message", foreign_keys="Message.receiver_id", back_populates="receiver")
 
-class Category(Base):
+class Category(SQLModel, table=True):
     __tablename__ = "categories"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(Text, unique=True, nullable=False)
-    
-    products = relationship("Product", back_populates="category")
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(sa_column_kwargs={"nullable": False, "unique": True})
 
-class Product(Base):
+    products: List["Product"] = Relationship(back_populates="category")
+
+
+class Product(SQLModel, table=True):
     __tablename__ = "products"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(Text, nullable=False)
-    description = Column(Text)
-    material = Column(Text)
-    length = Column(Integer, nullable=False)
-    width = Column(Integer, nullable=False)
-    height = Column(Integer, nullable=False)
-    price = Column(Numeric(10, 2), nullable=False)
-    quantity = Column(Integer, default=0)
-    category_id = Column(Integer, ForeignKey("categories.id"))
-    image = Column(Text)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    description: Optional[str] = None
+    material: Optional[str] = None
+    length: int
+    width: int
+    height: int
+    price: Decimal
+    quantity: int = 0
+    category_id: Optional[int] = Field(default=None, foreign_key="categories.id")
+    image: Optional[str] = None
 
-    category = relationship("Category", back_populates="products")
-    discounts = relationship("Discount", back_populates="product")
-    reviews = relationship("Review", back_populates="product")
+    category: Optional[Category] = Relationship(back_populates="products")
+    discounts: List["Discount"] = Relationship(back_populates="product")
+    reviews: List["Review"] = Relationship(back_populates="product")
 
-class Discount(Base):
+
+class Discount(SQLModel, table=True):
     __tablename__ = "discounts"
 
-    id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    amount = Column(Numeric(5, 2), nullable=False)
-    start_date = Column(Date, nullable=False)
-    end_date = Column(Date, nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    product_id: int = Field(foreign_key="products.id")
+    amount: Decimal
+    start_date: date
+    end_date: date
 
-    product = relationship("Product", back_populates="discounts")
+    product: Optional[Product] = Relationship(back_populates="discounts")
 
-class Order(Base):
+
+class Order(SQLModel, table=True):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    address = Column(Text, nullable=False)
-    city = Column(Text, nullable=False)
-    postal_code = Column(Integer, nullable=False)
-    date = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
-    status = Column(Text, default="pending")
-    payment_method = Column(Text, default="cash", nullable=False)
-    payment_status = Column(Text, default="pending")
-    transaction_id = Column(Text)
-    total_price = Column(Numeric(10, 2))
+    id: Optional[int] = Field(default=None, primary_key=True)
+    customer_id: int = Field(foreign_key="users.id")
+    address: str
+    city: str
+    postal_code: int
+    date: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="pending")
+    payment_method: str = Field(default="cash")
+    payment_status: str = Field(default="pending")
+    transaction_id: Optional[str] = None
+    total_price: Optional[Decimal] = None
 
-    __table_args__ = (
-        CheckConstraint("status IN ('pending','preparing','shipping','delivered','cancelled')", name="check_order_status"),
-        CheckConstraint("payment_method IN ('cash','card')", name="check_payment_method"),
-    )
+    customer: Optional[User] = Relationship(back_populates="orders")
+    items: List["OrderItem"] = Relationship(back_populates="order")
 
-    customer = relationship("User", back_populates="orders")
-    items = relationship("OrderItem", back_populates="order")
 
-class OrderItem(Base):
+class OrderItem(SQLModel, table=True):
     __tablename__ = "order_items"
 
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    quantity = Column(Integer, nullable=False)
-    price_per_unit = Column(Numeric(10, 2), nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    order_id: int = Field(foreign_key="orders.id")
+    product_id: int = Field(foreign_key="products.id")
+    quantity: int
+    price_per_unit: Decimal
 
-    order = relationship("Order", back_populates="items")
+    order: Optional[Order] = Relationship(back_populates="items")
 
-class Review(Base):
+
+class Review(SQLModel, table=True):
     __tablename__ = "reviews"
 
-    id = Column(Integer, primary_key=True)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    customer_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    rating = Column(Integer, nullable=False)
-    comment = Column(Text)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    product_id: int = Field(foreign_key="products.id")
+    customer_id: int = Field(foreign_key="users.id")
+    rating: int
+    comment: Optional[str] = None
 
-    __table_args__ = (
-        CheckConstraint("rating BETWEEN 1 AND 5", name="check_review_rating"),
-    )
+    product: Optional[Product] = Relationship(back_populates="reviews")
+    customer: Optional[User] = Relationship(back_populates="reviews")
 
-    product = relationship("Product", back_populates="reviews")
-    customer = relationship("User", back_populates="reviews")
 
-class Delivery(Base):
+class Delivery(SQLModel, table=True):
     __tablename__ = "deliveries"
 
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    delivery_person_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    status = Column(Text, default="in_progress")
-    date = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
+    id: Optional[int] = Field(default=None, primary_key=True)
+    order_id: int = Field(foreign_key="orders.id")
+    delivery_person_id: int = Field(foreign_key="users.id")
+    status: str = Field(default="in_progress")
+    date: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
-    __table_args__ = (
-        CheckConstraint("status IN ('in_progress','delivered')", name="check_delivery_status"),
-    )
+    order: Optional[Order] = Relationship()
+    delivery_person: Optional[User] = Relationship(back_populates="deliveries")
 
-    order = relationship("Order")
-    delivery_person = relationship("User", back_populates="deliveries")
 
-class Complaint(Base):
+class Complaint(SQLModel, table=True):
     __tablename__ = "complaints"
 
-    id = Column(Integer, primary_key=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    description = Column(Text, nullable=False)
-    status = Column(Text, default="open")
+    id: Optional[int] = Field(default=None, primary_key=True)
+    order_id: int = Field(foreign_key="orders.id")
+    description: str
+    status: str = Field(default="open")
 
-    __table_args__ = (
-        CheckConstraint("status IN ('open','resolved')", name="check_complaint_status"),
-    )
+    order: Optional[Order] = Relationship()
 
-    order = relationship("Order")
 
-class Message(Base):
+class Message(SQLModel, table=True):
     __tablename__ = "messages"
 
-    id = Column(Integer, primary_key=True)
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    receiver_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    content = Column(Text, nullable=False)
-    timestamp = Column(TIMESTAMP, server_default="CURRENT_TIMESTAMP")
+    id: Optional[int] = Field(default=None, primary_key=True)
+    sender_id: int = Field(foreign_key="users.id")
+    receiver_id: int = Field(foreign_key="users.id")
+    content: str
+    timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
-    sender = relationship("User", foreign_keys=[sender_id], back_populates="messages_sent")
-    receiver = relationship("User", foreign_keys=[receiver_id], back_populates="messages_received")
+    sender: Optional[User] = Relationship(back_populates="messages_sent", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
+    receiver: Optional[User] = Relationship(back_populates="messages_received", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 
-class WorkerRequest(Base):
+
+class WorkerRequest(SQLModel, table=True):
     __tablename__ = "worker_requests"
 
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
-    status = Column(String, default="pending", nullable=False)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id", unique=True)
+    status: str = Field(default="pending")
 
-    user = relationship("User")
+    user: Optional[User] = Relationship()
+
