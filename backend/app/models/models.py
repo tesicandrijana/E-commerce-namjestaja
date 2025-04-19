@@ -147,11 +147,9 @@ class Message(SQLModel, table=True):
 
 
 class WorkerRequest(SQLModel, table=True):
-    __tablename__ = "worker_requests"
-
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id", unique=True)
-    status: str = Field(default="pending")
-
-    user: Optional[User] = Relationship()
+    user_id: int = Field(foreign_key="user.id")
+    desired_role: str = Field(index=True)
+    status: str = Field(default="pending")  # pending, approved, rejected
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
