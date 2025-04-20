@@ -13,7 +13,11 @@ from app.crud.user import (
     get_worker_request,
     create_worker_request,
     get_worker_request_by_user_id,
-    update_user_role
+    update_user_role,
+    get_user_stats,
+    get_sales_stats,
+    get_rating_stats
+
 )
 
 SECRET_KEY = settings.SECRET_KEY
@@ -119,3 +123,12 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+
+@router.get("/admin/stats")
+def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+    return {
+        "users": get_user_stats(db),
+        "sales": get_sales_stats(db),
+        "ratings": get_rating_stats(db),
+    }

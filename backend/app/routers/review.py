@@ -1,18 +1,23 @@
-# app/routers/review.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.schemas.review import ReviewCreate, ReviewRead
+from app.crud.review import create_review, get_reviews_by_product, get_all_reviews
+from app.dependencies import get_current_user, get_admin_user, get_db
+from app.models.models import User
 from typing import List
-
-from app.crud import review
-from app.schemas import review as review_schema
-from app.dependencies import get_db
 
 router = APIRouter()
 
-@router.post("/", response_model=review_schema.Review)
-def create_review(review_data: review_schema.ReviewCreate, db: Session = Depends(get_db)):
-    return review.create_review(db, review_data)
+@router.post("/", response_model=ReviewRead)
+def submit_review(review: ReviewCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "customer":
+        raise HTTPException(status_code=403, detail="Only customers can leave reviews")
+    return create_review(db, current_user.id, review)
 
-@router.get("/", response_model=List[review_schema.Review])
-def read_reviews(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return review.get_reviews(db, skip=skip, limit=limit)
+@router.get("/product/{product_id}", response_model=List[ReviewRead])
+def read_reviews(product_id: int, db: Session = Depends(get_db)):
+    return get_reviews_by_product(db, product_id)
+
+@router.get("/", response_model=List[ReviewRead])
+def read_all_reviews(db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+    return get_all_reviews(db)

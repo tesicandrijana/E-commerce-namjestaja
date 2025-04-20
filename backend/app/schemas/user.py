@@ -32,17 +32,11 @@ class User(UserBase):
     role: ValidRoles
     is_active: bool
 
-    class Config:
-        from_attributes = True
-
 class UserSchema(BaseModel):
     id: int
     name: str
     email: EmailStr
     role: ValidRoles
-
-    class Config:
-        from_attributes = True
 
 class LoginWithRole(BaseModel):
     email: EmailStr

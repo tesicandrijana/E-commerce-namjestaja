@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from app.models.models import User, WorkerRequest   # assuming you have a WorkerRequest model
 from fastapi import HTTPException
 from app.schemas.user import UserCreate
+from sqlalchemy import func
+from app.models.models import Order, Review
 
 def create_user(db: Session, user: UserCreate):
     db_user = User(**user.dict())
@@ -48,8 +50,6 @@ def create_worker_request(db: Session, user_id: int, desired_role: str):
     db.refresh(new_req)
     return new_req
 
-def count_users_by_role(db: Session, role: str) -> int:
-    return db.query(User).filter(User.role == role).count()
 
 def get_worker_request_by_user_id(db: Session, user_id: int):
     return get_worker_request(db, user_id)
@@ -71,3 +71,32 @@ def update_user_role(db: Session, user_id: int, new_role: str):
     db.commit()
     db.refresh(user)
     return user
+
+
+def get_user_stats(db: Session):
+    return {
+        "total_users": db.query(User).count(),
+        "active_users": db.query(User).filter(User.is_active == True).count(),
+        "by_role": {
+            role: db.query(User).filter(User.role == role).count()
+            for role in ["administrator", "manager", "support", "delivery", "customer"]
+        }
+    }
+
+def get_sales_stats(db: Session):
+    total_orders = db.query(Order).count()
+    total_revenue = db.query(func.sum(Order.total_price)).scalar() or 0
+
+    return {
+        "total_orders": total_orders,
+        "total_revenue": float(total_revenue),
+    }
+
+def get_rating_stats(db: Session):
+    total_reviews = db.query(Review).count()
+    average_rating = db.query(func.avg(Review.rating)).scalar() or 0
+
+    return {
+        "total_reviews": total_reviews,
+        "average_rating": round(float(average_rating), 2),
+    }

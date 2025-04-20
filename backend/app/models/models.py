@@ -102,9 +102,9 @@ class Review(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     product_id: int = Field(foreign_key="products.id")
     customer_id: int = Field(foreign_key="users.id")
-    rating: int
+    rating: int = Field(..., ge=1, le=5)
     comment: Optional[str] = None
-
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     product: Optional[Product] = Relationship(back_populates="reviews")
     customer: Optional[User] = Relationship(back_populates="reviews")
 
