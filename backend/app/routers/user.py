@@ -39,9 +39,9 @@ def signup(user_create: UserCreate, db: Session = Depends(get_db)):
 # Login with role validation
 @router.post("/login", response_model=dict)
 def login_for_access_token(login_data: LoginWithRole, db: Session = Depends(get_db)):
-    db_user = user.get_user_by_email(db, login_data.username)
+    db_user = user.get_user_by_email(db, login_data.email)
     if not db_user or not db_user.verify_password(login_data.password):
-        raise HTTPException(status_code=401, detail="Incorrect username or password")
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
 
     if login_data.role == "worker" and db_user.role not in ["manager", "support", "delivery"]:
         raise HTTPException(status_code=403, detail="You are not a worker.")

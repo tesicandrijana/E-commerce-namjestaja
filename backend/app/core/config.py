@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings  # This is the new import
 
 class Settings(BaseSettings):
     # Database
-    SQLALCHEMY_DATABASE_URL: str = "sqlite:///./furniture_store.db"
+    #SQLALCHEMY_DATABASE_URL: str = "sqlite:///./furniture_store.db"
 
     # JWT
     SECRET_KEY: str = "your-very-secret-key"

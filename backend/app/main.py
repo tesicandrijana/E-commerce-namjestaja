@@ -1,8 +1,18 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.database import Base, engine, init_db
+from sqlmodel import SQLModel
+from app.database import engine, SessionDep
 from app.routers import user, product, category, order, review, discount
 
-app = FastAPI()
+def create_db_and_tables():
+    SQLModel.metadata.create_all(engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 # Register routers
 app.include_router(user.router, prefix="/users", tags=["Users"])
@@ -12,11 +22,6 @@ app.include_router(order.router, prefix="/orders", tags=["Orders"])
 app.include_router(review.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(discount.router, prefix="/discounts", tags=["Discounts"])
 
-@app.on_event("startup")
-def startup():
-    # Initialize DB and create tables if they don't exist
-    init_db()
-    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def read_root():

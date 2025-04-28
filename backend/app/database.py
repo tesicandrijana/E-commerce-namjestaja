@@ -1,8 +1,12 @@
+""" from fastapi import Depends,
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker """
+from typing import Annotated
+from fastapi import Depends
+from sqlmodel import Session, create_engine
 
-# Define your DB connection string
+""" # Define your DB connection string
 SQLALCHEMY_DATABASE_URL = "sqlite:///./furniture_store.db"  # or your real DB URL
 
 # Create the engine
@@ -11,10 +15,10 @@ engine = create_engine(
 )
 
 # SessionLocal instance
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) """
 
 # Base class for models
-Base = declarative_base()
+""" Base = declarative_base()
 def init_db():
     Base.metadata.create_all(bind=engine)
 
@@ -24,3 +28,16 @@ def get_db():
         yield db
     finally:
         db.close()
+ """
+
+
+db_url = "postgresql://postgres:1234@localhost:5432/dws";
+
+engine = create_engine(db_url);
+
+def get_db():
+    with Session(engine) as session:
+        yield session
+
+
+SessionDep = Annotated[Session, Depends(get_db)]; #umjesto Session = Depends(get_db)
