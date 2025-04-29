@@ -13,10 +13,12 @@ class UserBase(BaseModel):
     is_active: Optional[bool] = True
 
 class UserCreate(BaseModel):
-    name: str
+    name : str
+    username: str
     email: EmailStr
     password: str
-    role: ValidRoles
+    # Role will be automatically set to "customer" in backend during signup, so we don't need it here
+    role: Optional[ValidRoles] = "customer"  # Default to "customer"
 
 class UserUpdate(BaseModel):
     name: Optional[str]
@@ -41,7 +43,7 @@ class UserSchema(BaseModel):
 class LoginWithRole(BaseModel):
     email: EmailStr
     password: str
-    role: Literal["customer", "worker"]
+    role: Literal["customer", "worker"]  # This is used for checking the login role
 
 WorkerRole = Literal["manager", "support", "delivery"]
 RequestStatus = Literal["pending", "approved", "rejected"]

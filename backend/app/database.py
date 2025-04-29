@@ -1,43 +1,38 @@
-""" from fastapi import Depends,
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker """
+from fastapi import FastAPI, Depends
+from sqlmodel import Session, create_engine, SQLModel, Field
+from sqlalchemy.exc import OperationalError
 from typing import Annotated
-from fastapi import Depends
-from sqlmodel import Session, create_engine
+from pydantic import BaseModel
 
-""" # Define your DB connection string
-SQLALCHEMY_DATABASE_URL = "sqlite:///./furniture_store.db"  # or your real DB URL
+# Globalna baza PG
+db_url = "postgresql://avnadmin:AVNS_FWJcnG2WJYIgMrKPSqX@pg-3399d351-dzeny.h.aivencloud.com:25585/defaultdb?sslmode=require"
 
-# Create the engine
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}  # Only for SQLite
-)
+# Kreiraj engine za povezivanje sa bazom
+engine = create_engine(db_url, connect_args={"sslmode": "require"})
 
-# SessionLocal instance
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) """
+# Pokušaj konekcije sa bazom
+try:
+    with engine.connect() as connection:
+        print("✅ Uspješno povezano na bazu!")
+except OperationalError as e:
+    print("❌ Neuspjela konekcija na bazu:", e)
 
-# Base class for models
-""" Base = declarative_base()
+# Funkcija za kreiranje tabela
 def init_db():
-    Base.metadata.create_all(bind=engine)
+    SQLModel.metadata.create_all(bind=engine)
+    print("✅ Tabele su uspešno kreirane u bazi!")
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
- """
+# Pozivanje init_db da bi se tabele kreirale prilikom pokretanja
+init_db()
 
-
-db_url = "postgresql://postgres:1234@localhost:5432/dws";
-
-engine = create_engine(db_url);
-
+# Funkcija za dobijanje sesije iz baze
 def get_db():
     with Session(engine) as session:
         yield session
 
+# SessionDep se koristi za dependency injection u FastAPI
+SessionDep = Annotated[Session, Depends(get_db)]
 
-SessionDep = Annotated[Session, Depends(get_db)]; #umjesto Session = Depends(get_db)
+# FastAPI endpoint za ispis svih tabela i podataka
+app = FastAPI()
+

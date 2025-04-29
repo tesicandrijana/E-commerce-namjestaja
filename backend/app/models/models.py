@@ -2,14 +2,20 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import date, datetime
 from decimal import Decimal
+from passlib.context import CryptContext
+
+
+# Kreiraj instancu CryptContext za hashiranje i verifikaciju lozinke
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 # Models using SQLModel
-
 class User(SQLModel, table=True):
     __tablename__ = "users"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
+    username: str
     email: str = Field(unique=True)
     password: str
     role: str = Field(sa_column_kwargs={"nullable": False})
@@ -23,6 +29,14 @@ class User(SQLModel, table=True):
     messages_sent: List["Message"] = Relationship(back_populates="sender", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     messages_received: List["Message"] = Relationship(back_populates="receiver", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 
+     # Verifikacija lozinke
+    def verify_password(self, password: str) -> bool:
+        return pwd_context.verify(password, self.password)
+
+    # Staticka metoda za hashiranje lozinke
+    @staticmethod
+    def hash_password(password: str) -> str:
+        return pwd_context.hash(password)
 
 class Category(SQLModel, table=True):
     __tablename__ = "categories"

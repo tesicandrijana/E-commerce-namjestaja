@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from datetime import timedelta, datetime
 import jwt
+from passlib.context import CryptContext
 
 from app.schemas.user import UserCreate, UserSchema, LoginWithRole
 from app.dependencies import get_current_user, get_db, get_admin_user
@@ -17,7 +18,6 @@ from app.crud.user import (
     get_user_stats,
     get_sales_stats,
     get_rating_stats
-
 )
 
 SECRET_KEY = settings.SECRET_KEY
@@ -26,15 +26,27 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 router = APIRouter()
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
 
 # Signup (Only 'customer' role allowed)
 @router.post("/signup", response_model=UserSchema)
 def signup(user_create: UserCreate, db: Session = Depends(get_db)):
+    # Proveravamo da li je rola postavljena i da li je "customer"
     if user_create.role and user_create.role != "customer":
         raise HTTPException(status_code=400, detail="Only 'customer' role is allowed at signup")
     user_create.role = "customer"
-    return user.create_user(db, user_create)
 
+    # Enkriptovanje lozinke pre nego što je pošaljemo u funkciju za kreiranje korisnika
+    user_create.password = hash_password(user_create.password)
+
+    # Kreiramo korisnika
+    return user.create_user(db, user_create)
 
 # Login with role validation
 @router.post("/login", response_model=dict)
@@ -53,7 +65,6 @@ def login_for_access_token(login_data: LoginWithRole, db: Session = Depends(get_
         "token_type": "bearer"
     }
 
-
 # Customers can request to become workers
 @router.post("/request-worker/{desired_role}")
 def request_worker_access(desired_role: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
@@ -68,7 +79,6 @@ def request_worker_access(desired_role: str, current_user: User = Depends(get_cu
         raise HTTPException(status_code=400, detail="Worker request already submitted.")
 
     return create_worker_request(db, current_user.id, desired_role)
-
 
 # Admin approves customer to become a worker
 @router.post("/approve-worker/{user_id}")
@@ -86,7 +96,6 @@ def approve_worker_request(user_id: int, current_user: User = Depends(get_admin_
     update_user_role(db, user_id, desired_role)
     return {"detail": f"Worker request approved, user role updated to '{desired_role}'"}
 
-
 # Admin can create users (if you want to keep this route)
 @router.post("/", response_model=UserSchema)
 def create_user(
@@ -95,7 +104,6 @@ def create_user(
     current_user: User = Depends(get_admin_user)
 ):
     return user.create_user(db, user_data)
-
 
 # Get all users (admin only)
 @router.get("/", response_model=List[UserSchema])
@@ -107,7 +115,6 @@ def read_users(
 ):
     return user.get_users(db, skip=skip, limit=limit)
 
-
 # Get user by ID
 @router.get("/{user_id}", response_model=UserSchema)
 def read_user(user_id: int, db: Session = Depends(get_db)):
@@ -116,14 +123,12 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
-
 # Token generation function
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
     to_encode = data.copy()
     expire = datetime.utcnow() + expires_delta
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 @router.get("/admin/stats")
 def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
