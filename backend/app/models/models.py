@@ -29,14 +29,14 @@ class User(SQLModel, table=True):
     messages_sent: List["Message"] = Relationship(back_populates="sender", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     messages_received: List["Message"] = Relationship(back_populates="receiver", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 
-     # Verifikacija lozinke
+    """ # Verifikacija lozinke
     def verify_password(self, password: str) -> bool:
-        return pwd_context.verify(password, self.password)
+        return pwd_context.verify(password, self.password) """
 
     # Staticka metoda za hashiranje lozinke
-    @staticmethod
+    """ @staticmethod
     def hash_password(password: str) -> str:
-        return pwd_context.hash(password)
+        return pwd_context.hash(password) """
 
 class Category(SQLModel, table=True):
     __tablename__ = "categories"

@@ -16,8 +16,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# Allow frontend origin
 origins = [
+    "http://localhost:8000",
     "http://localhost:3000",  
     "http://127.0.0.1:3000"
 ]
@@ -38,8 +38,6 @@ app.include_router(category.router, prefix="/categories", tags=["Categories"])
 app.include_router(order.router, prefix="/orders", tags=["Orders"])
 app.include_router(review.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(discount.router, prefix="/discounts", tags=["Discounts"])
-
-
 
 @app.get("/")
 def read_root():

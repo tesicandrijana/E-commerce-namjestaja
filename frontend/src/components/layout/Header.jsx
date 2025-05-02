@@ -1,44 +1,56 @@
-import React, { useState } from 'react'
-import LoginModal from '../login/LoginModal';
+import React, { useEffect, useState } from 'react';
+import LoginModal from '../auth/LoginModal';
+import { useAuth } from '../auth/AuthProvider';
+import { NavLink } from "react-router-dom";
+
 function Header() {
-    const [role, setRole] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const openLoginModal = (userRole) => {
-        setRole(userRole);
-        setIsModalOpen(true);  // Always default to login when opening modal
-        //document.getElementById("login-modal").style.display = "flex";
-        console.log(isModalOpen)
-      };
+  const { handleLogout, currentUser } = useAuth();
+  const [role, setRole] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const closeLoginModal = () => {
-        setIsModalOpen(false);
-        console.log(isModalOpen)
-    };
+  const openLoginModal = (userRole) => {
+    setRole(userRole);
+    setIsModalOpen(true);
+    console.log(isModalOpen)
+  };
+
+  const closeLoginModal = () => {
+    setIsModalOpen(false);
+    console.log(isModalOpen)
+  };
+
 
   return (
     <>
-    <nav className="navbar">
+      <nav className="navbar">
         <div className="logo">FurniLux</div>
         <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/shop">Shop</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><NavLink to="/" end> Home </NavLink></li>
+          <li><NavLink to="/shop" end> Shop </NavLink></li>
+          <li><NavLink to="/about" end> About </NavLink></li>
+          <li><NavLink to="/contact" end> Contact </NavLink></li>
+          <li><NavLink to="/customerTest" end> Customer-test </NavLink></li>
+          <li><NavLink to="/adminTest" end> Admin-test </NavLink></li>
+
         </ul>
-        <button onClick={() => openLoginModal("employee")} className="login-button">
+        {/* <button onClick={() => openLoginModal("employee")} className="login-button">
           Employee Login
-        </button>
-        <button onClick={() => openLoginModal("customer")} className="login-button">
-          Login
-        </button>
+        </button> */}
+        {currentUser ? <button onClick={() => handleLogout()}>
+          Logout
+        </button> :
+          <button onClick={() => openLoginModal("customer")} className="login-button">
+            Login
+          </button>
+        }
       </nav>
       {isModalOpen && (
         <LoginModal
           role={role}
           onClose={closeLoginModal}
         />)}
-      </>
+    </>
   )
 }
 

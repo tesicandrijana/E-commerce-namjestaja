@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List,Annotated
 from datetime import timedelta, datetime
-import jwt
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
+from app.services import user_service
+from app.database import get_db
+from app.schemas.user import Token
 
 from app.schemas.user import UserCreate, UserSchema, LoginWithRole
-from app.dependencies import get_current_user, get_db, get_admin_user
+from app.dependencies import get_admin_user
 from app.crud import user
 from app.models.models import User
 from app.core.config import settings
@@ -28,11 +32,11 @@ router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+SessionDep = Annotated[Session, Depends(get_db)]
+
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
 
 # Signup (Only 'customer' role allowed)
 @router.post("/signup", response_model=UserSchema)
@@ -48,26 +52,22 @@ def signup(user_create: UserCreate, db: Session = Depends(get_db)):
     # Kreiramo korisnika
     return user.create_user(db, user_create)
 
-# Login with role validation
-@router.post("/login", response_model=dict)
-def login_for_access_token(login_data: LoginWithRole, db: Session = Depends(get_db)):
-    db_user = user.get_user_by_email(db, login_data.email)
-    if not db_user or not db_user.verify_password(login_data.password):
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
-
-    if login_data.role == "worker" and db_user.role not in ["manager", "support", "delivery"]:
-        raise HTTPException(status_code=403, detail="You are not a worker.")
-    elif login_data.role == "customer" and db_user.role != "customer":
-        raise HTTPException(status_code=403, detail="You are not a customer.")
-
-    return {
-        "access_token": create_access_token(data={"sub": db_user.id}),
-        "token_type": "bearer"
+# Login
+@router.post("/login")
+def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
+    login_data = {
+        "email": form_data.username,
+        "password": form_data.password
     }
+    return user_service.login_for_access_token(session, login_data)
+
+@router.get("/me")
+async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
+    return current_user
 
 # Customers can request to become workers
 @router.post("/request-worker/{desired_role}")
-def request_worker_access(desired_role: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def request_worker_access(desired_role: str, current_user: User = Depends(user_service.get_current_user), db: Session = Depends(get_db)):
     if current_user.role != "customer":
         raise HTTPException(status_code=400, detail="Only customers can request to become workers")
 
@@ -108,12 +108,12 @@ def create_user(
 # Get all users (admin only)
 @router.get("/", response_model=List[UserSchema])
 def read_users(
-    skip: int = 0,
+    session: SessionDep,
+    current_user: Annotated[User, Depends(user_service.role_check(["admin"]))],
+    offset: int = 0,
     limit: int = 100,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_admin_user)
 ):
-    return user.get_users(db, skip=skip, limit=limit)
+    return user_service.get_users(session,offset, limit)
 
 # Get user by ID
 @router.get("/{user_id}", response_model=UserSchema)
@@ -123,15 +123,9 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
-# Token generation function
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 @router.get("/admin/stats")
-def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User = Depends(get_admin_user)):
+def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User = Depends(user_service.role_check(["customer"]))):
     return {
         "users": get_user_stats(db),
         "sales": get_sales_stats(db),

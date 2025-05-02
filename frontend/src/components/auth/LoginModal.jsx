@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {useAuth} from './AuthProvider';
 
 function LoginModal({ role, onClose }) {
 
+  const {handleLogin} = useAuth()
   const [isLogin, setIsLogin] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -23,17 +25,16 @@ function LoginModal({ role, onClose }) {
   async function handleSubmit(e) {
     e.preventDefault();
     if (isLogin) {
-      // Send login data to backend for authentication
-      console.log(`Logging in as ${role} with`, formData);
+      const data = {
+        username: formData.email,
+        password: formData.password
+      }
       try {
-        const response = await axios.post("http://localhost:8000/users/login", {
-          email: formData.email,
-          password: formData.password,
-          role: role,
-        });
-        console.log("Login response:", response.data);
-      } catch (error) {
-        console.error("Error during login:", error.response?.data || error);
+        const response = await handleLogin(data);
+        console.log(`Logging in as ${role} with`, response);
+        onClose()
+      } catch (err) {
+        console.log(err);
       }
     } else {
       // Send signup data to backend (add role to form data for signup)
@@ -63,7 +64,7 @@ function LoginModal({ role, onClose }) {
             : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
         </h2>
         <form onSubmit={handleSubmit}>
-          {isLogin ? null : (
+          {isLogin ? null : ( <>
             <div className="input-group">
               <label htmlFor="name">Name</label>
               <input
@@ -75,7 +76,7 @@ function LoginModal({ role, onClose }) {
                 required
               />
             </div>
-          )}
+          
           <div className="input-group">
             <label htmlFor="username">Username</label>
             <input
@@ -87,7 +88,8 @@ function LoginModal({ role, onClose }) {
               required
             />
           </div>
-          {isLogin || role === "employee" ? null : (
+          </>
+          )}
             <div className="input-group">
               <label htmlFor="email">Email</label>
               <input
@@ -99,7 +101,6 @@ function LoginModal({ role, onClose }) {
                 required
               />
             </div>
-          )}
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <input

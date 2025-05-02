@@ -1,4 +1,5 @@
-from fastapi import Depends, HTTPException, Security
+import jwt
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError, ExpiredSignatureError
 from sqlalchemy.orm import Session
@@ -6,6 +7,7 @@ from app.crud import user
 from app.database import get_db
 from app.models.models import User
 from app.core.config import settings
+from app.services.user_service import get_current_user 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -33,17 +35,23 @@ def verify_token(token: str, credentials_exception):
 
 
 # Get current user (used in most protected endpoints)
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
+""" def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> User:
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    user_id = verify_token(token, credentials_exception)
-    db_user = user.get_user_by_id(db, user_id=user_id)
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms = [ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except InvalidTokenError:
+        raise credentials_exception
+    db_user = get_user(email)
     if db_user is None:
         raise credentials_exception
-    return db_user
+    return db_user """
 
 
 # Get admin user (used to protect admin-only routes)
