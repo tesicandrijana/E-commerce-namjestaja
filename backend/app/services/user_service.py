@@ -11,6 +11,8 @@ from app.database import get_db
 from app.schemas.user import LoginWithRole,Token
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
+from app.schemas.user import UserCreate
+from app.repositories import user_repository
 import jwt
 
 
@@ -22,6 +24,19 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 
 SessionDep = Annotated[Session, Depends(get_db)]
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def signup_user(db: Session, user_create: UserCreate):
+    if user_create.role and user_create.role != "customer":
+        raise HTTPException(status_code=400, detail="Only 'customer' role is allowed at signup")
+    
+    user_create.role = "customer"
+    user_create.password = hash_password(user_create.password)
+    
+    return user_repository.create_user(db, user_create)
 
 def get_users(session: Session, offset: int = 0, limit: int = 100) -> list[User]:
     return user_repository.get_users(session, offset, limit)

@@ -8,8 +8,11 @@ from passlib.context import CryptContext
 from app.services import user_service
 from app.database import get_db
 from app.schemas.user import Token
+from app.services.user_service import hash_password
+
 
 from app.schemas.user import UserCreate, UserSchema, LoginWithRole
+from app.services.user_service import signup_user
 from app.dependencies import get_admin_user
 from app.crud import user
 from app.models.models import User
@@ -41,16 +44,7 @@ def hash_password(password: str) -> str:
 # Signup (Only 'customer' role allowed)
 @router.post("/signup", response_model=UserSchema)
 def signup(user_create: UserCreate, db: Session = Depends(get_db)):
-    # Proveravamo da li je rola postavljena i da li je "customer"
-    if user_create.role and user_create.role != "customer":
-        raise HTTPException(status_code=400, detail="Only 'customer' role is allowed at signup")
-    user_create.role = "customer"
-
-    # Enkriptovanje lozinke pre nego što je pošaljemo u funkciju za kreiranje korisnika
-    user_create.password = hash_password(user_create.password)
-
-    # Kreiramo korisnika
-    return user.create_user(db, user_create)
+    return signup_user(db, user_create)
 
 # Login
 @router.post("/login")
