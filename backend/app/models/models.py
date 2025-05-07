@@ -15,7 +15,6 @@ class User(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    username: str
     email: str = Field(unique=True)
     password: str
     role: str = Field(sa_column_kwargs={"nullable": False})
@@ -46,6 +45,12 @@ class Category(SQLModel, table=True):
 
     products: List["Product"] = Relationship(back_populates="category")
 
+class Material(SQLModel, table=True):
+    __tablename__ = "materials"
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(sa_column_kwargs={"nullable": False, "unique": True})
+
+    products: List["Product"] = Relationship(back_populates="material")
 
 class Product(SQLModel, table=True):
     __tablename__ = "products"
@@ -53,7 +58,7 @@ class Product(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     description: Optional[str] = None
-    material: Optional[str] = None
+    material_id: Optional[int] = Field(default=None, foreign_key="materials.id")
     length: int
     width: int
     height: int
@@ -62,9 +67,19 @@ class Product(SQLModel, table=True):
     category_id: Optional[int] = Field(default=None, foreign_key="categories.id")
     image: Optional[str] = None
 
+    material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
     discounts: List["Discount"] = Relationship(back_populates="product")
     reviews: List["Review"] = Relationship(back_populates="product")
+
+    images: list["ProductImage"] = Relationship(back_populates="product")
+
+class ProductImage(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    product_id: int = Field(foreign_key="products.id")
+    image_url: str 
+
+    product: Product = Relationship(back_populates="images")
 
 
 class Discount(SQLModel, table=True):
@@ -77,7 +92,6 @@ class Discount(SQLModel, table=True):
     end_date: date
 
     product: Optional[Product] = Relationship(back_populates="discounts")
-
 
 class Order(SQLModel, table=True):
     __tablename__ = "orders"

@@ -1,17 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from typing import List
-
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form,File
+from typing import List, Annotated
+from sqlmodel import Session
 from app.crud import product
 from app.schemas import product as product_schema
-from app.dependencies import get_db
+from app.services import product_service
+from app.database import get_db
 
-router = APIRouter(prefix="/products", tags=["Products"])
+router = APIRouter()
 
+SessionDep = Annotated[Session, Depends(get_db)]
 
-@router.post("/", response_model=product_schema.Product)
-def create_product(product: product_schema.ProductCreate, db: Session = Depends(get_db)):
-    return product.create_product(db, product)
+@router.post("/") 
+def create_product(session: SessionDep, 
+                   name: Annotated[str, Form()],
+                   description: Annotated[str, Form()],
+                   material_id: Annotated[int, Form()],
+                   category_id: Annotated[int, Form()],
+                   length: Annotated[int, Form()],
+                   width: Annotated[int, Form()],
+                   height: Annotated[int, Form()],
+                   price: Annotated[int, Form()],
+                   quantity: Annotated[int, Form()],
+                   images: list[UploadFile] = File(...)):
+    return product_service.create_product(session, name, description, material_id, category_id, length, width, height, price, quantity, images)
 
 
 @router.get("/", response_model=List[product_schema.Product])
@@ -35,3 +46,5 @@ def update_product(product_id: int, product: product_schema.ProductCreate, db: S
 @router.delete("/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db)):
     return product.delete_product(db, product_id)
+
+
