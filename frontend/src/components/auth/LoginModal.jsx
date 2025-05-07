@@ -9,7 +9,7 @@ function LoginModal({ role, onClose }) {
 
   const [formData, setFormData] = useState({
     name: "",
-    username: "",
+    //username: "",
     password: "",
     email: "",
   });
@@ -77,7 +77,7 @@ function LoginModal({ role, onClose }) {
               />
             </div>
           
-          <div className="input-group">
+         {/*  <div className="input-group">
             <label htmlFor="username">Username</label>
             <input
               type="text"
@@ -87,7 +87,7 @@ function LoginModal({ role, onClose }) {
               onChange={handleFormChange}
               required
             />
-          </div>
+          </div> */}
           </>
           )}
             <div className="input-group">
