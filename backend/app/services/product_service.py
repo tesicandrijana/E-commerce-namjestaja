@@ -13,7 +13,7 @@ import uuid
 def image_upload(product_name: str,image: Annotated[UploadFile, File(...)]):
     upload_dir = "static/product_images"
     
-    if image.content_type not in ["image/jpeg", "image/png", "image/gif"]:
+    if image.content_type not in ["image/jpeg", "image/png", "image/gif", "image/webp"]:
         raise HTTPException(status_code=400, detail="Invalid file type")
         
     os.makedirs(upload_dir, exist_ok=True)
