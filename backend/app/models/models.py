@@ -15,6 +15,10 @@ class User(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
+<<<<<<< HEAD
+=======
+    #username: str
+>>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
     email: str = Field(unique=True)
     password: str
     role: str = Field(sa_column_kwargs={"nullable": False})
@@ -28,14 +32,6 @@ class User(SQLModel, table=True):
     messages_sent: List["Message"] = Relationship(back_populates="sender", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     messages_received: List["Message"] = Relationship(back_populates="receiver", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 
-    """ # Verifikacija lozinke
-    def verify_password(self, password: str) -> bool:
-        return pwd_context.verify(password, self.password) """
-
-    # Staticka metoda za hashiranje lozinke
-    """ @staticmethod
-    def hash_password(password: str) -> str:
-        return pwd_context.hash(password) """
 
 class Category(SQLModel, table=True):
     __tablename__ = "categories"

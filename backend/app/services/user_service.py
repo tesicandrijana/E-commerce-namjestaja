@@ -11,7 +11,11 @@ from app.database import get_db
 from app.schemas.user import LoginWithRole,Token
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
+from app.schemas.user import UserCreate
+from app.repositories import user_repository
+from  app.models import models
 import jwt
+import re
 
 
 SECRET_KEY = settings.SECRET_KEY
@@ -22,6 +26,32 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 
 SessionDep = Annotated[Session, Depends(get_db)]
+
+def validate_password_strength(password: str):
+    if len(password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters long")
+    if not re.search(r"[A-Z]", password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one uppercase letter")
+    if not re.search(r"[0-9]", password):
+        raise HTTPException(status_code=400, detail="Password must contain at least one number")
+    if not re.search(r"[\W_]", password):  # \W matches any non-alphanumeric character
+        raise HTTPException(status_code=400, detail="Password must contain at least one special character")
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def check_email_exists(db: Session, email: str):
+    existing_user = db.query(models.User).filter(models.User.email == email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already exists.")
+    return None
+
+def signup_user(db: Session, user_create: UserCreate):
+    validate_password_strength(user_create.password)
+    check_email_exists(db, user_create.email)
+    user_create.password = hash_password(user_create.password)
+    return user_repository.create_user(db, user_create)
 
 def get_users(session: Session, offset: int = 0, limit: int = 100) -> list[User]:
     return user_repository.get_users(session, offset, limit)

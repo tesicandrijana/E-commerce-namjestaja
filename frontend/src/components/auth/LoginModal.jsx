@@ -9,8 +9,13 @@ function LoginModal({ role, onClose }) {
 
   const [formData, setFormData] = useState({
     name: "",
+<<<<<<< HEAD
 /*     username: "",
  */    password: "",
+=======
+    //username: "",
+    password: "",
+>>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
     email: "",
   });
 
@@ -77,7 +82,11 @@ function LoginModal({ role, onClose }) {
               />
             </div>
           
+<<<<<<< HEAD
           {/* <div className="input-group">
+=======
+         {/*  <div className="input-group">
+>>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
             <label htmlFor="username">Username</label>
             <input
               type="text"
