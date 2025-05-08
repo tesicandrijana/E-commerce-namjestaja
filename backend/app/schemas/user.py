@@ -7,18 +7,12 @@ ValidRoles = Literal["administrator", "manager", "customer", "support", "deliver
 class UserBase(BaseModel):
     name: str
     email: EmailStr
-    role: ValidRoles
-    phone: Optional[str] = None
+    role: Optional[str] = "customer"    
     address: Optional[str] = None
     is_active: Optional[bool] = True
 
-class UserCreate(BaseModel):
-    name : str
-    username: str
-    email: EmailStr
+class UserCreate(UserBase):
     password: str
-    # Role will be automatically set to "customer" in backend during signup, so we don't need it here
-    role: Optional[ValidRoles] = "customer"  # Default to "customer"
 
 class UserUpdate(BaseModel):
     name: Optional[str]
@@ -67,4 +61,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    email: str | None = None
