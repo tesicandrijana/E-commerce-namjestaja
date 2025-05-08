@@ -15,10 +15,7 @@ class User(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-<<<<<<< HEAD
-=======
     #username: str
->>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
     email: str = Field(unique=True)
     password: str
     role: str = Field(sa_column_kwargs={"nullable": False})
