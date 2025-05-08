@@ -13,7 +13,7 @@ import uuid
 def image_upload(product_name: str,image: Annotated[UploadFile, File(...)]):
     upload_dir = "static/product_images"
     
-    if image.content_type not in ["image/jpeg", "image/png", "image/gif"]:
+    if image.content_type not in ["image/jpeg", "image/png", "image/gif","image/webp"]:
         raise HTTPException(status_code=400, detail="Invalid file type")
         
     os.makedirs(upload_dir, exist_ok=True)
@@ -61,6 +61,7 @@ def create_product(session: Session,
         db_product = product_repository.create_product(session, product)
         for image in images:
             product_url = image_upload(name,image)
+            print(product_url)
             product_repository.add_product_image(session, db_product, product_url)
 
         return db_product

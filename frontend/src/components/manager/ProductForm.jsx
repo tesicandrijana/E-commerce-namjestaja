@@ -18,9 +18,9 @@ function ProductForm() {
             }
         }
 
-        for (const file in fileArray) {
-            formData.append("images", fileArray[file])
-        }
+        for (const file of fileArray) {
+            formData.append("images", file);
+        }        
 
         try {
             const response = await axios.post("http://localhost:8000/products", formData,

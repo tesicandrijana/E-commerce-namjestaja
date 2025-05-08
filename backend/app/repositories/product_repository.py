@@ -16,3 +16,4 @@ def add_product_image(session: Session, product: Product, url: str):
     session.add(product_image)
     session.commit()
     session.refresh(product_image)
+    
