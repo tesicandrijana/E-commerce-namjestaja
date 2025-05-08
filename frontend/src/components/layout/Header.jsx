@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import LoginModal from '../auth/LoginModal';
 import { useAuth } from '../auth/AuthProvider';
 import { NavLink } from "react-router-dom";
@@ -32,6 +32,7 @@ function Header() {
           <li><NavLink to="/contact" end> Contact </NavLink></li>
           <li><NavLink to="/customerTest" end> Customer-test </NavLink></li>
           <li><NavLink to="/adminTest" end> Admin-test </NavLink></li>
+          <li><NavLink to="/manager-dashboard">Manager dashboard</NavLink></li>
 
         </ul>
         {/* <button onClick={() => openLoginModal("employee")} className="login-button">

@@ -99,6 +99,7 @@ def create_user(
 ):
     return user.create_user(db, user_data)
 
+
 # Get all users (admin only)
 @router.get("/", response_model=List[UserSchema])
 def read_users(

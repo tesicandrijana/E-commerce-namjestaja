@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException 
 from sqlalchemy.orm import Session
-from typing import List
-
+from typing import List, Annotated
+from app.services import category_service
 from app.crud import category  # 
 from app.schemas import category as category_schema
 from app.dependencies import get_db
 
-router = APIRouter(prefix="/categories", tags=["Categories"])
-
+router = APIRouter()
+SessionDep = Annotated[Session, Depends(get_db)]
 
 @router.post("/", response_model=category_schema.Category)
 def create_category(category_data: category_schema.CategoryCreate, db: Session = Depends(get_db)):
@@ -18,8 +18,11 @@ def create_category(category_data: category_schema.CategoryCreate, db: Session =
 
 
 @router.get("/", response_model=List[category_schema.Category])
-def read_categories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return category.get_categories(db, skip=skip, limit=limit)
+def read_categories(    
+    session: SessionDep,
+    offset: int = 0,
+    limit: int = 100,):
+    return category_service.get_categories(session)
 
 
 @router.get("/{category_id}", response_model=category_schema.Category)

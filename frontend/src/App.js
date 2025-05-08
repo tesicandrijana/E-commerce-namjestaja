@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import CustomerTest from "./pages/customer/CustomerTest";
+import Dashboard from "./pages/manager/Dashboard";
+import ProductForm from "./components/manager/ProductForm";
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +23,8 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
             <Route path="/adminTest" element={<CustomerTest />} />
           </Route>
+            <Route path="/manager-dashboard" element={<Dashboard />} />
+            <Route path="/add-product" element={<ProductForm/>}/>
         </Route>
       </Routes>
 
