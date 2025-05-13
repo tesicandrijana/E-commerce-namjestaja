@@ -8,11 +8,9 @@ from app.core.config import settings
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
 from app.database import get_db
-from app.schemas.user import LoginWithRole,Token
+from app.schemas.user import LoginWithRole,Token, UserCreate
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
-from app.schemas.user import UserCreate
-from app.repositories import user_repository
 from  app.models import models
 import jwt
 import re

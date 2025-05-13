@@ -4,6 +4,7 @@ from sqlmodel import SQLModel
 from app.database import engine, SessionDep
 from app.routers import user, product, category, order, review, discount,material
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 
 def create_db_and_tables():
@@ -15,6 +16,7 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 origins = [
     "http://localhost:8000",

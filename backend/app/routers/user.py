@@ -1,17 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List,Annotated
-from datetime import timedelta, datetime
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Session
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from app.services import user_service
 from app.database import get_db
 from app.schemas.user import Token
-from app.services.user_service import hash_password
-
-
-from app.schemas.user import UserCreate, UserSchema, LoginWithRole
+from app.schemas.user import UserCreate, UserSchema
 from app.services.user_service import signup_user
 from app.dependencies import get_admin_user
 from app.crud import user

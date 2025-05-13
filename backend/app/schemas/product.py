@@ -2,6 +2,13 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+class ProductImage(BaseModel):
+    id: int
+    image_url: str
+
+    class Config:
+        from_attributes = True
+
 class ProductBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -12,7 +19,7 @@ class ProductBase(BaseModel):
     price: float
     quantity: Optional[int] = 1
     category_id: int
-    images: Optional[list[str]] | None 
+    images: Optional[list[ProductImage]] | None = None
 
 
 class ProductCreate(ProductBase):

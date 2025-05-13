@@ -7,12 +7,7 @@ ValidRoles = Literal["administrator", "manager", "customer", "support", "deliver
 class UserBase(BaseModel):
     name: str
     email: EmailStr
-<<<<<<< HEAD
-    role: Optional[ValidRoles] = "customer"  # Default to "customer"
-    phone: Optional[str] = None
-=======
     role: Optional[str] = "customer"    
->>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
     address: Optional[str] = None
     is_active: Optional[bool] = True
 

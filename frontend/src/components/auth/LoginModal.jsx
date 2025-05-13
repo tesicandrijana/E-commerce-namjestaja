@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {useAuth} from './AuthProvider';
+import { useAuth } from './AuthProvider';
 
 function LoginModal({ role, onClose }) {
 
-  const {handleLogin} = useAuth()
+  const { handleLogin } = useAuth()
   const [isLogin, setIsLogin] = useState(true);
 
   const [formData, setFormData] = useState({
@@ -64,7 +64,7 @@ function LoginModal({ role, onClose }) {
             : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
         </h2>
         <form onSubmit={handleSubmit}>
-          {isLogin ? null : ( <>
+          {isLogin ? null : (<>
             <div className="input-group">
               <label htmlFor="name">Name</label>
               <input
@@ -76,8 +76,8 @@ function LoginModal({ role, onClose }) {
                 required
               />
             </div>
-          
-          {/* <div className="input-group">
+
+            {/* <div className="input-group">
             <label htmlFor="username">Username</label>
             <input
               type="text"
@@ -90,17 +90,17 @@ function LoginModal({ role, onClose }) {
           </div> */}
           </>
           )}
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleFormChange}
+              required
+            />
+          </div>
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <input
@@ -125,21 +125,18 @@ function LoginModal({ role, onClose }) {
             </button>
           </div>
         </form>
+        <div className="toggle-form">
+          <p>
+            {isLogin ? "Don't have an account? " : "Already have an account? "}
+            <span
+              onClick={toggleForm}
+              style={{ color: "#f39c12", cursor: "pointer" }}
+            >
+              {isLogin ? "Sign Up" : "Log In"}
+            </span>
+          </p>
+        </div>
 
-        {/* Sign Up toggle only for customers */}
-        {role === "customer" && (
-          <div className="toggle-form">
-            <p>
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <span
-                onClick={toggleForm}
-                style={{ color: "#f39c12", cursor: "pointer" }}
-              >
-                {isLogin ? "Sign Up" : "Log In"}
-              </span>
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

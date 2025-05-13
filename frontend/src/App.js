@@ -6,7 +6,8 @@ import Layout from "./components/layout/Layout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import CustomerTest from "./pages/customer/CustomerTest";
 import Dashboard from "./pages/manager/Dashboard";
-import ProductForm from "./components/manager/ProductForm";
+import ProductForm from "./components/product/ProductForm";
+import ProductDetail from "./components/product/ProductDetail";
 function App() {
   return (
     <BrowserRouter>
@@ -20,11 +21,12 @@ function App() {
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
             <Route path="/customerTest" element={<CustomerTest />} />
           </Route>
-          <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
-            <Route path="/adminTest" element={<CustomerTest />} />
-          </Route>
-            <Route path="/manager-dashboard" element={<Dashboard />} />
-            <Route path="/add-product" element={<ProductForm/>}/>
+
+          <Route path="/manager-dashboard" element={<Dashboard />} />
+          <Route path="/products/:id/edit" element={<ProductForm mode="edit"/>}/>
+          <Route path="/products/create" element={<ProductForm mode="create"/>} />
+    
+          <Route path="/products/:id" element={<ProductDetail />} />
         </Route>
       </Routes>
 

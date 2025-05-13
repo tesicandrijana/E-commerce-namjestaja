@@ -65,7 +65,7 @@ class Product(SQLModel, table=True):
     discounts: List["Discount"] = Relationship(back_populates="product")
     reviews: List["Review"] = Relationship(back_populates="product")
 
-    images: list["ProductImage"] = Relationship(back_populates="product")
+    images: list["ProductImage"] = Relationship(back_populates="product",cascade_delete=True)
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
