@@ -1,0 +1,16 @@
+.login-modal input {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  outline: none;
+  color: #000; /* Boja teksta */
+}
+
+.login-modal input::placeholder {
+  color: #5c5d5d; /* Plava boja placeholdera */
+  opacity: 1; /* Da placeholder bude potpuno vidljiv */
+}
+.login-modal input:focus {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2); /* suptilna narandžasta nijansa */
+  outline: none;
+}

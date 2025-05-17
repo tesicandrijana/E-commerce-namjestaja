@@ -2,17 +2,13 @@ from pydantic import BaseModel, EmailStr
 from typing import Literal, Optional
 from datetime import datetime
 
-ValidRoles = Literal["administrator", "manager", "customer", "support", "delivery"]
+ValidRoles = Literal["admin", "manager", "customer", "support", "delivery"]
 
 class UserBase(BaseModel):
     name: str
     email: EmailStr
-<<<<<<< HEAD
     role: Optional[ValidRoles] = "customer"  # Default to "customer"
     phone: Optional[str] = None
-=======
-    role: Optional[str] = "customer"    
->>>>>>> f3e0bc0272b93ca11ba881c456f354352032dd3e
     address: Optional[str] = None
     is_active: Optional[bool] = True
 
@@ -26,7 +22,7 @@ class UserUpdate(BaseModel):
     role: Optional[ValidRoles]
     phone: Optional[str]
     address: Optional[str]
-    is_active: Optional[bool]
+    # is_active is omitted from the update model
 
 class User(UserBase):
     id: int
@@ -38,6 +34,8 @@ class UserSchema(BaseModel):
     name: str
     email: EmailStr
     role: ValidRoles
+    phone: Optional[str]
+    address: Optional[str]
 
 class LoginWithRole(BaseModel):
     email: EmailStr
@@ -63,7 +61,6 @@ class WorkerRequestRead(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
 
 class TokenData(BaseModel):
     email: str | None = None

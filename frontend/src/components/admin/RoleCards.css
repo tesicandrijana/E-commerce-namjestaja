@@ -1,0 +1,130 @@
+.ag-format-container {
+  width: 1142px;
+  margin: 0 auto;
+  padding: 50px 0;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.ag-courses_box {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.cards-row .ag-courses_item {
+  flex: 1 1 calc(25% - 20px);
+  margin: 0;
+  overflow: hidden;
+  border-radius: 28px;
+}
+
+.ag-courses-item_link {
+  display: block;
+  padding: 30px 20px;
+  background-color: #e6e6e694;
+  text-decoration: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.ag-courses-item_link:hover,
+.ag-courses-item_link:hover .ag-courses-item_date {
+  text-decoration: none;
+  color: #FFF;
+}
+
+.ag-courses-item_link:hover .ag-courses-item_bg {
+  transform: scale(10);
+  transition: all 0.5s ease;
+}
+
+.ag-courses-item_title {
+  min-height: 87px;
+  margin: 0 0 25px;
+  overflow: hidden;
+  font-weight: bold;
+  font-size: 30px;
+  color: #333333;
+  position: relative;
+  z-index: 2;
+}
+
+.ag-courses-item_date-box {
+  font-size: 18px;
+  color: #333333;
+  position: relative;
+  z-index: 2;
+}
+
+.ag-courses-item_date {
+  font-weight: bold;
+  color: #f9b234;
+  transition: color 0.5s ease;
+}
+
+.ag-courses-item_bg {
+  height: 128px;
+  width: 128px;
+  background-color: #f9b234;
+  position: absolute;
+  top: -75px;
+  right: -75px;
+  border-radius: 50%;
+  transition: all 0.5s ease;
+  z-index: 1;
+}
+
+.ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+  background-color: #3ecd5e;
+}
+
+.ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+  background-color: #e44002;
+}
+
+.ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+  background-color: #952aff;
+}
+
+.ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+  background-color: #cd3e94;
+}
+
+.ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+  background-color: #4c49ea;
+}
+
+@media only screen and (max-width: 979px) {
+  .cards-row .ag-courses_item {
+    flex: 1 1 calc(50% - 20px);
+  }
+  .ag-courses-item_title {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 639px) {
+  .cards-row {
+    flex-wrap: wrap;
+  }
+  .cards-row .ag-courses_item {
+    flex: 1 1 100%;
+  }
+  .ag-courses-item_title {
+    min-height: 72px;
+    line-height: 1;
+    font-size: 24px;
+  }
+  .ag-courses-item_link {
+    padding: 22px 40px;
+  }
+  .ag-courses-item_date-box {
+    font-size: 16px;
+  }
+}

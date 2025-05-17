@@ -1,0 +1,87 @@
+/* Osnovne postavke za formu kao karticu */
+#EmployeeForm {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  max-width: 420px;
+  margin-top: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+  color: #1a237e; /* tamnoplava za tekst unutar forme */
+}
+
+/* Poruka o uspehu - plava i centrira */
+#successfully {
+  color: #1565c0; /* srednje plava */
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+/* Stil za input i select elementi */
+input, select {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 10px 0;
+  border: 1.8px solid #90caf9; /* svetloplava ivica */
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #0d47a1; /* tamnoplavi tekst unutar inputa */
+  background-color: #e3f2fd; /* svetloplava pozadina */
+}
+
+/* Placeholder stil */
+input::placeholder {
+  color: #64b5f6; /* svetloplavi placeholder */
+  font-style: italic;
+}
+
+/* Fokusirani input/select sa plavim shadow-om */
+input:focus, select:focus {
+  border-color: #1976d2; /* plava */
+  box-shadow: 0 0 8px rgba(25, 118, 210, 0.6);
+  outline: none;
+}
+
+/* Stil za dugme submit */
+input[type="submit"] {
+  background-color: #1976d2; /* plavo dugme */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 14px 0;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #0d47a1;
+  box-shadow: 0 4px 12px rgba(13, 71, 161, 0.6);
+}
+
+/* Stil za selekt polje (pozadina i boja teksta) */
+select {
+  background-color: #bbdefb;
+  color: #0d47a1;
+}
+
+/* Poruke o grešci (crvene boje prilagođene plavoj temi) */
+p {
+  font-size: 14px;
+  color: #1565c0; /* svetloplavi ton za greške */
+  text-align: center;
+  margin-top: 10px;
+}
