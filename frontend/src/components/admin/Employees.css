@@ -1,22 +1,21 @@
 /* Employees.css */
 
-/* Opšti stil za stranicu */
-body {
+.employees-page {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
   background-color: #f4f7fc;
+  padding-bottom: 40px;
 }
 
-/* Stil za naslov */
-h1 {
+/* Heading */
+.employees-title {
   text-align: center;
   color: #333;
   margin-top: 20px;
   font-size: 2rem;
 }
 
-table {
+/* Table */
+.employees-table {
   width: 80%;
   margin: 20px auto;
   border-collapse: collapse;
@@ -26,8 +25,7 @@ table {
   overflow: hidden;
 }
 
-/* Zaglavlje */
-th {
+.employees-table th {
   background-color: #007bff;
   color: #fff;
   padding: 12px 15px;
@@ -36,8 +34,7 @@ th {
   border-bottom: 2px solid #ddd;
 }
 
-/* Ćelije */
-td {
+.employees-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -45,35 +42,34 @@ td {
   transition: background-color 0.3s ease;
 }
 
-/* Hover red */
-tbody tr:hover {
+.employees-table tbody tr:hover {
   background-color: #f1f1f1;
 }
 
-/* Zaobljeni uglovi */
-tbody tr:first-child td:first-child {
+/* Rounded corners for first and last cells */
+.employees-table tbody tr:first-child td:first-child {
   border-top-left-radius: 12px;
 }
-tbody tr:first-child td:last-child {
+.employees-table tbody tr:first-child td:last-child {
   border-top-right-radius: 12px;
 }
-tbody tr:last-child td:first-child {
+.employees-table tbody tr:last-child td:first-child {
   border-bottom-left-radius: 12px;
 }
-tbody tr:last-child td:last-child {
+.employees-table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
 }
 
-/* Stil za prikazivanje greške */
-p {
+/* Error message */
+.employees-error {
   text-align: center;
   color: red;
   font-size: 1.1rem;
 }
 
-/* Dugme Edit - stil */
-button.edit-btn {
-  background-color: #007bff; /* plava kao zaglavlje tabele */
+/* Edit button */
+.edit-btn {
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 6px 14px;
@@ -84,23 +80,23 @@ button.edit-btn {
   box-shadow: 0 2px 6px rgba(0, 123, 255, 0.5);
 }
 
-button.edit-btn:hover {
-  background-color: #0056b3; /* tamnija plava za hover */
+.edit-btn:hover {
+  background-color: #0056b3;
   box-shadow: 0 4px 12px rgba(0, 86, 179, 0.7);
 }
 
-/* Dodatni stilovi za mobilne uređaje */
+/* Responsive */
 @media (max-width: 768px) {
-  table {
+  .employees-table {
     width: 90%;
   }
 
-  th,
-  td {
+  .employees-table th,
+  .employees-table td {
     padding: 10px;
   }
 
-  h1 {
+  .employees-title {
     font-size: 1.5rem;
   }
 }

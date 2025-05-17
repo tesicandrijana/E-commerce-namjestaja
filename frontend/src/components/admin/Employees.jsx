@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './Employees.css';
-import EditUserModal from './UserModal'; // <-- ovo mora da se slaže s onim što si exportovao
+import EditUserModal from './UserModal';
 
 const Employees = () => {
   const [users, setUsers] = useState([]);
@@ -80,7 +80,7 @@ const Employees = () => {
         }
       });
 
-      await fetchUsers(); // osvježi listu nakon update-a
+      await fetchUsers();
       setEditUserId(null);
       setError(null);
     } catch (err) {
@@ -98,7 +98,7 @@ const Employees = () => {
         }
       });
 
-      await fetchUsers(); // osvježi listu nakon brisanja
+      await fetchUsers();
       setEditUserId(null);
       setError(null);
     } catch (err) {
@@ -108,10 +108,12 @@ const Employees = () => {
   };
 
   return (
-    <div>
-      <h1>Employees</h1>
+    <div className="employees-page">
+      <h1 className="employees-title">Employees</h1>
 
-      <table>
+      {error && <p className="employees-error">{error}</p>}
+
+      <table className="employees-table">
         <thead>
           <tr>
             <th>Full name</th>
@@ -133,7 +135,7 @@ const Employees = () => {
               <td>{user.role}</td>
               <td>••••••••</td>
               <td>
-                <button onClick={() => handleEdit(user)} className='edit-btn'>Edit</button>
+                <button onClick={() => handleEdit(user)} className="edit-btn">Edit</button>
               </td>
             </tr>
           ))}
@@ -156,3 +158,4 @@ const Employees = () => {
 };
 
 export default Employees;
+

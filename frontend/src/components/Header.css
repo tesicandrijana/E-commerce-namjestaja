@@ -1,0 +1,149 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #fffefc; /* subtle off-white */
+  color: #333;
+}
+
+/* Main Header */
+.main-header {
+  background: linear-gradient(to right, #fff9ec, #fff4e1); /* soft gradient */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  padding: 1.2rem 2rem;
+  position: relative;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Header Layout */
+.header-container {
+  max-width: 1250px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* Logo */
+.logo a {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f4a300;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  font-family: 'Playfair Display', serif;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.logo a:hover {
+  color: #ffc066;
+  text-shadow: 0 1px 6px rgba(255, 189, 89, 0.4);
+}
+
+/* Navigation */
+.nav-links {
+  display: flex;
+  gap: 1.8rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  color: #555;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 0;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 0%;
+  background-color: #f4a300;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a:focus {
+  color: #f4a300;
+}
+
+.nav-links a:hover::after,
+.nav-links a:focus::after {
+  width: 100%;
+}
+
+/* Auth Buttons */
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  padding: 0.6rem 1.4rem;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  user-select: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+/* Login Button */
+.login-btn {
+  background-color: transparent;
+  color: #f4a300;
+  border: 2px solid #f4a300;
+}
+
+.login-btn:hover,
+.login-btn:focus {
+  background-color: #f4a300;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(244, 163, 0, 0.3);
+}
+
+/* Register Button */
+.register-btn {
+  background-color: #ff8c66;
+  color: #fff;
+  border: 2px solid #ff8c66;
+  box-shadow: 0 0 6px rgba(255, 140, 102, 0.35);
+}
+
+.register-btn:hover,
+.register-btn:focus {
+  background-color: #ffa07a;
+  border-color: #ffa07a;
+  box-shadow: 0 0 10px rgba(255, 160, 122, 0.4);
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .nav-links {
+    justify-content: center;
+    gap: 1.2rem;
+  }
+
+  .auth-buttons {
+    justify-content: center;
+    width: 100%;
+  }
+}
+

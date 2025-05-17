@@ -8,7 +8,7 @@ class UserBase(BaseModel):
     name: str
     email: EmailStr
     role: Optional[ValidRoles] = "customer"  # Default to "customer"
-    phone: Optional[str] = None
+    phone: Optional[str] = None  
     address: Optional[str] = None
     is_active: Optional[bool] = True
 

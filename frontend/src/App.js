@@ -1,55 +1,77 @@
 import React from "react";
-import HomePage from "./pages/home/HomePage";
-import NewEmployee from "./components/admin/NewEmployee";
-import Employees from "./components/admin/Employees";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/layout/Layout";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { CartProvider } from "./contexts/CartContext";
+
+// Layouts and wrappers
+import Header from "./components/Header";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+
+// Pages (Customer)
+import Home from "./pages/customer/Home";
+import About from "./pages/customer/About";
+import Contact from "./pages/customer/Contact";
+import ProductList from "./pages/customer/ProductList";
+import ProductDetails from "./pages/customer/ProductDetails";
 import CustomerTest from "./pages/customer/CustomerTest";
 
-import AdminDashboard from "./pages/admin/AdminDashboard"; // NOVO
-import ManagerDashboard from "./pages/manager/ManagerDashboard"; // IZMJENA: Preimenovano sa Dashboard
-import SupportDashboard from "./pages/support/SupportDashboard"; // IZMJENA: Preimenovano sa Dashboard
-import DeliveryDashboard from "./pages/delivery/DeliveryDashboard"; // IZMJENA: Preimenovano sa Dashboard
+// Pages (Admin)
+import NewEmployee from "./components/admin/NewEmployee"; // ✅ UPDATED
+import Employees from "./components/admin/Employees";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
+// Pages (Manager)
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ProductForm from "./components/manager/ProductForm";
+
+// Pages (Support & Delivery)
+import SupportDashboard from "./pages/support/SupportDashboard";
+import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/shop" element={<HomePage />} />
-          <Route path="/about" element={<HomePage />} />
-          <Route path="/NewEmployee" element={<NewEmployee />} />
-          <Route path="/employees" element={<Employees />} />
+    <CartProvider>
+      <Router>
+        <Header />
+        <Routes>
+          {/* Shared Pages */}
+          <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<ProductList />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/products/:id" element={<ProductDetails />} />
 
+          {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
             <Route path="/customerTest" element={<CustomerTest />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={"admin"} />}>
+          {/* Admin Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
             <Route path="/adminTest" element={<CustomerTest />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} /> {/* NOVO */}
+            <Route path="/new-employee" element={<NewEmployee />} /> {/* ✅ UPDATED */}
+            <Route path="/employees" element={<Employees />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={"manager"} />}> {/* NOVO: Dodan ProtectedRoute za menadžera */}
-            <Route path="/manager-dashboard" element={<ManagerDashboard />} /> {/* IZMJENA */}
+          {/* Manager Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
+            <Route path="/manager-dashboard" element={<ManagerDashboard />} />
             <Route path="/add-product" element={<ProductForm />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={"support"} />}> {/* NOVO: Dodan ProtectedRoute za menadžera */}
-            <Route path="/support-dashboard" element={<SupportDashboard />} /> {/* IZMJENA */}
+          {/* Support Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"support"} />}>
+            <Route path="/support-dashboard" element={<SupportDashboard />} />
           </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={"delivery"} />}> {/* NOVO: Dodan ProtectedRoute za menadžera */}
-            <Route path="/delivery-dashboard" element={<DeliveryDashboard />} /> {/* IZMJENA */}
+          {/* Delivery Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>
+            <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
           </Route>
-
-        </Route>
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </Router>
+    </CartProvider>
   );
 }
 

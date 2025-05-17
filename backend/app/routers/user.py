@@ -164,4 +164,3 @@ def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User 
         "sales": get_sales_stats(db),
         "ratings": get_rating_stats(db),
     }
-

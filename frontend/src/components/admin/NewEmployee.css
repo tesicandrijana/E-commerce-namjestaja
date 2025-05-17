@@ -26,36 +26,37 @@
 }
 
 /* Stil za input i select elementi */
-input, select {
+/* Input and select styling */
+.employee-input,
+.employee-select {
   width: 100%;
   padding: 12px 14px;
   margin: 10px 0;
-  border: 1.8px solid #90caf9; /* svetloplava ivica */
+  border: 1.8px solid #90caf9;
   border-radius: 6px;
   box-sizing: border-box;
   font-size: 15px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #0d47a1; /* tamnoplavi tekst unutar inputa */
-  background-color: #e3f2fd; /* svetloplava pozadina */
+  color: #0d47a1;
+  background-color: #e3f2fd;
 }
 
-/* Placeholder stil */
-input::placeholder {
-  color: #64b5f6; /* svetloplavi placeholder */
+.employee-input::placeholder {
+  color: #64b5f6;
   font-style: italic;
 }
 
-/* Fokusirani input/select sa plavim shadow-om */
-input:focus, select:focus {
-  border-color: #1976d2; /* plava */
+.employee-input:focus,
+.employee-select:focus {
+  border-color: #1976d2;
   box-shadow: 0 0 8px rgba(25, 118, 210, 0.6);
   outline: none;
 }
 
-/* Stil za dugme submit */
-input[type="submit"] {
-  background-color: #1976d2; /* plavo dugme */
+/* Submit button styling */
+.employee-submit {
+  background-color: #1976d2;
   color: white;
   border: none;
   cursor: pointer;
@@ -64,24 +65,25 @@ input[type="submit"] {
   border-radius: 6px;
   padding: 14px 0;
   margin-top: 20px;
+  width: 100%;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-input[type="submit"]:hover {
+.employee-submit:hover {
   background-color: #0d47a1;
   box-shadow: 0 4px 12px rgba(13, 71, 161, 0.6);
 }
 
-/* Stil za selekt polje (pozadina i boja teksta) */
-select {
+/* Select field colors */
+.employee-select {
   background-color: #bbdefb;
   color: #0d47a1;
 }
 
-/* Poruke o grešci (crvene boje prilagođene plavoj temi) */
-p {
+/* Error message */
+.employee-error {
   font-size: 14px;
-  color: #1565c0; /* svetloplavi ton za greške */
+  color: #1565c0;
   text-align: center;
   margin-top: 10px;
 }

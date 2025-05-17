@@ -4,7 +4,6 @@ import EditUserModal from './UserModal';
 import './NewEmployee.css';
 import RoleCounts from './RoleCards';
 
-
 export default function NewEmployee() {
   const [formData, setFormData] = useState({
     name: '',
@@ -18,7 +17,7 @@ export default function NewEmployee() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [employeeData, setEmployeeData] = useState(null);
-  const [modalVisible, setModalVisible] = useState(true); // modal vidljiv na startu
+  const [modalVisible, setModalVisible] = useState(true);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,16 +28,14 @@ export default function NewEmployee() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    // Validacija minimalna može biti ovde ili na backendu
-
     try {
       const payload = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
-        role: formData.role,
         address: formData.address,
+        role: formData.role,
       };
 
       const response = await axios.post("http://localhost:8000/users/signup", payload);
@@ -46,10 +43,9 @@ export default function NewEmployee() {
       setSuccessMessage("Employee successfully created!");
       setEmployeeData({
         name: formData.name,
-        role: formData.role
+        role: formData.role,
       });
 
-      // Reset forme
       setFormData({
         name: '',
         email: '',
@@ -61,10 +57,14 @@ export default function NewEmployee() {
 
       setModalVisible(false);
     } catch (error) {
-      if (error.response?.data?.detail && error.response.data.detail.includes("Email already exists")) {
+      if (error.response?.data?.detail?.includes("Email already exists")) {
         setErrorMessage("Email already exists");
       } else {
-        setErrorMessage(error.response?.data?.detail ? JSON.stringify(error.response.data.detail) : error.message);
+        setErrorMessage(
+          error.response?.data?.detail
+            ? JSON.stringify(error.response.data.detail)
+            : error.message
+        );
       }
     }
   };
@@ -85,17 +85,21 @@ export default function NewEmployee() {
           error={errorMessage}
           mode="add"
         />
-
       )}
+
       <RoleCounts />
+
       {successMessage && (
-        <div style={{ marginTop: 20, color: 'green' }}>
+        <div className="employee-success-message">
           <h3>Employee Information:</h3>
           <p>Full Name: {employeeData.name}</p>
           <p>Role: {employeeData.role}</p>
-          <button onClick={() => setModalVisible(true)}>Add another employee</button>
+          <button className="employee-submit" onClick={() => setModalVisible(true)}>
+            Add another employee
+          </button>
         </div>
       )}
     </>
   );
 }
+

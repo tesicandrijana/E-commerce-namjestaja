@@ -1,0 +1,61 @@
+import React, { useState } from 'react';
+import { NavLink, Link } from 'react-router-dom';
+import './Header.css';
+import LoginModal from './auth/LoginModal'; 
+import { useAuth } from './auth/AuthProvider';
+
+
+export default function Header() {
+  const { handleLogout, currentUser } = useAuth();
+  const [role, setRole] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openLoginModal = (userRole) => {
+    setRole(userRole);
+    setIsModalOpen(true);
+  };
+
+  const closeLoginModal = () => {
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <header className="main-header">
+        <div className="header-container">
+          <div className="logo">
+            <Link to="/">FurniStyle</Link>
+          </div>
+
+          <nav className="nav-links">
+            <NavLink to="/" end>Home</NavLink>
+            <NavLink to="/products">Shop</NavLink>
+            <NavLink to="/about">About</NavLink>
+            <NavLink to="/contact">Contact</NavLink>
+            <NavLink to="/customerTest">Customer Test</NavLink>
+            <NavLink to="/adminTest">Admin Test</NavLink>
+            <NavLink to="/manager-dashboard">Manager Dashboard</NavLink>
+          </nav>
+
+          <div className="auth-buttons">
+            {currentUser ? (
+              <button onClick={handleLogout} className="btn login-btn">Logout</button>
+            ) : (
+              <>
+                <button onClick={() => openLoginModal("customer")} className="btn login-btn">Login</button>
+                <Link to="/register" className="btn register-btn">Register</Link>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {isModalOpen && (
+        <LoginModal
+          role={role}
+          onClose={closeLoginModal}
+        />
+      )}
+    </>
+  );
+}
