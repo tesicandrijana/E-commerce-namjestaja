@@ -6,6 +6,7 @@ from app.routers import user, product, category, order, review, discount,materia
 from fastapi.middleware.cors import CORSMiddleware
 
 
+
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
@@ -24,7 +25,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # Dozvoljava pristup samo sa ovih domena
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

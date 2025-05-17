@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {useAuth} from './AuthProvider';
+import { useAuth } from './AuthProvider';
+import { useNavigate } from 'react-router-dom';
+import './LoginModal.css';
 
 function LoginModal({ role, onClose }) {
-
-  const {handleLogin} = useAuth()
+  const { handleLogin } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: "",
-/*     username: "",
- */    password: "",
     email: "",
+    password: "",
+    phone: "",
+    address: "",
   });
 
   const handleFormChange = (e) => {
@@ -24,35 +28,65 @@ function LoginModal({ role, onClose }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setErrorMessage("");
+
     if (isLogin) {
       const data = {
         username: formData.email,
-        password: formData.password
-      }
+        password: formData.password,
+      };
       try {
         const response = await handleLogin(data);
         console.log(`Logging in as ${role} with`, response);
-        onClose()
+
+        if (response?.role === "admin") {
+          navigate("/admin-dashboard");
+        } else if (response?.role === "manager") {
+          navigate("/manager-dashboard");
+        } else if (response?.role === "support") {
+          navigate("/support-dashboard");
+        } else if (response?.role === "delivery") {
+          navigate("/delivery-dashboard");
+        }
+
+        onClose();
       } catch (err) {
+        setErrorMessage("Invalid credentials");
         console.log(err);
       }
     } else {
-      // Send signup data to backend (add role to form data for signup)
       const signupData = {
-        ...formData,
-        role: "customer", // Set role to 'customer' when signing up
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: role || "customer",
+        is_active: true,
+        ...(formData.phone && { phone: formData.phone }),
+        ...(formData.address && { address: formData.address }),
       };
+
       try {
         await axios.post("http://localhost:8000/users/signup", signupData);
-        console.log(`Signing up as ${role} with`, formData);
+        console.log(`Signing up as ${role} with`, signupData);
+        setErrorMessage("");
+        onClose();
       } catch (error) {
-        console.error("Error during signup:", error.response?.data || error);
+        const detail = error.response?.data?.detail;
+        if (detail?.includes("Email already exists")) {
+          setErrorMessage("Email already exists");
+        } else if (typeof detail === "string") {
+          setErrorMessage(detail);
+        } else {
+          setErrorMessage(error.message);
+        }
+        console.error("Error during signup:", error);
       }
     }
-  };
+  }
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
+    setErrorMessage("");
   };
 
   return (
@@ -64,43 +98,34 @@ function LoginModal({ role, onClose }) {
             : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
         </h2>
         <form onSubmit={handleSubmit}>
-          {isLogin ? null : ( <>
-            <div className="input-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-          
-          {/* <div className="input-group">
-            <label htmlFor="username">Username</label>
+          {!isLogin && (
+            <>
+              <div className="input-group">
+                <label htmlFor="name">Full name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleFormChange}
+                  required
+                  placeholder="Full name"
+                />
+              </div>
+            </>
+          )}
+          <div className="input-group">
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleFormChange}
               required
+              placeholder="Email"
             />
-          </div> */}
-          </>
-          )}
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
+          </div>
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <input
@@ -110,8 +135,14 @@ function LoginModal({ role, onClose }) {
               value={formData.password}
               onChange={handleFormChange}
               required
+              placeholder="Password"
             />
           </div>
+
+          {errorMessage && (
+            <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
+          )}
+
           <div className="form-actions">
             <button type="submit" className="login-submit">
               {isLogin ? "Log In" : "Sign Up"}
@@ -119,14 +150,13 @@ function LoginModal({ role, onClose }) {
             <button
               type="button"
               className="close-button"
-              onClick={() => onClose()}
+              onClick={onClose}
             >
               Close
             </button>
           </div>
         </form>
 
-        {/* Sign Up toggle only for customers */}
         {role === "customer" && (
           <div className="toggle-form">
             <p>

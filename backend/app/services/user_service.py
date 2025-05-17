@@ -53,8 +53,12 @@ def signup_user(db: Session, user_create: UserCreate):
     user_create.password = hash_password(user_create.password)
     return user_repository.create_user(db, user_create)
 
-def get_users(session: Session, offset: int = 0, limit: int = 100) -> list[User]:
-    return user_repository.get_users(session, offset, limit)
+def get_users(session: Session, offset: int = 0, limit: int = 100):
+    """
+    Funkcija koja vraća sve korisnike, osim onih sa rolom 'customer'.
+    """
+    users = session.query(User).filter(User.role != 'customer').offset(offset).limit(limit).all()
+    return users
 
 def get_user(session: Session, email: str) -> User:
     return user_repository.get_user(session, email)
@@ -106,7 +110,7 @@ def get_current_user(session: SessionDep, token: Annotated[str, Depends(oauth2_s
         raise credentials_exception
     return db_user
 
-def role_check(allowed_roles: List[Literal["administrator", "manager", "customer", "support", "delivery"]]):
+def role_check(allowed_roles: List[Literal["admin", "manager", "customer", "support", "delivery"]]):
     def dependency(current_user: Annotated[User, Depends(get_current_user)]) -> User:
         if current_user.role not in allowed_roles:
             raise HTTPException(status_code=403, detail="Permission denied")

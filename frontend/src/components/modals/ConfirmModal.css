@@ -1,0 +1,41 @@
+.confirm-modal-card {
+  width: 350px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-title {
+  text-align: center;
+  margin-bottom: 16px; /* po želji, razmak ispod naslova */
+  font-weight: bold;   /* opcionalno, da istakneš naslov */
+  font-size: 1.5rem;   /* ili veličina po tvom izboru */
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+.modal-buttons button {
+  padding: 8px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+}
+
+.modal-buttons button:first-of-type {
+  background-color: #f51111;
+  color: white;
+}
+
+.modal-buttons button:last-of-type {
+  background-color: #aaa;
+  color: white;
+}

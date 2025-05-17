@@ -9,6 +9,11 @@ from app.services import user_service
 from app.database import get_db
 from app.schemas.user import Token
 from app.services.user_service import hash_password
+from app.schemas.user import UserUpdate
+from app.services.user_service import validate_password_strength
+from sqlalchemy import func
+
+
 
 
 from app.schemas.user import UserCreate, UserSchema, LoginWithRole
@@ -55,6 +60,68 @@ def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2Passw
     }
     return user_service.login_for_access_token(session, login_data)
 
+
+@router.get("/employees", response_model=List[UserSchema])
+def get_employees(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(user_service.role_check(["admin"])),
+    offset: int = 0,
+    limit: int = 100,
+):
+    users = user_service.get_users(db, offset, limit)
+
+    if not users:
+        raise HTTPException(status_code=404, detail="No employees found")
+
+    return users
+
+@router.put("/{user_id}", response_model=UserSchema)
+def update_user(
+    user_id: int,
+    user_update: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(user_service.role_check(["admin"]))
+):
+    db_user = user.get_user_by_id(db, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user_update.password:
+        validate_password_strength(user_update.password)
+        user_update.password = user_service.hash_password(user_update.password)
+
+
+    updated_user = user.update_user(db, user_id, user_update.dict(exclude_unset=True))
+
+    return updated_user
+
+
+@router.delete("/{user_id}", status_code=204)
+def delete_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(user_service.role_check(["admin"]))
+):
+    db_user = user.get_user_by_id(db, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    user.delete_user(db, user_id)
+    return None
+
+@router.get("/count-by-role")
+def count_users_by_role(
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(user_service.role_check(["admin"]))
+):
+    role_counts = (
+        db.query(User.role, func.count(User.id))
+        .filter(User.role != "customer")  # isključi korisnike s rolom 'customer'
+        .group_by(User.role)
+        .all()
+    )
+    return {role: count for role, count in role_counts}
+
 @router.get("/me")
 async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
     return current_user
@@ -90,35 +157,6 @@ def approve_worker_request(user_id: int, current_user: User = Depends(get_admin_
     update_user_role(db, user_id, desired_role)
     return {"detail": f"Worker request approved, user role updated to '{desired_role}'"}
 
-# Admin can create users (if you want to keep this route)
-@router.post("/", response_model=UserSchema)
-def create_user(
-    user_data: UserCreate,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_admin_user)
-):
-    return user.create_user(db, user_data)
-
-
-# Get all users (admin only)
-@router.get("/", response_model=List[UserSchema])
-def read_users(
-    session: SessionDep,
-    current_user: Annotated[User, Depends(user_service.role_check(["admin"]))],
-    offset: int = 0,
-    limit: int = 100,
-):
-    return user_service.get_users(session,offset, limit)
-
-# Get user by ID
-@router.get("/{user_id}", response_model=UserSchema)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = user.get_user(db, user_id)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return db_user
-
-
 @router.get("/admin/stats")
 def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User = Depends(user_service.role_check(["customer"]))):
     return {
@@ -126,3 +164,4 @@ def get_admin_dashboard_stats(db: Session = Depends(get_db), current_user: User 
         "sales": get_sales_stats(db),
         "ratings": get_rating_stats(db),
     }
+
