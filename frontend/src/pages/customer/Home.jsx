@@ -93,7 +93,7 @@ const Home = () => {
               <Link
                 to={`/products/${prod.id}`}
                 key={prod.id}
-                className="product-card"
+                className="product-card-home"
               >
                 <img src={prod.image} alt={prod.name} />
                 <div className="product-info">
