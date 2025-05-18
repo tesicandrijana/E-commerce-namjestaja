@@ -39,8 +39,8 @@ function ProductDetail() {
 
   return (
     <div className="product-wrapper">
-      <div className="product-card">
-        <div className="product-image">
+      <div className="product-detail-card">
+        <div className="product-detail-image">
           <ImageCarousel steps={product.images} />
         </div>
         <div className="product-details">

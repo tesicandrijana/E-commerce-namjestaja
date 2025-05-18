@@ -54,3 +54,6 @@ def delete_product(session: SessionDep, id: int):
     return product_service.delete_product(session, id)
 
 
+@router.patch("/{id}/restock")
+def restock(session: SessionDep, id: int, restockRequest: product_schema.RestockRequest):
+    return product_service.restock(session,id,restockRequest.added)

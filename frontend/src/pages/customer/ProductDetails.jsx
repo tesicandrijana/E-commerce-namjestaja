@@ -589,6 +589,8 @@ const allProducts = [
 }
 ];
 
+
+
  // Find product by id
   const product = allProducts.find((p) => p.id === productId);
 
@@ -613,14 +615,14 @@ const allProducts = [
   const [newRating, setNewRating] = useState(0);
   const [newComment, setNewComment] = useState("");
 
-  if (!product) {
+  /* if (!product) {
     return (
       <div className="not-found">
         <h2>Product not found</h2>
         <p>Sorry, we couldn't find the product you're looking for.</p>
       </div>
     );
-  }
+  } */
 
   const avgRating =
     reviews.length > 0
