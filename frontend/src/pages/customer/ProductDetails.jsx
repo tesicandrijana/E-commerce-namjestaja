@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom"; // if you use react-router for product id param
 import { useCart } from "../../contexts/CartContext"; // adjust path as needed
 import "./ProductDetails.css";
+import ProductDetail from '../../components/product/ProductDetail'
 
 
 // Simple StarRating component
@@ -648,7 +649,7 @@ const allProducts = [
 
 return (
   <div className="pd-container">
-    <div className="pd-info-wrapper">
+    {/* <div className="pd-info-wrapper">
       <div className="pd-image">
         <img src={product.image} alt={product.name} />
       </div>
@@ -660,7 +661,8 @@ return (
           🛒 Add to Cart
         </button>
       </div>
-    </div>
+    </div> */}
+    <ProductDetail />
 
     <div className="pd-rating-summary">
       <StarRating rating={avgRating} />
