@@ -4,7 +4,7 @@ from sqlmodel import Session
 from app.crud.product import get_product_with_category
 from app.crud import product
 from app.schemas import product as product_schema
-from app.services import product_service
+from app.services import product_service, user_service
 from app.database import get_db
 from app.schemas.product import ProductRead
 from app.models.models import Product
