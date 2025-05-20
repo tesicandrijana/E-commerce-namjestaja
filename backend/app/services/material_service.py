@@ -8,3 +8,6 @@ from fastapi import HTTPException
 
 def get_materials(session: Session, offset: int = 0, limit: int = 100) -> list[Material]:
     return material_repository.get_materials(session, offset, limit)
+
+def get_material(session: Session, id: int) -> Material:
+    return material_repository.get_material(session, id)

@@ -13,3 +13,10 @@ def read_materials(
     offset: int = 0,
     limit: int = 100,):
     return material_service.get_materials(session)
+
+@router.get("/{id}")
+def read_material(
+    session: SessionDep,
+    id:int
+):
+    return material_service.get_material(session,id)

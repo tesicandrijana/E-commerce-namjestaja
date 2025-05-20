@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Create context
 const CartContext = createContext();
@@ -9,6 +9,22 @@ export const useCart = () => useContext(CartContext);
 // Provider component
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+
+  // Fetch current cart items from backend on mount (adjust URL as needed)
+  useEffect(() => {
+    fetch('http://localhost:8000/cart/')
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch cart');
+        return res.json();
+      })
+      .then(data => {
+        // Expecting data to be array like [{ id, name, ..., quantity }, ...]
+        setCartItems(data);
+      })
+      .catch(err => {
+        console.error('Error fetching cart items:', err);
+      });
+  }, []);
 
   // Add product to cart
   const addToCart = (product) => {
@@ -55,3 +71,4 @@ export function CartProvider({ children }) {
     </CartContext.Provider>
   );
 }
+

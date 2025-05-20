@@ -74,13 +74,13 @@
   display: inline-block;
   transition: all 0.3s ease;
   text-shadow: none;
-  box-shadow: 0 6px 14px rgba(230, 126, 34, 0.25);
+  box-shadow: 0 6px 14px rgba(94, 117, 137, 0.25);
 }
 
 .btn-primary:hover,
 .btn-primary:focus {
-  background-color: #cf711f;
-  box-shadow: 0 8px 20px rgba(207, 113, 31, 0.35);
+  background-color: #8db7c0;
+  box-shadow: 0 8px 20px rgba(110, 157, 193, 0.504);
   outline: none;
 }
 

@@ -17,7 +17,15 @@ try:
 except OperationalError as e:
     print("Neuspjela konekcija na bazu:", e)
 
+from app.database import engine  # or your engine definition
 
+def get_session():
+    session = Session(engine)
+    try:
+        yield session
+    finally:
+        session.close()
+        
 # Funkcija za dobijanje sesije iz baze
 def get_db():
     with Session(engine) as session:

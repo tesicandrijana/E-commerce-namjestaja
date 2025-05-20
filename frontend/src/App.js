@@ -13,6 +13,7 @@ import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import CustomerTest from "./pages/customer/CustomerTest";
+import Cart from "./pages/customer/Cart";  // <-- NEW
 
 // Pages (Admin)
 import NewEmployee from "./components/admin/NewEmployee"; // ✅ UPDATED
@@ -21,7 +22,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
-import ProductForm from "./components/manager/ProductForm";
+import ProductForm from "./components/product/ProductForm";
 
 // Pages (Support & Delivery)
 import SupportDashboard from "./pages/support/SupportDashboard";
@@ -40,6 +41,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />  {/* <-- NEW */}
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
@@ -57,7 +59,8 @@ function App() {
           {/* Manager Pages */}
           <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
-            <Route path="/add-product" element={<ProductForm />} />
+            <Route path="/products/:id/edit" element={<ProductForm mode="edit" />} />
+            <Route path="/products/create" element={<ProductForm mode="create" />} />
           </Route>
 
           {/* Support Pages */}

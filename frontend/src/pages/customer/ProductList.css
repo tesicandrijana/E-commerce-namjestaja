@@ -189,7 +189,7 @@ h1 {
   border: none;
   border-radius: 14px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(67, 96, 126, 0.273);
   backdrop-filter: blur(6px);
   transition: all 0.4s ease;
   overflow: hidden;
@@ -214,7 +214,7 @@ h1 {
 
 .show-more-btn:hover {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(118, 75, 162, 0.5);
+  box-shadow: 0 12px 30px rgba(175, 172, 118, 0.5);
   background-position: right center;
 }
 
@@ -291,4 +291,85 @@ h1 {
 
 .add-to-cart-btn:active {
   transform: scale(0.98);
+}
+
+/* Search Container */
+.search-bar-advanced {
+  margin: 30px auto 38px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Wrapper with icon and clear button */
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 40px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Input field */
+/* Input field */
+.search-input-advanced {
+  width: 100%;
+  max-width: 500px;   /* keep consistent max-width */
+  padding: 12px 48px 12px 48px; /* keep padding same on focus */
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 40px;
+  background-color: transparent;
+  color: #333;
+  outline: none;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box; /* add this */
+}
+
+
+/* Input focus effect */
+.search-input-advanced:focus {
+  background-color: #f9f9f9;
+}
+
+/* Search icon on the left */
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #888;
+  pointer-events: none;
+}
+
+/* Clear (×) button */
+.clear-button {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateX(10px); /* starts slightly off to the right */
+  font-size: 1.3rem;
+  background: none;
+  border: none;
+  color: #bbb;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* When there is text, show the clear button smoothly */
+.search-input-wrapper.has-text .clear-button {
+  opacity: 1;
+  transform: translateY(-40%) translateX(0);
+  pointer-events: auto;
+}
+
+.clear-button:hover {
+  color: #444;
 }

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';  // relative path from components to contexts
+import { FaShoppingCart } from 'react-icons/fa';
 import './Header.css';
 import LoginModal from './auth/LoginModal'; 
 import { useAuth } from './auth/AuthProvider';
 
-
 export default function Header() {
   const { handleLogout, currentUser } = useAuth();
+  const { cartQuantity } = useCart(); // get total cart quantity
+
   const [role, setRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -36,6 +39,16 @@ export default function Header() {
             <NavLink to="/adminTest">Admin Test</NavLink>
             <NavLink to="/manager-dashboard">Manager Dashboard</NavLink>
           </nav>
+
+          {/* Cart icon and badge */}
+          <div className="cart-icon-wrapper" title="View Cart">
+            <Link to="/cart" className="cart-link">
+              <FaShoppingCart size={24} />
+              {cartQuantity > 0 && (
+                <span className="cart-badge">{cartQuantity}</span>
+              )}
+            </Link>
+          </div>
 
           <div className="auth-buttons">
             {currentUser ? (

@@ -10,7 +10,7 @@ import shutil
 import uuid
 
 
-def image_upload(product_name: str,image: Annotated[UploadFile, File(...)]):
+def save_image(product_name: str,image: Annotated[UploadFile, File(...)]):
     upload_dir = "static/product_images"
     
     if image.content_type not in ["image/jpeg", "image/png", "image/gif","image/webp"]:
@@ -33,8 +33,28 @@ def image_upload(product_name: str,image: Annotated[UploadFile, File(...)]):
     finally: 
         image.file.close()
 
-    return file_path
+    return file_path.replace("\\", "/")
 
+def delete_image_file(image_filename: str):
+    image_path = image_filename.replace("/", os.sep)
+    
+    if os.path.exists(image_path):
+        print(image_path.replace("\\", "/"))
+        os.remove(image_path)
+        return True
+    else:
+        return False
+    
+def images_upload(session: Session, product: Product, images: Annotated[list[UploadFile],File(...)]):
+    for image in images:
+            product_url = save_image(product.name,image)
+            product_repository.add_product_image(session, product, product_url)
+    
+def delete_images_for_product(session: Session, product: Product):
+        for image in product.images:
+            path = product_repository.delete_product_image(session, image.id)
+            delete_image_file(path)
+        
 
 def create_product(session: Session,
                    name: Annotated[str, Form()],
@@ -59,11 +79,56 @@ def create_product(session: Session,
              quantity = quantity
         )
         db_product = product_repository.create_product(session, product)
-        for image in images:
-            product_url = image_upload(name,image)
-            print(product_url)
-            product_repository.add_product_image(session, db_product, product_url)
+
+        images_upload(session, db_product, images)
 
         return db_product
         
+def get_product(session: Session, id: int):
+    return product_repository.get_product(session, id)
+ 
+def delete_product(session: Session, id: int):
+    product = product_repository.get_product(session, id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
 
+    delete_images_for_product(session, product)
+    return product_repository.delete_product(session, id)
+
+def update_product(session: Session, 
+                   id: int,
+                   name: Annotated[str, Form()],
+                   description: Annotated[str, Form()],
+                   material_id: Annotated[int, Form()],
+                   category_id: Annotated[int, Form()],
+                   length: Annotated[int, Form()],
+                   width: Annotated[int, Form()],
+                   height: Annotated[int, Form()],
+                   price: Annotated[int, Form()],
+                   quantity: Annotated[int, Form()],
+                   images: Annotated[list[UploadFile],File(...)]):
+    db_product = product_repository.get_product(session, id)
+    if not db_product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    product = Product(
+        id = id,
+        name = name,
+        description = description,
+        material_id = material_id,
+        category_id = category_id,
+        length = length,
+        width = width,
+        height = height,
+        price = price,
+        quantity = quantity
+    )
+    if images:
+        delete_images_for_product(session, db_product)
+        images_upload(session, db_product, images)
+
+    product_repository.update_product(session, id, product)
+
+def restock(session:Session, id:int, added: int):
+    product = product_repository.get_product(session, id)
+    new_quantity = product.quantity + added
+    return product_repository.restock(session, product, new_quantity)

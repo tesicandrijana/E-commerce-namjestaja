@@ -1,312 +1,164 @@
-/* === Star Rating === */
-.pd-star {
-  font-size: 1.6rem;
-  color: #ccc;
-  cursor: default;
-  transition: color 0.2s ease-in-out;
-}
-
-.pd-star.filled {
-  color: #f1c40f;
-}
-
-.pd-star.editable {
-  cursor: pointer;
-}
-
-.pd-star-rating {
-  display: inline-flex;
-  gap: 0.3rem;
-}
-
-
-/* === Container & Layout === */
 .pd-container {
-  max-width: 960px;
-  margin: 2.5rem auto;
-  padding: 0 1.5rem;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #2c3e50;
-}
-
-
-/* === Product Info Section === */
-.pd-info-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  margin-bottom: 3rem;
-  align-items: flex-start;
-}
-
-.pd-image {
-  flex: 1 1 320px;
-  max-width: 380px;
+  max-width: 1100px;
+  margin: 50px auto;
+  padding: 20px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  background-color: #f7f9fb;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.pd-info-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 40px;
 }
 
 .pd-image img {
   width: 100%;
-  display: block;
-  object-fit: cover;
   border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .pd-summary {
-  flex: 1 1 300px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .pd-summary h1 {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.6rem;
+  font-size: 30px;
+  color: #222;
 }
 
 .pd-description {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: #555;
-  margin-bottom: 1.4rem;
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border-left: 4px solid #00bfa5;
+  background-color: #e0f2f1;
+  border-radius: 6px;
+  font-weight: 600;
+  max-width: fit-content;
+  box-shadow: 0 1px 3px rgba(0, 191, 165, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.pd-description:hover {
+  background-color: #b2dfdb;
 }
 
 .pd-price {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #e67e22;
-  margin-bottom: 1.7rem;
+  font-size: 24px;
+  color: #00897b;
+  font-weight: bold;
 }
 
-
-/* === Add to Cart Button === */
 .pd-add-to-cart {
-  padding: 0.8rem 2rem;
-  background-color: #e67e22;
-  color: #fff;
+  margin-top: auto;
+  padding: 12px 20px;
+  background: linear-gradient(to right, #00bfa5, #1de9b6);
   border: none;
-  border-radius: 28px;
-  font-weight: 600;
-  font-size: 1rem;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 8px 16px rgba(230, 126, 34, 0.2);
-  transition: background-color 0.3s ease;
-  align-self: flex-start;
+  transition: transform 0.2s ease;
 }
 
 .pd-add-to-cart:hover {
-  background-color: #cf711f;
+  transform: scale(1.05);
 }
 
-
-/* === Rating Summary === */
-.pd-rating-summary {
-  border-top: 1px solid #e1e1e1;
-  border-bottom: 1px solid #e1e1e1;
-  padding: 1.2rem 0;
-  margin-bottom: 2.5rem;
+.pd-star-rating {
+  font-size: 30px; /* bigger stars */
   display: flex;
+  justify-content: center; /* center horizontally */
   align-items: center;
-  gap: 1rem;
-  font-weight: 600;
-  color: #34495e;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.pd-avg-score {
-  font-size: 1.4rem;
+.pd-star {
+  color: #ccc;
+  transition: color 0.2s, transform 0.2s;
 }
 
-.pd-review-count {
-  font-size: 1rem;
-  color: #7f8c8d;
+.pd-star.filled {
+  color: #fbc02d;
 }
 
-
-/* === Review Section === */
-.pd-reviews h2 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin-bottom: 1.8rem;
-  border-left: 5px solid #e67e22;
-  padding-left: 12px;
+.pd-star.editable:hover {
+  color: #ffca28;
+  transform: scale(1.2);
 }
 
-
-/* === Add Review Form === */
-/* === Review Form Container === */
+/* Review Card Style */
 .pd-add-review {
-  margin-top: 3rem;
-  background: #f9fafb;
-  padding: 2rem 2.5rem;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  margin-left: auto;
-  margin-right: auto;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* === Form Title === */
-.pd-add-review h2 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #1f2a38;
-  border-bottom: 3px solid #277aae;
-  padding-bottom: 0.3rem;
-  letter-spacing: 0.05em;
-}
-
-/* === Textarea === */
-.pd-add-review textarea {
-  width: 95%;
-  min-height: 140px;
-  padding: 14px 18px;
+  background: #ffffff;
+  border: 2px dashed #00bfa5;
+  padding: 30px;
   border-radius: 12px;
-  border: 2px solid #ccc;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: #34495e;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.pd-add-review h2 {
+  font-size: 26px;
+  margin-bottom: 15px;
+  color: #004d40;
+}
+
+.pd-add-review form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pd-add-review label {
+  font-weight: 600;
+}
+
+.pd-add-review textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
   resize: vertical;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+  font-size: 14px;
+  font-family: inherit;
+  min-height: 100px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  background-color: #fefefe;
 }
 
 .pd-add-review textarea:focus {
+  border-color: #00bfa5;
+  box-shadow: 0 0 0 3px rgba(0, 191, 165, 0.2);
   outline: none;
-  border-color: #27ae60;
-  box-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
+  background-color: #ffffff;
 }
 
-/* === Submit Button === */
 .pd-submit-review {
-  margin-top: 1.2rem;
-  padding: 0.5rem 1.4rem;
-  background: linear-gradient(135deg, #7ed6a1, #6bbf8a);
-  color: #ffffffdd;
+  background: #00bfa5;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
   border: none;
-  border-radius: 24px;
-  font-weight: 600;
-  font-size: 0.9rem;
   cursor: pointer;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 4px 12px rgba(110, 179, 141, 0.3);
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
-  letter-spacing: 0.03em;
-  user-select: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
 
 .pd-submit-review:hover {
-  background: linear-gradient(135deg, #6bbf8a, #5aa471);
-  box-shadow: 0 6px 16px rgba(90, 164, 113, 0.4);
-  transform: translateY(-1.5px);
+  background: #00897b;
 }
-
-.pd-submit-review:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(90, 164, 113, 0.3);
-}
-
-
-/* === Review Card === */
-.pd-review-card {
-  display: flex;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  align-items: flex-start;
-  gap: 2rem;
-  background-color: #e8e8e8b7;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 1.4rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  transition: box-shadow 0.3s ease;
-}
-
-.pd-review-card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-}
-
-
-/* === Avatar / User Icon === */
-.pd-review-avatar {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f5b041, #f39c12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-
-/* === Review Body === */
-.pd-review-content {
-  flex: 1;
-}
-
-.pd-review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.95rem;
-  color: #2c3e50;
-  margin-bottom: 0.3rem;
-}
-
-.pd-review-name {
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
-.pd-review-date {
-  font-style: italic;
-  color: #999;
-  font-size: 0.9rem;
-}
-
-
-/* === Review Rating (Stars) === */
-.pd-review-stars {
-  margin: 0.3rem 0 0.7rem;
-}
-
-/* === Review Text === */
-.pd-review-text {
-  font-size: 1.05rem;
-  color: #444;
-  line-height: 1.6;
-}
-
-
-/* === Load More Button === */
-.pd-load-more {
-  padding: 0.7rem 1.6rem;
-  background-color: #f4f4f4;
-  border: 1px solid #dde6e9;
-  border-radius: 30px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.95rem;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #2c3e50;
-  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
-  margin-top: 1rem;
-  display: inline-block;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.pd-load-more:hover {
-  background-color: #d4e4edd1;
-  border-color: #e1e1e1df;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
-}
-
