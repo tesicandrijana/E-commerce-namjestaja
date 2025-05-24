@@ -28,41 +28,145 @@ h1 {
   user-select: none;
 }
 
-/* Category Filter */
-.filter {
+.category-list-search-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 40px;
-  gap: 15px;
   flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  /*border-left: 2px solid rgb(0, 0, 0);*/
+  padding: 30px 30px 20px 30px ;
+  margin-bottom: 40px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-image: url("https://i.pinimg.com/originals/09/3b/e1/093be1b2049451f215437f8124871486.jpg");
+  /* url('https://img.freepik.com/premium-vector/tropical-leaves-palms-monstera-leaf-floral-vector-seamless-pattern-background_151840-478.jpg?w=2000'); /* Replace with your actual image path 
+  background-image: url('https://static.vecteezy.com/system/resources/previews/027/884/435/large_2x/seamless-summer-tropical-pattern-with-monstera-plam-leaves-and-hibiscus-flowers-illustration-vector.jpg'); /* Replace with your actual image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 1;
 }
 
+/* Optional: Add overlay for better readability */
+.category-list-search-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.805), rgba(169, 195, 211, 0.784));  /* Light overlay */
+  border-radius: 16px;
+  z-index: -1;
+}
+
+
+/* Filter buttons area */
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 2;
+  min-width: 280px;
+  margin-top: 10px;
+}
+
+/* Category button style */
 .category-btn {
-  padding: 8px 15px;
-  background-color: #f5f5f5;
-  color: #333;
-  border: 2px solid transparent;
-  border-radius: 8px;
+  padding: 6.5px 13px;
+ /* background: linear-gradient(to bottom, #f9f7f3b7, #eae6dfc1);*/
+  background: linear-gradient(to bottom, #f9f7f3ce, #eae6dfc1);
+  color: #4a4a4a;
+  font-family: 'poppins' ,'Courier New', Courier, monospace;
+  border: 1.8px solid #ccc5bb;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 5px rgba(120, 110, 100, 0.05);
+  letter-spacing: 0.3px;
 }
 
 .category-btn:hover {
-  background-color: #e0f0ff;
-  border-color: #b3daff;
-  color: #007bff;
-  transform: translateY(-1px);
+  background: linear-gradient(to bottom, #f0ece6, #dfd9d0);
+  border-color: #b8b2a6;
+  color: #3b3b3b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(80, 70, 60, 0.12);
 }
 
 .category-btn.active {
-  background-color: #007bff;
+  background: #4e4c4bbb;
   color: #fff;
+  font-weight: 600;
+  border-color: #4e4c4b00;
+  box-shadow: 0 6px 16px rgba(100, 90, 80, 0.2);
+  transform: scale(1.03);
+}
+
+
+/* Search area */
+.search-bar-advanced {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 280px;
+}
+
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.search-input-advanced {
+  width: 100%;
+  padding: 10px 38px 10px 38px;
+  border-radius: 10px;
+  border: 2px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+}
+
+.search-input-advanced:focus {
+  outline: none;
   border-color: #007bff;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 1.1rem;
+}
+
+.clear-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.clear-button:hover {
+  color: #333;
 }
 
 

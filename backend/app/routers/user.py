@@ -12,10 +12,6 @@ from app.services.user_service import hash_password
 from app.schemas.user import UserUpdate
 from app.services.user_service import validate_password_strength
 from sqlalchemy import func
-
-
-
-
 from app.schemas.user import UserCreate, UserSchema, LoginWithRole
 from app.services.user_service import signup_user
 from app.dependencies import get_admin_user
@@ -125,6 +121,7 @@ def count_users_by_role(
 @router.get("/me")
 async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
     return current_user
+
 
 # Customers can request to become workers
 @router.post("/request-worker/{desired_role}")

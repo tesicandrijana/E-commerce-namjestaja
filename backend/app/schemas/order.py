@@ -1,8 +1,12 @@
-from pydantic import BaseModel
-from typing import Optional
+# schemas/order.py
+from typing import Optional, List
+from sqlmodel import SQLModel, Field
 from datetime import datetime
+from decimal import Decimal
+from .order_item import OrderItemCreate, OrderItemRead
 
-class OrderBase(BaseModel):
+
+class OrderBase(SQLModel):
     customer_id: int
     address: str
     city: str
@@ -11,14 +15,28 @@ class OrderBase(BaseModel):
     payment_method: Optional[str] = "cash"
     payment_status: Optional[str] = "pending"
     transaction_id: Optional[str] = None
-    total_price: Optional[float] = None
+    total_price: Optional[Decimal] = None
+
 
 class OrderCreate(OrderBase):
-    pass
+    items: List[OrderItemCreate]
 
-class Order(OrderBase):
+
+class OrderRead(OrderBase):
     id: int
-    date: Optional[datetime]
+    date: datetime
+    items: List[OrderItemRead] = []
 
     class Config:
-        from_attributes = True
+        orm_mode = True
+
+
+class OrderUpdate(SQLModel):
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[int] = None
+    status: Optional[str] = None
+    payment_method: Optional[str] = None
+    payment_status: Optional[str] = None
+    transaction_id: Optional[str] = None
+    total_price: Optional[Decimal] = None

@@ -1,24 +1,48 @@
 # crud/order_item.py
-from sqlalchemy.orm import Session
+from sqlmodel import Session, select
 from app.models.models import OrderItem
-from app.schemas.order_item import OrderItemCreate
+from app.schemas.order_item import OrderItemCreate, OrderItemUpdate
+from typing import List, Optional
+from fastapi import HTTPException
 
-def create_order_item(db: Session, order_item: OrderItemCreate):
-    db_order_item = OrderItem(**order_item.dict())
-    db.add(db_order_item)
-    db.commit()
-    db.refresh(db_order_item)
-    return db_order_item
 
-def get_order_items(db: Session):
-    return db.query(OrderItem).all()
-
-def update_order_item(db: Session, order_item_id: int, updates: dict):
-    db.query(OrderItem).filter(OrderItem.id == order_item_id).update(updates)
-    db.commit()
-
-def delete_order_item(db: Session, order_item_id: int):
-    item = db.query(OrderItem).get(order_item_id)
-    db.delete(item)
-    db.commit()
+def create_order_item(data: OrderItemCreate, session: Session) -> OrderItem:
+    item = OrderItem(**data.dict())
+    session.add(item)
+    session.commit()
+    session.refresh(item)
     return item
+
+
+def get_order_items(session: Session) -> List[OrderItem]:
+    statement = select(OrderItem)
+    return session.exec(statement).all()
+
+
+def get_order_item_by_id(order_item_id: int, session: Session) -> Optional[OrderItem]:
+    return session.get(OrderItem, order_item_id)
+
+
+def update_order_item(order_item_id: int, updates: OrderItemUpdate, session: Session) -> Optional[OrderItem]:
+    item = session.get(OrderItem, order_item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Order item not found")
+
+    update_data = updates.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(item, key, value)
+
+    session.add(item)
+    session.commit()
+    session.refresh(item)
+    return item
+
+
+def delete_order_item(order_item_id: int, session: Session) -> bool:
+    item = session.get(OrderItem, order_item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="Order item not found")
+
+    session.delete(item)
+    session.commit()
+    return True

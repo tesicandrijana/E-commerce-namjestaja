@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { useCart } from '../contexts/CartContext';  // relative path from components to contexts
+import { useCart } from '../contexts/CartContext';  // Adjust path if needed
 import { FaShoppingCart } from 'react-icons/fa';
 import './Header.css';
 import LoginModal from './auth/LoginModal'; 
 import { useAuth } from './auth/AuthProvider';
 
 export default function Header() {
-  const { handleLogout, currentUser } = useAuth();
-  const { cartQuantity } = useCart(); // get total cart quantity
+  const { handleLogout, isLoggedIn, userRole } = useAuth();  // use isLoggedIn & userRole from context
+  const { cartQuantity } = useCart();
 
   const [role, setRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,7 +37,7 @@ export default function Header() {
             <NavLink to="/contact">Contact</NavLink>
             <NavLink to="/customerTest">Customer Test</NavLink>
             <NavLink to="/adminTest">Admin Test</NavLink>
-            <NavLink to="/manager-dashboard">Manager Dashboard</NavLink>
+            <NavLink to="/manager-dashboard">Manager Dashboard</NavLink>  
           </nav>
 
           {/* Cart icon and badge */}
@@ -51,8 +51,11 @@ export default function Header() {
           </div>
 
           <div className="auth-buttons">
-            {currentUser ? (
-              <button onClick={handleLogout} className="btn login-btn">Logout</button>
+            {isLoggedIn ? (
+              <>
+                <span className="user-role">{userRole}</span>
+                <button onClick={handleLogout} className="btn login-btn">Logout</button>
+              </>
             ) : (
               <>
                 <button onClick={() => openLoginModal("customer")} className="btn login-btn">Login</button>

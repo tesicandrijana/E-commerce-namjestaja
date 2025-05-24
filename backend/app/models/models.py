@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import date, datetime
 from decimal import Decimal
+from sqlalchemy import UniqueConstraint
 from passlib.context import CryptContext
 
 
@@ -28,6 +29,7 @@ class User(SQLModel, table=True):
     deliveries: List["Delivery"] = Relationship(back_populates="delivery_person")
     messages_sent: List["Message"] = Relationship(back_populates="sender", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     messages_received: List["Message"] = Relationship(back_populates="receiver", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
+    cart_items: List["CartItem"] = Relationship(back_populates="user")
 
 
 class Category(SQLModel, table=True):
@@ -64,8 +66,8 @@ class Product(SQLModel, table=True):
     category: Optional[Category] = Relationship(back_populates="products")
     discounts: List["Discount"] = Relationship(back_populates="product")
     reviews: List["Review"] = Relationship(back_populates="product")
-
-    images: list["ProductImage"] = Relationship(back_populates="product",cascade_delete=True)
+    cart_items: List["CartItem"] = Relationship(back_populates="product")
+    images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -85,6 +87,20 @@ class Discount(SQLModel, table=True):
     end_date: date
 
     product: Optional[Product] = Relationship(back_populates="discounts")
+
+class CartItem(SQLModel, table=True):
+    __tablename__ = "cart_items"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id")
+    product_id: int = Field(foreign_key="products.id", sa_column_kwargs={"nullable": False})
+
+    quantity: int
+    added_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: Optional[User] = Relationship(back_populates="cart_items")
+    product: Optional[Product] = Relationship()
+
 
 class Order(SQLModel, table=True):
     __tablename__ = "orders"

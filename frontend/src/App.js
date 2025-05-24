@@ -1,9 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./contexts/CartContext";
+import { AuthProvider } from './components/auth/AuthProvider';
+import { CartProvider } from './contexts/CartContext';
 
 // Layouts and wrappers
+import Header2 from "./components/Header2";
 import Header from "./components/Header";
+import Footer from "./components/Footer"; // ✅ Added Footer
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Pages (Customer)
@@ -13,10 +16,10 @@ import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import CustomerTest from "./pages/customer/CustomerTest";
-import Cart from "./pages/customer/Cart";  // <-- NEW
+import Cart from "./pages/customer/Cart"; // ✅ New Cart Page
 
 // Pages (Admin)
-import NewEmployee from "./components/admin/NewEmployee"; // ✅ UPDATED
+import NewEmployee from "./components/admin/NewEmployee"; // ✅ Updated
 import Employees from "./components/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
@@ -30,9 +33,11 @@ import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
+  <AuthProvider>
+      <CartProvider>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Header />
+        <Header2 />
         <Routes>
           {/* Shared Pages */}
           <Route path="/" element={<Home />} />
@@ -41,7 +46,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />  {/* <-- NEW */}
+          <Route path="/cart" element={<Cart/>} />
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
@@ -51,7 +56,7 @@ function App() {
           {/* Admin Pages */}
           <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
             <Route path="/adminTest" element={<CustomerTest />} />
-            <Route path="/new-employee" element={<NewEmployee />} /> {/* ✅ UPDATED */}
+            <Route path="/new-employee" element={<NewEmployee />} />
             <Route path="/employees" element={<Employees />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
@@ -73,8 +78,11 @@ function App() {
             <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
           </Route>
         </Routes>
+
+        <Footer /> {/* ✅ Always at the bottom */}
       </Router>
     </CartProvider>
+    </AuthProvider>
   );
 }
 
