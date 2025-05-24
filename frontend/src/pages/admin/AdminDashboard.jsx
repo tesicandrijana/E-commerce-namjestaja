@@ -30,6 +30,16 @@ function AdminDashboard() {
           description="Click to see a list of all employees"
           onClick={() => navigate("/employees")}
         />
+
+        <Card
+          number="03"
+          bgColor="#66b2ff"
+          imageSrc="/admin/archive.png"
+          altText="View archived employees"
+          title="View archived employees"
+          description="Click to see a list of all archived employees"
+          onClick={() => navigate("/ArchivedEmployees")}
+        />
       </div>
     </div>
   );

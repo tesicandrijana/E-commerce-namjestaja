@@ -1,0 +1,15 @@
+/* Employees.css */
+
+.employees-page {
+  font-family: Arial, sans-serif;
+  padding-bottom: 40px;
+}
+
+/* Heading */
+.employees-title {
+  text-align: center;
+  color: #333;
+  margin-top: 20px;
+  font-size: 2rem;
+}
+

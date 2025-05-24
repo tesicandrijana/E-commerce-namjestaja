@@ -16,9 +16,10 @@ import CustomerTest from "./pages/customer/CustomerTest";
 import Cart from "./pages/customer/Cart";  // <-- NEW
 
 // Pages (Admin)
-import NewEmployee from "./components/admin/NewEmployee"; // ✅ UPDATED
-import Employees from "./components/admin/Employees";
+import NewEmployee from "./components/admin/NewEmployee";
+import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -51,8 +52,9 @@ function App() {
           {/* Admin Pages */}
           <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
             <Route path="/adminTest" element={<CustomerTest />} />
-            <Route path="/new-employee" element={<NewEmployee />} /> {/* ✅ UPDATED */}
-            <Route path="/employees" element={<Employees />} />
+            <Route path="/NewEmployee" element={<NewEmployee />} />
+            <Route path="/Employees" element={<Employees />} />
+            <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   {/* NEW */}
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
 

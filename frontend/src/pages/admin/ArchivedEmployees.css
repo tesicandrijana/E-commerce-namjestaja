@@ -1,0 +1,73 @@
+.restore-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.restore-btn:hover {
+  background-color: #0056b3;
+}
+
+.restore-btn:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.employees-success {
+  color: #007bff;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.employees-message {
+  text-align: center;
+  margin: 1rem 0 2rem 0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.employees-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.employees-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.employees-message.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.employees-message.info {
+  background-color: #cce5ff;
+  color: #004085;
+  border: 1px solid #b8daff;
+}
+
+.restore-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.employees-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
