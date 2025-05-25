@@ -14,3 +14,14 @@ class Complaint(ComplaintBase):
 
     class Config:
         from_attributes = True
+
+
+class ComplaintUpdate(BaseModel):
+    description: Optional[str] = None
+    status: Optional[str] = None  # open, in_progress, resolved
+    
+
+class ComplaintResponse(BaseModel):
+    response_text: str
+
+
