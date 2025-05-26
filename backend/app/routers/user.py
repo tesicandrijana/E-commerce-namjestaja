@@ -7,11 +7,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy import func
-
 from app.services import user_service
 from app.database import get_db
 from app.schemas.user import Token, UserCreate, UserSchema, UserUpdate, LoginWithRole
-from app.services.user_service import hash_password, validate_password_strength
+from app.services.user_service import hash_password, validate_password_strength,signup_user
 from app.dependencies import get_admin_user
 from app.crud import user
 from app.models.models import User

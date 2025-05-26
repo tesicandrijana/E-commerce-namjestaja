@@ -5,11 +5,14 @@ const AuthContext = createContext(undefined)
 
 export default function AuthProvider ({children}) {
     const [currentUser, setCurrentUser] = useState()
+    const [token, setToken] = useState()
+
+    axios.defaults.baseURL = "http://localhost:8000";
 
     async function fetchUser(){
         try{
             const token = localStorage.getItem("token");
-
+            setToken(token);
             const response = await axios.get("http://localhost:8000/users/me",{
                 headers: {
                   Authorization: `Bearer ${token}`
@@ -17,7 +20,8 @@ export default function AuthProvider ({children}) {
               });
             console.log(response);
             const user = response.data;
-            
+
+            axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             setCurrentUser(user);
             return user;
         }catch{
@@ -47,7 +51,6 @@ export default function AuthProvider ({children}) {
     }
 
     async function handleLogout(){
-        //logout na be
         setCurrentUser(null);
         localStorage.clear();
     }

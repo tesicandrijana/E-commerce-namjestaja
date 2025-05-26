@@ -33,13 +33,12 @@ def save_image(product_name: str,image: Annotated[UploadFile, File(...)]):
     finally: 
         image.file.close()
 
-    return file_path.replace("\\", "/")
+    return filename
 
 def delete_image_file(image_filename: str):
     image_path = image_filename.replace("/", os.sep)
     
     if os.path.exists(image_path):
-        print(image_path.replace("\\", "/"))
         os.remove(image_path)
         return True
     else:

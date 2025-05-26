@@ -15,8 +15,9 @@ function ProductDetail() {
       try {
         const response = await axios.get(`http://localhost:8000/products/${id}`);
         const formattedImages = response.data.images.map(img =>
-          `http://localhost:8000/${img.image_url}`
+          `http://localhost:8000/static/product_images/${img.image_url}`
         );
+        console.log(formattedImages)
 
         setProduct({
           ...response.data,
