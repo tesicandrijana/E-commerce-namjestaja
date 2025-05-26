@@ -25,8 +25,13 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ProductForm from "./components/product/ProductForm";
 
-// Pages (Support & Delivery)
+// Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
+import ComplaintsList from "./pages/support/ComplaintsList";
+import ComplaintDetails from "./pages/support/ComplaintDetails"
+
+
+// Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 
 function App() {
@@ -65,10 +70,11 @@ function App() {
             <Route path="/products/create" element={<ProductForm mode="create" />} />
           </Route>
 
-          {/* Support Pages */}
-          <Route element={<ProtectedRoute allowedRoles={"support"} />}>
-            <Route path="/support-dashboard" element={<SupportDashboard />} />
-          </Route>
+        {/* Support Pages */}
+        {/* Todo - vrati protected route */}
+        <Route path="/support-dashboard" element={<SupportDashboard />} />
+        <Route path="/support/complaints" element={<ComplaintsList />} />
+        <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
 
           {/* Delivery Pages */}
           <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>

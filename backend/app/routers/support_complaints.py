@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List, Annotated
-
+from typing import List, Annotated, Optional
 from app.models.models import Complaint, User
 from app.schemas import complaint as complaint_schema
 from app.dependencies import get_db
@@ -33,9 +32,14 @@ def get_all_complaints(
     session: SessionDep,
     offset: int = 0,
     limit: int = 100,
+    complaint_type: Optional[str] = None,  #dodano
     current_user: User = Depends(fake_support_user)
-):
-    return complaint_crud.get_complaints(session, offset=offset, limit=limit)
+): 
+    query = session.query(Complaint)       #podrzi query parametar
+    if complaint_type:
+        query = query.filter(Complaint.complaint_type == complaint_type)
+    return query.offset(offset).limit(limit).all()
+
 
 #Pregled pojedinacne reklamacije
 @router.get("/{complaint_id}", response_model=complaint_schema.Complaint)

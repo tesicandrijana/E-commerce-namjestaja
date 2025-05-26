@@ -5,6 +5,7 @@ class ComplaintBase(BaseModel):
     order_id: int
     description: str
     status: Optional[str] = "open"
+    complaint_type: str = "complaint"
 
 class ComplaintCreate(ComplaintBase):
     pass
