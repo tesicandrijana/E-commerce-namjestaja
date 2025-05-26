@@ -5,7 +5,6 @@ import { FaShoppingCart, FaSearch, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../components/auth/AuthProvider";
 import LoginModal from "../../components/auth/LoginModal";
 import "./ProductList.css";
-import axios from "axios";
 
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
 const DEFAULT_CATEGORY = { id: 0, name: "All" };
@@ -63,7 +62,7 @@ export default function ProductList() {
 
   const handleAddToCart = useCallback(
     async (product) => {
-      if (!isLoggedIn) {
+      if (!currentUser) {
         setPendingProduct(product);
         setShowLoginModal(true);
         return;
@@ -88,16 +87,16 @@ export default function ProductList() {
         alert(`Could not add ${product.name} to cart. Please try again.`);
       }
     },
-    [isLoggedIn, token]
+    [currentUser, token]
   );
 
   // Automatically add pending product after login
   useEffect(() => {
-    if (pendingProduct && isLoggedIn) {
+    if (pendingProduct && currentUser) {
       handleAddToCart(pendingProduct);
       setPendingProduct(null);
     }
-  }, [isLoggedIn, pendingProduct, handleAddToCart]);
+  }, [currentUser, pendingProduct, handleAddToCart]);
 
   const handleModalClose = () => {
     setShowLoginModal(false);
@@ -194,7 +193,7 @@ export default function ProductList() {
                 style={{ textDecoration: "none", color: "inherit", display: "block" }}
               >
                 <img
-                  src={getImageUrl(product.image)}
+                  src={getImageUrl(product?.images[0].image_url)}
                   alt={product.name || "Product image"}
                   className="product-image"
                   onLoad={(e) => handleImageLoad(e, product.id)}

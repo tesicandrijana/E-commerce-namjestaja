@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from './components/auth/AuthProvider';
+import AuthProvider from './components/auth/AuthProvider';
 import { CartProvider } from './contexts/CartContext';
 
 // Layouts and wrappers

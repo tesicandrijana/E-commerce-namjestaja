@@ -6,7 +6,7 @@ from app.models.models import CartItem, Product, User
 from app.schemas.cart import CartItemCreate, CartItemRead, CartItemUpdate
 from app.database import get_db
 from app.dependencies import get_current_customer
-
+from app.services import user_service
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -29,7 +29,7 @@ def add_to_cart(
     *,
     cart_item_in: CartItemCreate,
     session: Session = Depends(get_db),
-    current_user: User = Depends(get_current_customer),
+    current_user: User = Depends(user_service.get_current_user),
 ):
     """Add product to cart or update quantity if already in cart"""
 
