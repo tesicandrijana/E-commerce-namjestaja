@@ -15,20 +15,25 @@ import About from "./pages/customer/About";
 import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
-import CustomerTest from "./pages/customer/CustomerTest";
-import Cart from "./pages/customer/Cart"; // ✅ New Cart Page
+import Cart from "./pages/customer/Cart";  
 
 // Pages (Admin)
-import NewEmployee from "./components/admin/NewEmployee"; // ✅ Updated
-import Employees from "./components/admin/Employees";
+import NewEmployee from "./components/admin/NewEmployee";
+import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ProductForm from "./components/product/ProductForm";
 
-// Pages (Support & Delivery)
+// Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
+import ComplaintsList from "./pages/support/ComplaintsList";
+import ComplaintDetails from "./pages/support/ComplaintDetails"
+
+
+// Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 
 function App() {
@@ -46,18 +51,17 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart/>} />
+          <Route path="/cart" element={<Cart />} />  
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
-            <Route path="/customerTest" element={<CustomerTest />} />
           </Route>
 
           {/* Admin Pages */}
           <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
-            <Route path="/adminTest" element={<CustomerTest />} />
-            <Route path="/new-employee" element={<NewEmployee />} />
-            <Route path="/employees" element={<Employees />} />
+            <Route path="/NewEmployee" element={<NewEmployee />} />
+            <Route path="/Employees" element={<Employees />} />
+            <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
 
@@ -68,10 +72,11 @@ function App() {
             <Route path="/products/create" element={<ProductForm mode="create" />} />
           </Route>
 
-          {/* Support Pages */}
-          <Route element={<ProtectedRoute allowedRoles={"support"} />}>
-            <Route path="/support-dashboard" element={<SupportDashboard />} />
-          </Route>
+        {/* Support Pages */}
+        {/* Todo - vrati protected route */}
+        <Route path="/support-dashboard" element={<SupportDashboard />} />
+        <Route path="/support/complaints" element={<ComplaintsList />} />
+        <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
 
           {/* Delivery Pages */}
           <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>

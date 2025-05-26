@@ -5,6 +5,7 @@ import { FaShoppingCart, FaSearch, FaTimes } from "react-icons/fa";
 import { useAuth } from "../../components/auth/AuthProvider";
 import LoginModal from "../../components/auth/LoginModal";
 import "./ProductList.css";
+import axios from "axios";
 
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
 const DEFAULT_CATEGORY = { id: 0, name: "All" };
@@ -19,7 +20,7 @@ export default function ProductList() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingProduct, setPendingProduct] = useState(null);
 
-  const { isLoggedIn, token } = useAuth();
+  const { currentUser, token } = useAuth();
   const navigate = useNavigate();
   const { categoryName } = useParams();
 

@@ -1,33 +1,15 @@
-/* Employees.css */
+/* EmployeeTable.css */
 
-.employees-page {
-  font-family: Arial, sans-serif;
-  background-color: #f4f7fc;
-  padding-bottom: 40px;
-}
-
-/* Heading */
-.employees-title {
-  text-align: center;
-  color: #333;
-  margin-top: 20px;
-  font-size: 2rem;
-}
-
-/* Table */
 .employees-table {
   width: 80%;
   margin: 20px auto;
   border-collapse: collapse;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  background-color: white;
   border-radius: 12px;
   overflow: hidden;
 }
 
 .employees-table th {
-  background-color: #007bff;
-  color: #fff;
+ color: #007bff;
   padding: 12px 15px;
   text-align: left;
   font-size: 1.1rem;
@@ -38,15 +20,15 @@
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
-  color: #555;
+  color: #444;
   transition: background-color 0.3s ease;
 }
 
 .employees-table tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color:#f0f4fa; /* blago svetlija nijansa na hover */
 }
 
-/* Rounded corners for first and last cells */
+/* Zaobljeni uglovi prve i poslednje ćelije */
 .employees-table tbody tr:first-child td:first-child {
   border-top-left-radius: 12px;
 }
@@ -60,32 +42,28 @@
   border-bottom-right-radius: 12px;
 }
 
-/* Error message */
-.employees-error {
-  text-align: center;
-  color: red;
-  font-size: 1.1rem;
-}
-
-/* Edit button */
+/* Dugme za edit */
 .edit-btn {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  background-color: white; 
+  color: #007bff;     
+  border-style: none; 
+  font-size: 2rem;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  width: 36px;
+  height: 36px;
 }
 
 .edit-btn:hover {
-  background-color: #0056b3;
-  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
-/* Responsive */
+
+/* Responsive dizajn */
 @media (max-width: 768px) {
   .employees-table {
     width: 90%;
@@ -94,9 +72,5 @@
   .employees-table th,
   .employees-table td {
     padding: 10px;
-  }
-
-  .employees-title {
-    font-size: 1.5rem;
   }
 }

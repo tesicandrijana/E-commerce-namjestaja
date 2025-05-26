@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './Employees.css';
-import EditUserModal from './UserModal';
+import EditUserModal from '../../components/admin/UserModal';
+import EmployeeTable from '../../components/admin/EmployeeTable';
 
 const Employees = () => {
   const [users, setUsers] = useState([]);
@@ -107,40 +108,32 @@ const Employees = () => {
     }
   };
 
+  // Novo: funkcija za arhiviranje korisnika
+  const handleArchive = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:8000/users/${editUserId}/archive`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      await fetchUsers();
+      setEditUserId(null);
+      setError(null);
+    } catch (err) {
+      console.error("Greška pri arhiviranju korisnika:", err.response?.data || err);
+      setError(err.response?.data || 'Greška pri arhiviranju korisnika.');
+    }
+  };
+
   return (
     <div className="employees-page">
       <h1 className="employees-title">Employees</h1>
 
-      {error && <p className="employees-error">{error}</p>}
+      {error && <p className="employees-error">{typeof error === 'object' ? error.detail || JSON.stringify(error) : error}</p>}
 
-      <table className="employees-table">
-        <thead>
-          <tr>
-            <th>Full name</th>
-            <th>Email</th>
-            <th>Phone number</th>
-            <th>Address</th>
-            <th>Role</th>
-            <th>Password</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.phone}</td>
-              <td>{user.address}</td>
-              <td>{user.role}</td>
-              <td>••••••••</td>
-              <td>
-                <button onClick={() => handleEdit(user)} className="edit-btn">Edit</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <EmployeeTable users={users} onEdit={handleEdit} />
 
       {editUserId && (
         <EditUserModal
@@ -148,6 +141,7 @@ const Employees = () => {
           onClose={handleCancel}
           onSave={handleUpdate}
           onDelete={handleDelete}
+          onArchive={handleArchive}  // prosleđujem novu funkciju
           initialData={formData}
           mode="edit"
           onChange={handleChange}
@@ -158,4 +152,3 @@ const Employees = () => {
 };
 
 export default Employees;
-

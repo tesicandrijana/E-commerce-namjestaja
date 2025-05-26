@@ -27,13 +27,13 @@ const EditUserModal = ({
   };
 
   const handleSave = async () => {
-  const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token'); 
 
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     try {
       setError(null);
@@ -63,7 +63,6 @@ const EditUserModal = ({
     }
   };
 
-
   const handleDeleteClick = () => {
     setShowConfirm(true);
   };
@@ -78,6 +77,28 @@ const EditUserModal = ({
       setError('Failed to delete user');
     }
   };
+
+  const handleArchiveClick = async () => {
+    
+  try {
+    const token = localStorage.getItem('token');
+    if (!formData.id) {
+      setError("User ID is missing");
+      return;
+    }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    await axios.put(`http://localhost:8000/users/${formData.id}/archive`, {}, config);
+    onClose();
+  } catch (err) {
+    console.error('Error archiving user:', err);
+    setError(err.response?.data?.detail || 'Failed to archive user');
+  }
+};
+
 
   if (!isOpen) return null;
 
@@ -117,10 +138,16 @@ const EditUserModal = ({
             <button onClick={onClose}>Cancel</button>
 
             {mode === 'edit' && (
-              <button onClick={handleDeleteClick} className="delete-btn">
-                Delete
-              </button>
+              <>
+                <button onClick={handleArchiveClick} className="archive-btn">
+                  Archive
+                </button>
+                <button onClick={handleDeleteClick} className="delete-btn">
+                  Delete
+                </button>
+              </>
             )}
+
           </div>
         </div>
       </div>

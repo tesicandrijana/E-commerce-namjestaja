@@ -166,6 +166,8 @@ class Complaint(SQLModel, table=True):
     order_id: int = Field(foreign_key="orders.id")
     description: str
     status: str = Field(default="open")
+    complaint_type: str = Field(default="complaint")  
+    response_text: Optional[str] = None  #DODANO POLJE
 
     order: Optional[Order] = Relationship()
 
