@@ -12,8 +12,7 @@ import About from "./pages/customer/About";
 import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
-import CustomerTest from "./pages/customer/CustomerTest";
-import Cart from "./pages/customer/Cart";  // <-- NEW
+import Cart from "./pages/customer/Cart";  
 
 // Pages (Admin)
 import NewEmployee from "./components/admin/NewEmployee";
@@ -42,19 +41,17 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />  {/* <-- NEW */}
+          <Route path="/cart" element={<Cart />} />  
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
-            <Route path="/customerTest" element={<CustomerTest />} />
           </Route>
 
           {/* Admin Pages */}
           <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
-            <Route path="/adminTest" element={<CustomerTest />} />
             <Route path="/NewEmployee" element={<NewEmployee />} />
             <Route path="/Employees" element={<Employees />} />
-            <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   {/* NEW */}
+            <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
 

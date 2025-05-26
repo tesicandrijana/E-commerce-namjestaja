@@ -25,8 +25,8 @@ function ImageCarousel({steps}) {
     style={{
       width: '100%',
       borderRadius: '8px',
-      objectFit: 'cover',
-      /* maxHeight: '500px' */
+      objectFit: 'contain',
+      maxHeight: '30rem' 
     }}
   />
   <MobileStepper

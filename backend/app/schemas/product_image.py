@@ -2,8 +2,11 @@ from typing import Optional
 from sqlmodel import SQLModel, Field
 
 class ProductImageBase(SQLModel):
-    url: str
+    image_url: str
     product_id: int
+
+    class Config:
+        from_attributes = True
 
 class ProductImageCreate(ProductImageBase):
     pass
@@ -14,5 +17,3 @@ class ProductImageRead(ProductImageBase):
 class ProductImageUpdate(SQLModel):
     url: Optional[str] = None
 
-class Config:
-    from_attributes = True

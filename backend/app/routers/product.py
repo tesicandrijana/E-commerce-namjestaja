@@ -71,28 +71,14 @@ def update_product(
     return updated_product
 
 # Read product (with optional category)
-@router.get("/{product_id}", response_model=ProductRead)
-def read_product(
-    product_id: int,
-    include_category: bool = False,
-    session: Session = Depends(get_db),
-):
-    if include_category:
-        product_obj = get_product_with_category(session, product_id)
-    else:
-        product_obj = session.get(Product, product_id)
-
-    if not product_obj:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return product_obj
+@router.get("/{id}", response_model = product_schema.ProductRead)
+def read_product(session: SessionDep, id: int):
+    return product_service.get_product(session,id)
 
 # Delete product
-@router.delete("/{product_id}", response_model=product_schema.ProductRead)
-def delete_product(product_id: int, db: Session = Depends(get_db)):
-    deleted_product = product.delete_product(db, product_id)
-    if deleted_product is None:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return deleted_product
+@router.delete("/{id}")
+def delete_product(session: SessionDep, id: int):
+    return product_service.delete_product(session, id)
 
 # Restock product
 @router.patch("/{product_id}/restock")

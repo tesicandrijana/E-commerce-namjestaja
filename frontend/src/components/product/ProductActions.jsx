@@ -44,7 +44,7 @@ function ProductActions({ id, stock }) {
         </>
       )}
 
-      {currentUser?.role === "customer" && (
+      {currentUser?.role === "customer" || !currentUser && (
         <button
           className="action-btn add-to-cart-btn"
           disabled={stock === 0}

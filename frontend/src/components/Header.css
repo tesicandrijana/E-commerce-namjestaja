@@ -70,7 +70,9 @@ body {
 }
 
 .nav-links a:hover,
-.nav-links a:focus {
+.nav-links a:focus,
+.cart-link:hover svg,
+.cart-link:focus svg {
   color: #f4a300;
 }
 
@@ -122,7 +124,8 @@ body {
 }
 
 .register-btn:hover,
-.register-btn:focus {
+.register-btn:focus
+ {
   background-color: #ffa07a;
   border-color: #ffa07a;
   box-shadow: 0 0 10px rgba(255, 160, 122, 0.4);
@@ -130,7 +133,7 @@ body {
 
 .cart-icon-wrapper {
   position: relative;
-  margin-left: 15px;
+  margin-right: 0%;
   display: inline-block;
 }
 
@@ -153,6 +156,13 @@ body {
   border-radius: 50%;
   pointer-events: none;
   user-select: none;
+}
+
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 

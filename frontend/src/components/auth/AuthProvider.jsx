@@ -4,7 +4,7 @@ import axios from 'axios'
 const AuthContext = createContext(undefined)
 
 export default function AuthProvider ({children}) {
-    const [currentUser, setCurrentUser] = useState()
+    const [currentUser, setCurrentUser] = useState();
 
     async function fetchUser(){
         try{
@@ -47,9 +47,9 @@ export default function AuthProvider ({children}) {
     }
 
     async function handleLogout(){
-        //logout na be
         setCurrentUser(null);
         localStorage.clear();
+        
     }
 
     return <AuthContext.Provider value = {{

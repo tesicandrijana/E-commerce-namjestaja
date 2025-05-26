@@ -1,8 +1,10 @@
 .product-wrapper {
-  width: 70%;
   display: flex;
   justify-content: center;
   background-color: #f4f4f4;
+  background-color: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
   margin: 3rem auto;
 }
 
@@ -11,9 +13,6 @@
   flex-direction: row;
   max-width: 1200px;
   width: 100%;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaShoppingCart, FaSearch, FaTimes } from "react-icons/fa";
 import { useCart } from "../../contexts/CartContext";
+import axios from "axios";
 import "./ProductList.css";
 
-const categories = [
+{const categories = [
   { id: 0, name: "All" },
   { id: 1, name: "Living Room" },
   { id: 2, name: "Bedroom" },
@@ -16,11 +17,12 @@ const categories = [
   { id: 8, name: "Hallway" },
   { id: 9, name: "Kids Room" },
   { id: 10, name: "Other" },
-];
+];}
 
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
 
 export default function ProductList() {
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [visibleCount, setVisibleCount] = useState(8);
@@ -28,8 +30,18 @@ export default function ProductList() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { addToCart } = useCart();
+  const fetchCategories = async () => {
+          try {
+              const response = await axios.get("http://localhost:8000/categories");
+              setCategories(response.data)
+          }
+          catch (e) {
+              console.log(e)
+          }
+      }
 
   useEffect(() => {
+    fetchCategories();
     fetch("http://localhost:8000/products/")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch products");
@@ -44,31 +56,31 @@ export default function ProductList() {
   }, []);
 
   const handleAddToCart = async (product) => {
-  try {
-    // Call backend API to create order first
-    const response = await fetch("http://localhost:8000/orders/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // "Authorization": `Bearer ${token}`, // if needed
-      },
-      body: JSON.stringify({ product_id: product.id, quantity: 1 }),
-    });
+    try {
+      // Call backend API to create order first
+      const response = await fetch("http://localhost:8000/orders/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // "Authorization": `Bearer ${token}`, // if needed
+        },
+        body: JSON.stringify({ product_id: product.id, quantity: 1 }),
+      });
 
-    if (!response.ok) {
-      throw new Error("Failed to create order");
+      if (!response.ok) {
+        throw new Error("Failed to create order");
+      }
+      const orderData = await response.json();
+
+      // Only after successful order, update frontend cart state
+      addToCart(product);
+
+      alert("Order created successfully! Order ID: " + orderData.id);
+    } catch (error) {
+      console.error("Error adding to cart and creating order:", error);
+      alert("Failed to add product to cart/order");
     }
-    const orderData = await response.json();
-
-    // Only after successful order, update frontend cart state
-    addToCart(product);
-
-    alert("Order created successfully! Order ID: " + orderData.id);
-  } catch (error) {
-    console.error("Error adding to cart and creating order:", error);
-    alert("Failed to add product to cart/order");
-  }
-};
+  };
 
 
 
@@ -117,27 +129,27 @@ export default function ProductList() {
       </div>
 
       {/* Search Input */}
-<div className="search-bar-advanced">
-  <div className={`search-input-wrapper ${searchQuery ? "has-text" : ""}`}>
-    <FaSearch className="search-icon" />
-    <input
-      type="text"
-      placeholder="Search products..."
-      className="search-input-advanced"
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-    />
-    {searchQuery && (
-      <button
-        className="clear-button"
-        onClick={() => setSearchQuery("")}
-        aria-label="Clear search"
-      >
-        <FaTimes />
-      </button>
-    )}
-  </div>
-</div>
+      <div className="search-bar-advanced">
+        <div className={`search-input-wrapper ${searchQuery ? "has-text" : ""}`}>
+          <FaSearch className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="search-input-advanced"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              className="clear-button"
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
+      </div>
 
 
 
@@ -155,16 +167,14 @@ export default function ProductList() {
             >
               <img
                 src={
-                  product.image.startsWith("http")
-                    ? product.image
-                    : product.image.startsWith("/static")
-                    ? `http://localhost:8000${product.image}`
-                    : `${IMAGE_BASE_URL}${product.image}`
+                  product.images && product.images.length > 0
+                    ? `${IMAGE_BASE_URL}${product.images[0].image_url}` : "No image"
                 }
                 alt={product.name}
                 className="product-image"
                 onLoad={(e) => handleImageLoad(e, product.id)}
               />
+
 
               <div className="product-info">
                 <h3 className="product-title">{product.name}</h3>
@@ -176,7 +186,7 @@ export default function ProductList() {
             </Link>
 
             <button onClick={() => handleAddToCart(product)} className="add-to-cart-btn">
-           <FaShoppingCart /> Add to Cart
+              <FaShoppingCart /> Add to Cart
             </button>
           </div>
         ))}
