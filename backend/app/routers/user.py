@@ -7,6 +7,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy import func
+from sqlalchemy import or_
+
 
 from app.services import user_service
 from app.database import get_db
@@ -133,10 +135,20 @@ def count_users_by_role(
 
 @router.get("/archived-users", response_model=List[UserSchema])
 def get_archived_users(
+    search: str = '',
     db: Session = Depends(get_db),
     current_user: User = Depends(user_service.role_check(["admin"]))
 ):
-    archived_users = db.query(User).filter(User.is_active == False).all()
+    query = db.query(User).filter(User.is_active == False)
+    
+    if search:
+        search_filter = or_(
+            User.name.ilike(f"%{search}%"),
+            User.role.ilike(f"%{search}%")
+        )
+        query = query.filter(search_filter)
+    
+    archived_users = query.all()
 
     if not archived_users:
         raise HTTPException(status_code=404, detail="No archived users found")
@@ -188,6 +200,7 @@ def restore_user(
     db.refresh(user)
     return {"detail": f"User with ID {user_id} restored successfully"}
 
+
 @router.put("/{user_id}/archive", response_model=UserSchema)
 def archive_user(
     user_id: int,
@@ -206,6 +219,27 @@ def archive_user(
     db.refresh(db_user)
 
     return db_user
+
+@router.get("/employees/search", response_model=List[UserSchema])
+def search_employees(
+    search: str = '',
+    db: Session = Depends(get_db),
+    current_user: User = Depends(user_service.role_check(["admin"]))
+):
+    if not search:
+        return []  # Ako nema unosa, ne vraćaj ništa
+
+    query = db.query(User).filter(
+    User.is_active == True,
+    User.role != "customer",
+    or_(
+        User.name.ilike(f"%{search}%"),
+        User.role.ilike(f"%{search}%")
+    )
+)
+
+    return query.limit(10).all()
+
 
 
 @router.get("/me")

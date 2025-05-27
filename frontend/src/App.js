@@ -14,12 +14,15 @@ import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import CustomerTest from "./pages/customer/CustomerTest";
 import Cart from "./pages/customer/Cart";  // <-- NEW
-
+ 
+// EmployeeStatistics
 // Pages (Admin)
-import NewEmployee from "./components/admin/NewEmployee";
+import NewEmployee from "./pages/admin/NewEmployee";
 import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
+import EmployeeStatistics from "./pages/admin/EmployeeStatistics";
+
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -56,6 +59,8 @@ function App() {
             <Route path="/Employees" element={<Employees />} />
             <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   {/* NEW */}
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/EmployeeStatistics" element={<EmployeeStatistics />} />
+
           </Route>
 
           {/* Manager Pages */}

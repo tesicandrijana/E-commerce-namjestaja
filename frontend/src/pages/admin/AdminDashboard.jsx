@@ -10,14 +10,16 @@ function AdminDashboard() {
   return (
     <div className="dashboard-container">
 
+      <h1>click here to add new employee</h1>
+
       <div className="card-list">
         <Card
           number="01"
           bgColor="#0f82fc"
           imageSrc="/admin/newemployee.png"
           altText="New Employee"
-          title="Add Employee"
-          description="Click to add a new employee"
+          title="New Employee"
+          description="Click to add new employee"
           onClick={() => navigate("/NewEmployee")}
         />
 
@@ -33,6 +35,16 @@ function AdminDashboard() {
 
         <Card
           number="03"
+          bgColor="#0f82fc"
+          imageSrc="/admin/statistic.png"
+          altText="employee statistics"
+          title="View employee statistics"
+          description="Click to see employee statistics"
+          onClick={() => navigate("/EmployeeStatistics")}
+        />
+
+        <Card
+          number="04"
           bgColor="#66b2ff"
           imageSrc="/admin/archive.png"
           altText="View archived employees"

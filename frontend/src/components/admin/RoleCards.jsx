@@ -51,7 +51,7 @@ export default function RoleDashboard({ refresh }) {
             outerRadius={100}
             fill="#8884d8"
             dataKey="value"
-            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
           >
             {chartData.map((_, index) => (
               <Cell key={index} fill={colors[index % colors.length]} />

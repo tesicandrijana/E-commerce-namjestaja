@@ -1,8 +1,11 @@
+// Employees.jsx
 import React, { useState, useEffect } from 'react'; 
 import axios from 'axios';
 import './Employees.css';
-import EditUserModal from '../../components/admin/UserModal';
+import EditUserModal from '../../components/admin/EditUserModal';
 import EmployeeTable from '../../components/admin/EmployeeTable';
+import ConfirmModal from '../../components/modals/ConfirmModal';
+import SearchBar from '../../components/admin/SearchBar';
 
 const Employees = () => {
   const [users, setUsers] = useState([]);
@@ -17,14 +20,21 @@ const Employees = () => {
   });
   const [error, setError] = useState(null);
 
-  const fetchUsers = async () => {
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const fetchUsers = async (query = '') => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get("http://localhost:8000/users/employees", {
         headers: {
           Authorization: `Bearer ${token}`
         },
-        params: { offset: 0, limit: 100 }
+        params: {
+          offset: 0,
+          limit: 100,
+          search: query   // prosleđujemo query parametar za pretragu
+        }
       });
       setUsers(response.data);
     } catch (err) {
@@ -80,17 +90,20 @@ const Employees = () => {
           Authorization: `Bearer ${token}`
         }
       });
-
       await fetchUsers();
       setEditUserId(null);
       setError(null);
     } catch (err) {
-      console.error("ERROR-------------------------->", err.response?.data || err);
+      console.error(err.response?.data || err);
       setError(err.response?.data || 'Greška pri ažuriranju korisnika.');
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:8000/users/${editUserId}`, {
@@ -98,18 +111,24 @@ const Employees = () => {
           Authorization: `Bearer ${token}`
         }
       });
-
       await fetchUsers();
       setEditUserId(null);
       setError(null);
     } catch (err) {
-      console.error("Greška pri brisanju korisnika:", err.response?.data || err);
+      console.error(err.response?.data || err);
       setError(err.response?.data || 'Greška pri brisanju korisnika.');
+    } finally {
+      setShowDeleteModal(false);
     }
   };
 
-  // Novo: funkcija za arhiviranje korisnika
-  const handleArchive = async () => {
+  const handleArchive = () => {
+    setShowArchiveModal(true);
+  };
+
+  const userToArchive = users.find(user => user.id === editUserId);
+
+  const confirmArchive = async () => {
     try {
       const token = localStorage.getItem('token');
       await axios.put(`http://localhost:8000/users/${editUserId}/archive`, {}, {
@@ -117,19 +136,45 @@ const Employees = () => {
           Authorization: `Bearer ${token}`
         }
       });
-
       await fetchUsers();
       setEditUserId(null);
       setError(null);
     } catch (err) {
-      console.error("Greška pri arhiviranju korisnika:", err.response?.data || err);
+      console.error(err.response?.data || err);
       setError(err.response?.data || 'Greška pri arhiviranju korisnika.');
+    } finally {
+      setShowArchiveModal(false);
     }
   };
 
+  const handleSearch = (query) => {
+    fetchUsers(query);
+  };
+
+  const handleUserSelect = (user) => {
+  setEditUserId(user.id);
+  setFormData({
+    id: user.id,
+    name: user.name || '',
+    email: user.email || '',
+    phone: user.phone || '',
+    address: user.address || '',
+    role: user.role || '',
+    password: ''
+  });
+  setError(null);
+};
+
+
   return (
     <div className="employees-page">
-      <h1 className="employees-title">Employees</h1>
+      <h1 className="employees-title">Employees page</h1>
+      <h5>Manage and see all employee records in one place</h5>
+      <p>Use the search bar to quickly find a specific employee, or edit their information directly in the table</p>
+      <p>Click on the column headers to sort the table</p>
+
+
+      <SearchBar onSearch={handleSearch} onUserSelect={handleUserSelect} />
 
       {error && <p className="employees-error">{typeof error === 'object' ? error.detail || JSON.stringify(error) : error}</p>}
 
@@ -141,12 +186,44 @@ const Employees = () => {
           onClose={handleCancel}
           onSave={handleUpdate}
           onDelete={handleDelete}
-          onArchive={handleArchive}  // prosleđujem novu funkciju
+          onArchive={handleArchive}
           initialData={formData}
           mode="edit"
           onChange={handleChange}
         />
       )}
+
+      <ConfirmModal
+          isOpen={showArchiveModal}
+          title="Archive User"
+          message={
+            <>
+              Are you sure you want to archive user{' '}
+              {userToArchive ? <strong>{userToArchive.name}</strong> : ''}
+              ?
+            </>
+          }
+          onConfirm={confirmArchive}
+          onCancel={() => setShowArchiveModal(false)}
+          confirmText="Yes"
+          cancelText="Cancel"
+      />
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        title="Delete User"
+        message={
+          <>
+            Are you sure you want to permanently delete user{' '}
+            {userToArchive ? <strong>{userToArchive.name}</strong> : ''}
+            ?
+          </>
+        }
+        onConfirm={confirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+        confirmText="Yes"
+        cancelText="Cancel"
+      />
     </div>
   );
 };
