@@ -19,11 +19,8 @@ const Employees = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.get("http://localhost:8000/users/employees", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
+        withCredentials:true,
         params: { offset: 0, limit: 100 }
       });
       setUsers(response.data);
@@ -74,11 +71,8 @@ const Employees = () => {
 
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:8000/users/${editUserId}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
 
       await fetchUsers();
@@ -92,11 +86,8 @@ const Employees = () => {
 
   const handleDelete = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:8000/users/${editUserId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
 
       await fetchUsers();
@@ -111,11 +102,8 @@ const Employees = () => {
   // Novo: funkcija za arhiviranje korisnika
   const handleArchive = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:8000/users/${editUserId}/archive`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
 
       await fetchUsers();

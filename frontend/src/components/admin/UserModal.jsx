@@ -27,13 +27,6 @@ const EditUserModal = ({
   };
 
   const handleSave = async () => {
-    const token = localStorage.getItem('token'); 
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
 
     try {
       setError(null);
@@ -47,13 +40,13 @@ const EditUserModal = ({
           phone: formData.phone,
           address: formData.address,
           is_active: true,
-        }, config);
+        }, {withCredentials: true});
       } else {
         if (!formData.id) {
           setError("User ID is missing");
           return;
         }
-        await axios.put(`http://localhost:8000/users/${formData.id}`, formData, config);
+        await axios.put(`http://localhost:8000/users/${formData.id}`, formData, { withCredentials: true});
       }
 
       onClose();
@@ -81,17 +74,12 @@ const EditUserModal = ({
   const handleArchiveClick = async () => {
     
   try {
-    const token = localStorage.getItem('token');
     if (!formData.id) {
       setError("User ID is missing");
       return;
     }
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios.put(`http://localhost:8000/users/${formData.id}/archive`, {}, config);
+    
+    await axios.put(`http://localhost:8000/users/${formData.id}/archive`, {}, {withCredentials: true});
     onClose();
   } catch (err) {
     console.error('Error archiving user:', err);
