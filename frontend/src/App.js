@@ -1,12 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AuthProvider from './components/auth/AuthProvider';
+import AuthProvider, { useAuth } from './components/auth/AuthProvider';
 import { CartProvider } from './contexts/CartContext';
 
 // Layouts and wrappers
 import Header2 from "./components/Header2";
 import Header from "./components/Header";
+import SupportHeader from "./components/support/SupportHeader";   //header za zaposlenikaa
 import Footer from "./components/Footer"; // ✅ Added Footer
+import SupportFooter from "./components/support/SupportFooter";   //footer za zaposlenika
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Pages (Customer)
@@ -36,13 +38,30 @@ import ComplaintDetails from "./pages/support/ComplaintDetails"
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 
+
+//prikaz header i footera za zaposlenika
+const DynamicHeader = () => {
+  const { currentUser } = useAuth();
+  return currentUser?.role === 'support' ? <SupportHeader /> : <Header />;
+};
+const OptionalHeader2 = () => {
+  const { currentUser } = useAuth();
+  return currentUser?.role !== 'support' ? <Header2 /> : null;
+};
+const DynamicFooter = () => {
+  const { currentUser } = useAuth();
+  return currentUser?.role === 'support' ? <SupportFooter /> : <Footer />;
+};
+
+
+
 function App() {
   return (
   <AuthProvider>
       <CartProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <Header />
-        <Header2 />
+        <DynamicHeader />
+        <OptionalHeader2 />
         <Routes>
           {/* Shared Pages */}
           <Route path="/" element={<Home />} />
@@ -84,7 +103,7 @@ function App() {
           </Route>
         </Routes>
 
-        <Footer /> {/* ✅ Always at the bottom */}
+    <DynamicFooter />
       </Router>
     </CartProvider>
     </AuthProvider>
