@@ -1,41 +1,94 @@
 .confirm-modal-card {
-  width: 350px;
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 0.2s ease-out;
+  width: 360px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeInScale 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  user-select: none;
 }
 
 .modal-title {
   text-align: center;
-  margin-bottom: 16px; /* po želji, razmak ispod naslova */
-  font-weight: bold;   /* opcionalno, da istakneš naslov */
-  font-size: 1.5rem;   /* ili veličina po tvom izboru */
+  margin-bottom: 18px;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #333;
+  letter-spacing: 0.03em;
+}
+
+.confirm-modal-card p {
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin-bottom: 28px;
+  color: #555;
 }
 
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 14px;
 }
 
-
 .modal-buttons button {
-  padding: 8px 16px;
+  flex: 1;
+  padding: 10px 0;
   font-size: 1rem;
-  cursor: pointer;
+  font-weight: 500;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .modal-buttons button:first-of-type {
-  background-color: #f51111;
+  background-color: #e53935;
   color: white;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.6);
+}
+
+.modal-buttons button:first-of-type:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 6px 16px rgba(211, 47, 47, 0.75);
 }
 
 .modal-buttons button:last-of-type {
-  background-color: #aaa;
+  background-color: #757575;
   color: white;
+  box-shadow: 0 4px 12px rgba(117, 117, 117, 0.5);
+}
+
+.modal-buttons button:last-of-type:hover {
+  background-color: #616161;
+  box-shadow: 0 6px 16px rgba(97, 97, 97, 0.7);
+}
+
+/* Overlay styling for modal background */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Animation */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

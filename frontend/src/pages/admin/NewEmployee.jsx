@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import EditUserModal from './UserModal';
+import EditUserModal from '../../components/admin/EditUserModal';
 import './NewEmployee.css';
-import RoleCounts from './RoleCards';
+import RoleCounts from '../../components/admin/RoleCards';
 
 export default function NewEmployee() {
   const [formData, setFormData] = useState({

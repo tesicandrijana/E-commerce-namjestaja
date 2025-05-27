@@ -25,10 +25,12 @@ import CustomerComplaints from "./pages/customer/CustomerComplaints";
 import CustomerComplaintChat from "./pages/customer/CustomerComplaintChat";
 
 // Pages (Admin)
-import NewEmployee from "./components/admin/NewEmployee";
+import NewEmployee from "./pages/admin/NewEmployee";
 import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
+import EmployeeStatistics from "./pages/admin/EmployeeStatistics";
+
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -103,15 +105,16 @@ function App() {
                 </Route>
               </Route>
 
-              {/* Admin Protected routes */}
-              <Route element={<ProtectedRoute allowedRoles={"admin"} />}>
-                <Route element={<MainLayout />}>
-                  <Route path="/NewEmployee" element={<NewEmployee />} />
-                  <Route path="/Employees" element={<Employees />} />
-                  <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />
-                  <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                </Route>
-              </Route>
+          {/* Admin Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
+            <Route path="/adminTest" element={<CustomerTest />} />
+            <Route path="/NewEmployee" element={<NewEmployee />} />
+            <Route path="/Employees" element={<Employees />} />
+            <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   {/* NEW */}
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/EmployeeStatistics" element={<EmployeeStatistics />} />
+
+          </Route>
 
           {/* Manager Pages */}
           <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
