@@ -58,7 +58,7 @@ function App() {
           </Route>
 
           {/* Admin Pages */}
-          <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
+          <Route element={<ProtectedRoute allowedRoles={"admin"} />}>
             <Route path="/NewEmployee" element={<NewEmployee />} />
             <Route path="/Employees" element={<Employees />} />
             <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   

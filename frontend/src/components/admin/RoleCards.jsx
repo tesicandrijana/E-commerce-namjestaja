@@ -13,11 +13,8 @@ export default function RoleDashboard({ refresh }) {
       setLoading(true);
       setError("");
       try {
-        const token = localStorage.getItem('token');
         const response = await axios.get("http://localhost:8000/users/count-by-role", {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+          withCredentials:true
         });
         setCounts(response.data);
       } catch (err) {

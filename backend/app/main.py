@@ -20,24 +20,24 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
-# Static files (for serving product images, etc.)
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# CORS settings
 origins = [
-    # "http://localhost:8000",
+    "http://localhost:8000",
     "http://localhost:3000",  
     "http://127.0.0.1:3000"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Use the list you defined
+    allow_origins=["http://localhost:3000"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Static files (for serving product images, etc.)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# CORS settings
 
 
 # Register routers

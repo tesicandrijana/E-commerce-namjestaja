@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from typing import List, Annotated
 from datetime import timedelta, datetime
@@ -53,13 +53,16 @@ def signup(user_create: UserCreate, db: Session = Depends(get_db)):
 
 # Login
 @router.post("/login")
-def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]) -> Token:
+def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response) -> Token:
     login_data = {
         "email": form_data.username,
         "password": form_data.password
     }
-    return user_service.login_for_access_token(session, login_data)
+    return user_service.login_for_access_token(session, login_data,response)
 
+@router.post("/logout")
+def logout(response: Response):
+    return user_service.logout(response)
 
 @router.get("/employees", response_model=List[UserSchema])
 def get_employees(

@@ -19,7 +19,7 @@ export default function ProductList() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingProduct, setPendingProduct] = useState(null);
 
-  const { currentUser, token } = useAuth();
+  const { currentUser} = useAuth();
   const navigate = useNavigate();
   const { categoryName } = useParams();
 
@@ -71,13 +71,10 @@ export default function ProductList() {
       try {
         const response = await axios.post(
           "http://localhost:8000/cart/add",
-          { product_id: product.id, quantity: 1 },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
+          { product_id: product.id, quantity: 1 }, {
+          withCredentials: true
+        }
+
         );
 
         alert(`${product.name} added to cart!`);
@@ -87,7 +84,7 @@ export default function ProductList() {
         alert(`Could not add ${product.name} to cart. Please try again.`);
       }
     },
-    [currentUser, token]
+    [currentUser]
   );
 
   // Automatically add pending product after login
