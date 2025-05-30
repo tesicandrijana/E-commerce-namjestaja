@@ -1,71 +1,87 @@
-// detalji jednog zahtjeva, status, odgovor
-
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./ComplaintDetails.css";
 
 export default function ComplaintDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [complaint, setComplaint] = useState(null);
-  const [status, setStatus] = useState("");
+  const [finalResolution, setFinalResolution] = useState("");
   const [responseText, setResponseText] = useState("");
 
   useEffect(() => {
-    axios.get(`/support/complaints/${id}`)
-      .then(res => {
+    axios
+      .get(`http://localhost:8000/support/complaints/${id}`)
+      .then((res) => {
         setComplaint(res.data);
-        setStatus(res.data.status);
+        setFinalResolution(res.data.final_resolution || "");
         setResponseText(res.data.response_text || "");
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }, [id]);
 
-  const handleUpdate = async () => {
-    try {
-      await axios.put(`/support/complaints/${id}`, { status });
-      await axios.put(`/support/complaints/${id}/respond`, { response_text: responseText });
-      alert("Uspješno ažurirano!");
-      navigate("/support/complaints");
-    } catch (error) {
-      console.error("Greška prilikom ažuriranja:", error);
-    }
+  const handleUpdate = () => {
+    axios
+      .patch(`http://localhost:8000/support/complaints/${id}`, {
+        final_resolution: finalResolution,
+      })
+      .then(() => alert("Resolution updated successfully!"))
+      .catch((err) => console.error(err));
   };
 
-  if (!complaint) return <div>Učitavanje...</div>;
+  const handleRespond = () => {
+    axios
+      .post(`http://localhost:8000/support/complaints/${id}/respond`, {
+        response_text: responseText,
+      })
+      .then(() => alert("Response sent successfully!"))
+      .catch((err) => console.error(err));
+  };
+
+  if (!complaint) return <p className="loading">Loading complaint...</p>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Detalji zahtjeva #{id}</h2>
+    <div className="complaint-details-container">
+      <h1 className="title">Complaint Details</h1>
 
-      <div className="mb-2"><strong>Tip:</strong> {complaint.complaint_type}</div>
-      <div className="mb-2"><strong>Opis:</strong> {complaint.description}</div>
-      <div className="mb-2">
-        <label className="block font-semibold mb-1">Status:</label>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="p-2 border">
-          <option value="open">Otvoreno</option>
-          <option value="in_progress">U toku</option>
-          <option value="resolved">Riješeno</option>
-          <option value="rejected">Odbijeno</option>
-        </select>
+      <div className="complaint-info">
+        <p><strong>ID:</strong> {complaint.id}</p>
+        <p><strong>Status:</strong> {complaint.status}</p>
+        <p><strong>Preferred Resolution:</strong> {complaint.preferred_resolution || "Not provided"}</p>
+        <p><strong>Description:</strong> {complaint.description}</p>
+        {complaint.response_text && (
+          <p><strong>Previous Response:</strong> {complaint.response_text}</p>
+        )}
       </div>
 
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Odgovor korisniku:</label>
+      <div className="form-section">
+        <label>Final Resolution:</label>
+        <select
+          value={finalResolution}
+          onChange={(e) => setFinalResolution(e.target.value)}
+        >
+          <option value="">-- Select --</option>
+          <option value="refund">Refund</option>
+          <option value="return">Return</option>
+          <option value="repair">Repair</option>
+          <option value="decline">Decline</option>
+        </select>
+
+        <label>Respond to Customer:</label>
         <textarea
+          rows={5}
           value={responseText}
           onChange={(e) => setResponseText(e.target.value)}
-          rows={4}
-          className="w-full p-2 border"
         />
+
+        <div className="button-group">
+          <button className="update-btn" onClick={handleUpdate}>Update Resolution</button>
+          <button className="respond-btn" onClick={handleRespond}>Send Response</button>
+        </div>
       </div>
 
-      <button
-        onClick={handleUpdate}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Sačuvaj izmjene
-      </button>
+      <button className="back-link" onClick={() => navigate(-1)}>← Back to List</button>
     </div>
   );
 }

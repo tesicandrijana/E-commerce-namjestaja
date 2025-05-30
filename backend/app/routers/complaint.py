@@ -10,8 +10,8 @@ from app.dependencies import get_db
 router = APIRouter()
 
 @router.post("/", response_model=complaint_schema.Complaint)
-def create_complaint(complaint: complaint_schema.ComplaintCreate, db: Session = Depends(get_db)):
-    return complaint.create_complaint(db, complaint)
+def create_complaint(payload: complaint_schema.ComplaintCreate, db: Session = Depends(get_db)):
+    return complaint.create_complaint(db, payload)
 
 @router.get("/", response_model=List[complaint_schema.Complaint])
 def read_complaints(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

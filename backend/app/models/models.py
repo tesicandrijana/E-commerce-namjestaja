@@ -165,8 +165,11 @@ class Complaint(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
     description: str
-    status: str = Field(default="open")
-    complaint_type: str = Field(default="complaint")  
+    status: str = Field(default="open")   # open, in_progress, resolved, declined
+    preferred_resolution: Optional[str] = Field(default=None)  # return, refund, repair
+    final_resolution: Optional[str] = Field(default=None)      # zaposlenik odlučuje
+    response_text: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     response_text: Optional[str] = None  #DODANO POLJE
 
     order: Optional[Order] = Relationship()

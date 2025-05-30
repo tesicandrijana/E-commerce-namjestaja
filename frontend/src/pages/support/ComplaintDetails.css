@@ -1,0 +1,112 @@
+.complaint-details-container {
+  padding: 2.5rem;
+  background: linear-gradient(to top left, #f9f9f9, #ffffff);
+  max-width: 850px;
+  margin: 3rem auto;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  font-family: 'Poppins', sans-serif;
+  color: #2c3e50;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.8rem;
+  color: #2c3e50;
+  border-left: 6px solid #27ae60;
+  padding-left: 1rem;
+}
+
+.complaint-info p {
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+}
+
+.form-section {
+  margin-top: 2.5rem;
+}
+
+.form-section label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #34495e;
+}
+
+.form-section select,
+.form-section textarea {
+  width: 100%;
+  padding: 0.7rem;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: #fdfdfd;
+  transition: border-color 0.3s ease;
+}
+
+.form-section select:hover,
+.form-section textarea:hover {
+  border-color: #27ae60;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.update-btn,
+.respond-btn {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.update-btn {
+  background-color: #2980b9;
+  color: #fff;
+}
+
+.update-btn:hover {
+  background-color: #2471a3;
+  transform: translateY(-2px);
+}
+
+.respond-btn {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+.respond-btn:hover {
+  background-color: #219653;
+  transform: translateY(-2px);
+}
+
+.back-link {
+  margin-top: 2.5rem;
+  display: inline-block;
+  font-size: 1rem;
+  color: #2980b9;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.back-link:hover {
+  color: #1a5276;
+  text-decoration: underline;
+}
+
+.loading {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
