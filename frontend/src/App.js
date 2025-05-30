@@ -91,11 +91,12 @@ function App() {
             <Route path="/products/create" element={<ProductForm mode="create" />} />
           </Route>
 
-        {/* Support Pages */}
-        {/* Todo - vrati protected route */}
-        <Route path="/support-dashboard" element={<SupportDashboard />} />
-        <Route path="/support/complaints" element={<ComplaintsList />} />
-        <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
+        {/* Support Pages */}  
+        <Route element={<ProtectedRoute allowedRoles={"support"} />}>
+          <Route path="/support-dashboard" element={<SupportDashboard />} />
+          <Route path="/support/complaints" element={<ComplaintsList />} />
+          <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
+        </Route>
 
           {/* Delivery Pages */}
           <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>

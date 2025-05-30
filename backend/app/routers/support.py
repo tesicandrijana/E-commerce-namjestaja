@@ -1,39 +1,33 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Annotated, Optional
+
 from app.models.models import Complaint, User
 from app.schemas import complaint as complaint_schema
-from app.dependencies import get_db
+# from app.crud.user import get_user_by_id
+from app.dependencies import get_db  #get_support_user - ne treba
+from app.services.user_service import role_check
+
 from app.crud import complaint as complaint_crud
 from app.schemas.complaint import ComplaintUpdate
 
-router = APIRouter(
-    tags=["Support - Complaints"]
-)
-
+router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
-# PRIVREMENO: "glumimo" da je korisnik zaposlenik (dok ne koristiš pravu autentifikaciju)
-def fake_support_user():
-    return User(
-        id=999,
-        name="Test Support",
-        email="support@test.com",
-        role="support",
-        is_active=True
-    )
+# # PRIVREMENO: "glumimo" da je korisnik zaposlenik (dok ne koristiš pravu autentifikaciju)
+# def fake_support_user():
 
-# TODO: Zamijeniti fake_support_user sa pravom autentifikacijom
-
+# TODO: Zamijeniti fake_support_user sa pravom autentifikacijom, uradjeno            -   DONE
+# u dependencies - get_support_user...  ipak  ne treba! koristi role check iz user_service
 
 #GET:Pregled svih reklamacija
-@router.get("/", response_model=List[complaint_schema.Complaint])
+@router.get("/complaints", response_model=List[complaint_schema.Complaint])
 def get_all_complaints(
     session: SessionDep,
     offset: int = 0,
     limit: int = 100,
     complaint_type: Optional[str] = None,  #dodano
-    current_user: User = Depends(fake_support_user)
+    current_user: User = Depends(role_check(["support"]))
 ): 
     query = session.query(Complaint)       #podrzi query parametar
     if complaint_type:
@@ -42,11 +36,11 @@ def get_all_complaints(
 
 
 #Pregled pojedinacne reklamacije
-@router.get("/{complaint_id}", response_model=complaint_schema.Complaint)
+@router.get("/complaints/{complaint_id}", response_model=complaint_schema.Complaint)
 def get_complaint_by_id(
     complaint_id: int,
     session: SessionDep,
-    current_user: User = Depends(fake_support_user)
+    current_user: User = Depends(role_check(["support"]))
 ):
     complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
     if not complaint:
@@ -54,14 +48,13 @@ def get_complaint_by_id(
     return complaint
 
 
-
 # PUT: Azuriranje reklamacije (status, opis)
-@router.put("/{complaint_id}", response_model=complaint_schema.Complaint)
+@router.put("/complaints/{complaint_id}", response_model=complaint_schema.Complaint)
 def update_complaint_status(
     complaint_id: int,
     complaint_data: complaint_schema.ComplaintUpdate,
     session: SessionDep,
-    current_user: User = Depends(fake_support_user)
+    current_user: User = Depends(role_check(["support"]))
 ):
     db_complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
     if not db_complaint:
@@ -71,12 +64,13 @@ def update_complaint_status(
     session.refresh(db_complaint)
     return db_complaint
 
-@router.put("/{complaint_id}/respond", response_model=complaint_schema.Complaint)
+# ODGOVOR ZAPOSLENIKA NA REKLAMACIJU TJ COMPLAINT
+@router.put("/complaints/{complaint_id}/respond", response_model=complaint_schema.Complaint)
 def respond_to_complaint(
     complaint_id: int,
     response: complaint_schema.ComplaintResponse,
     session: SessionDep,
-    current_user: User = Depends(fake_support_user)
+    current_user: User = Depends(role_check(["support"]))
 ):
     db_complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
     if not db_complaint:

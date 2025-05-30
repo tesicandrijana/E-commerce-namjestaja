@@ -9,7 +9,9 @@ export default function ComplaintsList() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/support/complaints${filter ? `?complaint_type=${filter}` : ""}`)
+      .get(`http://localhost:8000/support/complaints${filter ? `?complaint_type=${filter}` : ""}`, {
+        withCredentials: true  // za cookie autentifikaciju
+      })
       .then((res) => setComplaints(res.data))
       .catch((err) => console.error(err));
   }, [filter]);

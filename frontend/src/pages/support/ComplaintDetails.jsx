@@ -11,8 +11,10 @@ export default function ComplaintDetails() {
   const [responseText, setResponseText] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:8000/support/complaints/${id}`)
+     axios
+      .get(`http://localhost:8000/support/complaints/${id}`, {
+        withCredentials: true, //  za cookie autentifikaciju
+      })
       .then((res) => {
         setComplaint(res.data);
         setFinalResolution(res.data.final_resolution || "");
