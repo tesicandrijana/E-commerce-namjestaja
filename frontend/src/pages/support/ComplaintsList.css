@@ -1,46 +1,58 @@
 .complaints-wrapper {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 5rem;
   font-family: 'Poppins', sans-serif;
   color: #2c3e50;
+  
+  /* background: linear-gradient(to bottom right, #f9f9f9, #f0f4f8); */
+  background-color: #f6f1ea;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
 
 .complaints-title {
-  font-size: 2.2rem;
+  font-size: 2.6rem;
   font-weight: 800;
-  color: #2c3e50;
+  color: #f5edde;
   margin-bottom: 2rem;
   text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  color: #5a9974;
 }
 
 .complaints-filter {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  align-items: center;
+  margin: 1rem 0 2rem;
+  text-align: right;
+}
+
+.complaints-filter label {
+  margin-right: 10px;
+  font-weight: 500;
+  color: #444;
+  font-size: 1rem;
 }
 
 .complaints-filter select {
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
+  padding: 8px 14px;
+  border-radius: 8px;
   border: 1px solid #ccc;
+  background-color: #fff;
   font-size: 1rem;
-  background-color: #f8f8f8;
-  transition: border 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: border 0.2s ease;
 }
 
-.complaints-filter select:hover {
-  border-color: #27ae60;
+.complaints-filter select:focus {
+  border-color: #f4a300;
+  outline: none;
 }
 
 .complaints-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 18px;
   overflow: hidden;
 }
 
@@ -49,54 +61,91 @@
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
+  vertical-align: middle;
 }
 
 .complaints-table th {
-  background-color: #f0f3f5;
-  font-weight: 600;
-  color: #333;
+  background-color: #fafafa;
+  font-weight: 700;
+  color: #444;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .status {
   font-weight: 600;
   text-transform: capitalize;
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  padding: 0.5rem 1rem; 
   display: inline-block;
+  font-size: 0.95rem;
 }
 
 .status.open {
-  background-color: #ffeaa7;
+  background-color: #fff7cc;
   color: #b28b00;
 }
 
 .status.in_progress {
-  background-color: #74b9ff;
+  background-color: #d6eaff;
   color: #0c2461;
 }
 
 .status.resolved {
-  background-color: #55efc4;
+  background-color: #d4fce0;
   color: #00695c;
 }
 
 .status.declined {
-  background-color: #fab1a0;
+  background-color: #ffe0db;
   color: #b71c1c;
 }
 
 .view-button {
   background-color: #27ae60;
   color: white;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
   font-weight: 600;
   font-size: 0.95rem;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+  display: inline-block;
 }
 
 .view-button:hover {
   background-color: #1e8449;
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.assign-button {
+  background-color: #f4a300;
+  color: white;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.assign-button:hover {
+  background-color: #d88f00;
+  transform: scale(1.03);
+}
+
+.unassigned {
+  color: #bbb;
+  font-style: italic;
+}
+
+.assigned-to-you {
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.assigned-other {
+  color: #7f8c8d;
+  font-weight: 500;
 }

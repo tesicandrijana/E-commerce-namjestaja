@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "./SupportDashboard.css";
 import SupportCard from "../../components/support/SupportCard";
 import "../../components/support/SupportCard.css";
 
+
+const SupportDashboard = () => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    axios.get("/support/", { withCredentials: true })
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch support user data", err);
+      });
+  }, []);
+
+  if (!userData) return <div>Loading...</div>;
+
+  
 const supportSections = [
   {
     title: "Complaints & Returns",
@@ -28,13 +46,12 @@ const supportSections = [
   {
     title: "My Profile",
     description: "View your personal details and photo",
-    link: "/support/profile",
+    /*link: "/support/profile",*/
+    link: userData.profile_link,   /* dodano */ 
     image: "/support/profile.png",
     className: "profile-card"
   },
 ];
-
-const SupportDashboard = () => {
   return (
     <main className="support-dashboard-container">
       <div className="dashboard-hero">
@@ -47,7 +64,7 @@ const SupportDashboard = () => {
         </p>
       </div>
 
-      <div class="support-grid-okvir">
+      <div className="support-grid-okvir">
         <div className="support-grid">
         {supportSections.map((section, index) => (
           <SupportCard section={section} key={index} />

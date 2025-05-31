@@ -31,6 +31,7 @@ import ProductForm from "./components/product/ProductForm";
 
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
+import SupportProfile from "./pages/support/SupportProfile";
 import ComplaintsList from "./pages/support/ComplaintsList";
 import ComplaintDetails from "./pages/support/ComplaintDetails"
 
@@ -93,7 +94,8 @@ function App() {
 
         {/* Support Pages */}  
         <Route element={<ProtectedRoute allowedRoles={"support"} />}>
-          <Route path="/support-dashboard" element={<SupportDashboard />} />
+          <Route path="/support" element={<SupportDashboard />} />
+          <Route path="/support/profile/:id" element={<SupportProfile />} />
           <Route path="/support/complaints" element={<ComplaintsList />} />
           <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
         </Route>

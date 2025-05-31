@@ -12,7 +12,7 @@ const SupportHeader = () => {
   return (
     <header className="support-header">
       <div className="support-header-container">
-        <Link to="/support-dashboard" className="support-logo">
+        <Link to="/support" className="support-logo">
           FurniStyle - Employee
         </Link>
         <nav className="support-nav">

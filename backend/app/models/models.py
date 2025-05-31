@@ -171,6 +171,7 @@ class Complaint(SQLModel, table=True):
     response_text: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
     response_text: Optional[str] = None  #DODANO POLJE
+    assigned_to: Optional[int] = Field(default=None, foreign_key="users.id")  # dodano
 
     order: Optional[Order] = Relationship()
 
