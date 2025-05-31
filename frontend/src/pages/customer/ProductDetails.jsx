@@ -2,6 +2,7 @@ import React from "react";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from "../../contexts/CartContext";
 import { FaShoppingCart, FaPaperPlane } from "react-icons/fa";
+import ProductDetail from "../../components/product/ProductDetail"
 import "./ProductDetails.css";
 
 // StarRating class component
@@ -136,9 +137,10 @@ class ProductDetails extends React.Component {
 
     return (
       <div className="pd-container">
-        <div className="pd-info-wrapper">
-          <div className="pd-image">
-            <img
+       {/* <div className="pd-info-wrapper">
+            <div className="pd-image"> */}
+            <ProductDetail/>
+           {/* <img
               src={
                 product.image?.startsWith("http")
                   ? product.image
@@ -165,9 +167,9 @@ class ProductDetails extends React.Component {
               className="pd-add-to-cart"
             >
               <FaShoppingCart /> Add to Cart
-            </button>
-          </div>
-        </div>
+            </button> */}
+          {/* </div> 
+        </div>*/}
 
         <div className="pd-add-review">
           <h2>Submit a Review</h2>

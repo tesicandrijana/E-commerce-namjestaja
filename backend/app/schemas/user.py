@@ -1,66 +1,54 @@
-from pydantic import BaseModel, EmailStr
-from typing import Literal, Optional
-from datetime import datetime
+from typing import Optional, Literal
+from sqlmodel import SQLModel, Field
+from pydantic import EmailStr
 
 ValidRoles = Literal["admin", "manager", "customer", "support", "delivery"]
 
-class UserBase(BaseModel):
+class UserBase(SQLModel):
     name: str
     email: EmailStr
-    role: Optional[ValidRoles] = "customer"  # Default to "customer"
-    phone: Optional[str] = None  
+    role: Optional[ValidRoles] = "customer"
+    phone: Optional[str] = None
     address: Optional[str] = None
     is_active: Optional[bool] = True
 
 class UserCreate(UserBase):
     password: str
 
-class UserUpdate(BaseModel):
-    name: Optional[str]
-    email: Optional[EmailStr]
-    password: Optional[str]
-    role: Optional[ValidRoles]
-    phone: Optional[str]
-    address: Optional[str]
-    # is_active is omitted from the update model
+class UserUpdate(SQLModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: Optional[ValidRoles] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    is_active: Optional[bool] = None
 
-class User(UserBase):
-    id: int
-    role: ValidRoles
-    is_active: bool
 
-class UserSchema(BaseModel):
+class UserSchema(SQLModel):
     id: int
     name: str
     email: EmailStr
     role: ValidRoles
-    phone: Optional[str]
-    address: Optional[str]
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    is_active: bool
 
-class LoginWithRole(BaseModel):
+class LoginWithRole(SQLModel):
     email: EmailStr
     password: str
-    role: Literal["customer", "worker"]  # This is used for checking the login role
+    role: Literal["customer", "worker"]
 
-WorkerRole = Literal["manager", "support", "delivery"]
-RequestStatus = Literal["pending", "approved", "rejected"]
-
-class WorkerRequestCreate(BaseModel):
-    desired_role: WorkerRole
-
-class WorkerRequestRead(BaseModel):
-    id: int
-    user_id: int
-    desired_role: WorkerRole
-    status: RequestStatus
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-class Token(BaseModel):
+class Token(SQLModel):
     access_token: str
     token_type: str
 
-class TokenData(BaseModel):
-    email: str | None = None
+class TokenData(SQLModel):
+    email: Optional[str] = None
+
+class RegisterUser(SQLModel):
+    name: str
+    email: EmailStr
+    password: str
+    role: Optional[ValidRoles] = "customer"
+    is_active: Optional[bool] = True

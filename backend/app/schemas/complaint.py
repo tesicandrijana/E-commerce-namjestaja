@@ -5,6 +5,7 @@ class ComplaintBase(BaseModel):
     order_id: int
     description: str
     status: Optional[str] = "open"
+    complaint_type: str = "complaint"
 
 class ComplaintCreate(ComplaintBase):
     pass
@@ -14,3 +15,14 @@ class Complaint(ComplaintBase):
 
     class Config:
         from_attributes = True
+
+
+class ComplaintUpdate(BaseModel):
+    description: Optional[str] = None
+    status: Optional[str] = None  # open, in_progress, resolved
+    
+
+class ComplaintResponse(BaseModel):
+    response_text: str
+
+

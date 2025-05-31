@@ -1,5 +1,5 @@
 from typing import Annotated,Literal, List
-from fastapi import Depends
+from fastapi import Depends, Cookie,Response
 from sqlmodel import Session
 from app.models.models import User
 from app.repositories import user_repository
@@ -70,10 +70,13 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-def login_for_access_token(session: SessionDep, login_data: LoginWithRole)-> Token:
+
+def login_for_access_token(session: SessionDep, login_data: LoginWithRole, response: Response)-> Token:
     db_user = get_user(session, login_data["email"])
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found.")
@@ -81,18 +84,26 @@ def login_for_access_token(session: SessionDep, login_data: LoginWithRole)-> Tok
     if not verify_password(login_data["password"], db_user.password):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
-    """if login_data.role == "worker" and db_user.role not in ["manager", "support", "delivery"]:
-        raise HTTPException(status_code=403, detail="You are not a worker.")
-    elif login_data.role == "customer" and db_user.role != "customer":
-        raise HTTPException(status_code=403, detail="You are not a customer.") """
-
     access_token_expires =timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": db_user.email}, expires_delta=access_token_expires
     )
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        samesite="Lax",
+        secure=False  
+    )
     return Token(access_token=access_token, token_type="bearer")
 
-def get_current_user(session: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]) -> User:
+def logout(response: Response):
+    response.delete_cookie("access_token")  
+    
+    return {"detail": "Logout successful"}
+
+def get_current_user(session: SessionDep, token: Annotated[str | None, Cookie(alias="access_token")]) -> User:
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",

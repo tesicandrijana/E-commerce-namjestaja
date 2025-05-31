@@ -1,0 +1,78 @@
+.join-form-container {
+  max-width: 700px;
+  margin: 40px auto 20px;
+  padding: 0 20px;
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.join-form-container h3 {
+  font-size: 1.8rem;
+  color: #f4a300;;
+  margin-bottom: 10px;
+}
+
+.join-form-container p {
+  font-size: 1rem;
+  color: #555;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.join-form {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.join-form h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #1a1a1a;
+}
+
+.join-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #444;
+  margin-right: 25px;
+}
+
+.join-form input[type="text"],
+.join-form input[type="email"],
+.join-form input[type="tel"],
+.join-form select,
+.join-form input[type="file"] {
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.join-form button {
+  padding: 12px;
+  background-color: #f4a300;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.join-form button:hover {
+  background-color: #f4a300;
+  margin-right: 25px;
+
+}

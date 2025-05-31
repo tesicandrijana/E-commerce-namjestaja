@@ -1,6 +1,8 @@
 from typing import Optional, List
 from decimal import Decimal
 from sqlmodel import SQLModel, Field
+from app.schemas import product_image
+from app.schemas.product_image import ProductImageRead 
 
 class CategoryRead(SQLModel):
     id: int
@@ -19,7 +21,7 @@ class ProductBase(SQLModel):
     price: Decimal
     quantity: int = 0
     category_id: Optional[int] = None
-    image: Optional[str] = None
+    images: Optional[list[product_image.ProductImageBase]] | None = None
 
 class ProductCreate(ProductBase):
     pass
@@ -34,11 +36,12 @@ class ProductUpdate(SQLModel):
     price: Optional[Decimal] = None
     quantity: Optional[int] = None
     category_id: Optional[int] = None
-    image: Optional[str] = None
+    images: Optional[list[product_image.ProductImageBase]] | None = None
 
 class ProductRead(ProductBase):
     id: int
-    category: Optional[CategoryRead] = None  # Include category here
+    category: Optional[CategoryRead] = None
+    images: Optional[List[ProductImageRead]] = []  # ispravno za čitanje
 
     class Config:
         orm_mode = True

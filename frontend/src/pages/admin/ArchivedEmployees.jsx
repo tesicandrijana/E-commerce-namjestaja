@@ -26,11 +26,8 @@ const ArchivedUsers = () => {
 
   const fetchArchivedUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.get("http://localhost:8000/users/archived-users", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
       setArchivedUsers(response.data);
     } catch (err) {
@@ -89,11 +86,10 @@ const ArchivedUsers = () => {
 
   const confirmRestore = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.post(
         'http://localhost:8000/users/restore-users',
         { user_ids: selectedUserIds },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { withCredentials:true } 
       );
 
       setActionMessage(null);

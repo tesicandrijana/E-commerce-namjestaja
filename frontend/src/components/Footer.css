@@ -1,0 +1,239 @@
+.footer-container {
+  position: relative;
+  overflow: hidden;
+  min-height: 400px; /* ensure enough height for background image */
+}
+
+.footer-bg-image {
+  background-image: linear-gradient(rgb(0, 0, 0), rgba(128, 128, 128, 0)), url('https://i.pinimg.com/originals/4d/df/7e/4ddf7ebc5f5ee12cca576e8987175302.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  filter: brightness(0.4) contrast(1.1);
+  z-index: 0;
+  opacity: 0.7;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  color: #fff9ec;
+  padding: 3rem 2rem 2rem;
+  font-family: 'Poppins', sans-serif;
+  border-top: 1px solid #333;
+  box-shadow: 0 -4px 12px rgba(255, 255, 255, 0.05);
+  min-height: 400px;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1250px;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+/* Branding */
+.footer-brand h2 {
+  font-family: 'Ephesis', 'Playfair Display', serif;
+  font-size: 2.2rem;
+  color: #fff9ec;
+  margin-bottom: 0.4rem;
+}
+
+.footer-brand p {
+  font-size: 1rem;
+  color: #ccc;
+  max-width: 250px;
+}
+
+/* Links Section */
+.footer-links {
+  display: flex;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-links h4 {
+  font-size: 1rem;
+  color: #fff9ec;
+  margin-bottom: 0.5rem;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Linkovi su sivi, ne mijenjaju boju teksta na hover, samo outline na focus */
+.footer-links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  /* ne mijenjaj boju teksta, samo možeš malo posvijetliti ako želiš */
+  color: #ddd;
+}
+
+.footer-links a:focus-visible {
+  outline: 3px solid #1e90ff; /* plavi outline */
+  outline-offset: 3px;
+  border-radius: 4px;
+  background-color: rgba(30, 144, 255, 0.15);
+}
+
+/* Kontakt sekcija linkovi, ako ih ima */
+.footer-contact a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  color: #ddd;
+}
+
+.footer-contact a:focus-visible {
+  outline: 3px solid #1e90ff;
+  outline-offset: 3px;
+  border-radius: 4px;
+  background-color: rgba(30, 144, 255, 0.15);
+}
+
+/* Contact Section */
+.footer-contact {
+  max-width: 250px;
+}
+
+.footer-contact h4 {
+  font-size: 1rem;
+  color: #fff9ec;
+  margin-bottom: 0.5rem;
+}
+
+.footer-contact p {
+  font-size: 0.95rem;
+  margin: 6px 0;
+  color: #ccc;
+}
+
+.newsletter {
+  display: flex;
+  margin-top: 0.7rem;
+}
+
+.newsletter input {
+  padding: 0.5rem 0.8rem;
+  border-radius: 20px 0 0 20px;
+  border: 1px solid #555;
+  background-color: #111;
+  color: #fff;
+  outline: none;
+  font-family: inherit;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.newsletter button {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  font-family: inherit;
+  border-radius: 0 20px 20px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.newsletter button:hover {
+  background-color: #ccc;
+  color: #000;
+}
+
+/* Social Icons */
+.social-icons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 1.1rem;
+}
+
+.social-icons i {
+  color: #ccc;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.social-icons i:hover {
+  color: #fff;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  text-align: center;
+  padding-top: 1.5rem;
+  margin: 100px;
+  margin-top: 4.5rem;
+  font-size: 0.9rem;
+  color: #424242;
+  border-top: 1px solid #333333d8;
+}
+
+.footer-links li a,
+.footer-links li .router-link {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+}
+
+.footer-links li a:hover,
+.footer-links li .router-link:hover {
+  color: #fff;
+  transform: scale(1.05);
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  .newsletter {
+    flex-direction: column;
+  }
+
+  .newsletter input,
+  .newsletter button {
+    border-radius: 20px;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .newsletter button {
+    border-radius: 20px;
+  }
+}

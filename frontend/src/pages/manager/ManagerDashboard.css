@@ -1,0 +1,22 @@
+.dashboard-container{
+    margin:auto;
+    width: 90%;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.statistics-container{
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 7px 13px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    min-height: 300px;
+
+}
+
+.card-list{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}

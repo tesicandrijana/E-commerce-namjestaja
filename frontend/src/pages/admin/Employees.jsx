@@ -25,16 +25,9 @@ const Employees = () => {
 
   const fetchUsers = async (query = '') => {
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.get("http://localhost:8000/users/employees", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        params: {
-          offset: 0,
-          limit: 100,
-          search: query   // prosleđujemo query parametar za pretragu
-        }
+        withCredentials:true,
+        params: { offset: 0, limit: 100 }
       });
       setUsers(response.data);
     } catch (err) {
@@ -84,11 +77,8 @@ const Employees = () => {
 
   const handleUpdate = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:8000/users/${editUserId}`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
       await fetchUsers();
       setEditUserId(null);
@@ -105,11 +95,8 @@ const Employees = () => {
 
   const confirmDelete = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:8000/users/${editUserId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
       await fetchUsers();
       setEditUserId(null);
@@ -130,11 +117,8 @@ const Employees = () => {
 
   const confirmArchive = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.put(`http://localhost:8000/users/${editUserId}/archive`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        withCredentials:true
       });
       await fetchUsers();
       setEditUserId(null);

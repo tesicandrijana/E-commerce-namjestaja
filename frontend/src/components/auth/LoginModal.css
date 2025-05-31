@@ -1,16 +1,209 @@
-.login-modal input {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  outline: none;
-  color: #000; /* Boja teksta */
+/* LoginModal.css */
+
+:root {
+  --primary-color: #f39c12;      /* warm orange */
+  --background-overlay: rgba(0, 0, 0, 0.6);
+  --modal-bg: #fff;
+  --input-bg: #f9f9f9;
+  --input-border: #ccc;
+  --input-focus-border: var(--primary-color);
+  --error-color: #e74c3c;
+  --text-color: #333;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --transition-speed: 0.3s;
 }
 
-.login-modal input::placeholder {
-  color: #5c5d5d; /* Plava boja placeholdera */
-  opacity: 1; /* Da placeholder bude potpuno vidljiv */
+.login-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--background-overlay);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeInOverlay 0.3s ease forwards;
 }
-.login-modal input:focus {
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.login-modal {
+  background: var(--modal-bg);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 420px;
+  padding: 2rem 2.5rem;
+  box-shadow:
+    0 8px 16px rgba(0,0,0,0.1),
+    0 4px 8px rgba(0,0,0,0.06);
+  font-family: var(--font-family);
+  color: var(--text-color);
+  position: relative;
+  animation: slideUpModal 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-modal h2 {
+  margin: 0 0 1.6rem 0;
+  font-weight: 600;
+  font-size: 1.75rem;
+  text-align: center;
+  color: var(--primary-color);
+  letter-spacing: 0.04em;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Center input fields horizontally and add even padding */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+  align-items: center; /* center inputs horizontally */
+}
+
+.input-group label {
+  width: 100%;
+  max-width: 350px;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #444;
+  user-select: none;
+  text-align: left;
+}
+
+.input-group input {
+  width: 100%;
+  max-width: 350px;
+  padding: 0.65rem 1.5rem; /* even left-right padding */
+  font-size: 1rem;
+  border: 1.8px solid #ddd;
+  border-radius: 8px;
+  outline-offset: 2px;
+  outline-color: transparent;
+  transition: border-color 0.3s ease, outline-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input-group input:focus {
   border-color: #f39c12;
-  box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.2); /* suptilna narandžasta nijansa */
+  outline-color: #f39c12;
+  box-shadow: 0 0 8px rgba(243, 156, 18, 0.4);
+}
+
+
+p.error-message {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: -0.6rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  user-select: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+button.login-submit,
+button.close-button {
+  cursor: pointer;
+  padding: 0.7rem 1.3rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
+  user-select: none;
+  flex: 1;
+  min-width: 100px;
+  text-align: center;
+  font-family: var(--font-family);
+}
+
+button.login-submit {
+  background-color: var(--primary-color);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+}
+
+button.login-submit:hover,
+button.login-submit:focus {
+  background-color: #d87f00;
+  box-shadow: 0 6px 14px rgba(216, 127, 0, 0.6);
   outline: none;
+}
+
+button.close-button {
+  background-color: #eee;
+  color: #555;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+button.close-button:hover,
+button.close-button:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+.toggle-form {
+  margin-top: 1.6rem;
+  font-size: 0.95rem;
+  text-align: center;
+  color: #666;
+  user-select: none;
+}
+
+.toggle-form p {
+  margin: 0;
+  user-select: none;
+}
+
+.toggle-form span {
+  font-weight: 600;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: color 0.25s ease;
+  user-select: none;
+}
+
+.toggle-form span:hover,
+.toggle-form span:focus {
+  color: #d87f00;
+  outline: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .login-modal {
+    padding: 1.5rem 1.75rem;
+  }
+
+  button.login-submit,
+  button.close-button {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+  }
 }

@@ -1,16 +1,18 @@
-from pydantic import BaseModel
+from typing import Optional
+from sqlmodel import SQLModel, Field
 
 
-class CategoryBase(BaseModel):
-    name: str
+class CategoryBase(SQLModel):
+    name: str = Field(index=True)
 
 
 class CategoryCreate(CategoryBase):
     pass
 
 
-class Category(CategoryBase):
+class CategoryRead(CategoryBase):
     id: int
 
-    class Config:
-        from_attributes = True
+
+class CategoryUpdate(SQLModel):
+    name: Optional[str] = None

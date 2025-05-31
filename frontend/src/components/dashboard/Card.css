@@ -1,5 +1,6 @@
 .card {
-  width: 600px;  /* vraćena širina */
+  width: 100%;
+  max-width: 320px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -8,8 +9,7 @@
   flex-direction: column;
   align-items: center;
   padding: 15px;
-  
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* dodaj transition */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -27,35 +27,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px; /* prostor ispod broja */
+  margin-bottom: 15px;
   flex-shrink: 0;
 }
 
 .card-image {
-  width: 300px;       /* fiksna širina slike, možeš prilagoditi */
-  height: 250px;      /* fiksna visina */
-  object-fit: cover;
+  width: 90%;
+  height: auto;
+  max-height: 12rem;
+  object-fit: contain;
   border-radius: 8px;
-  margin-bottom: 15px; /* prostor ispod slike */
+  margin-bottom: 15px;
   flex-shrink: 0;
 }
 
 .card-content h3 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 1.1rem;
+  color: #e67e22; 
+  text-align: center;
 }
 
 .card-content p {
   margin: 5px 0 0;
-  font-size: 14px;
+  font-size: 0.9rem;
   color: #777;
 }
 
 .card-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px; /* prostor između kartica */
-  padding: 20px; /* prostor oko svih kartica */
+  justify-content: space-between;
+  padding: 2rem 0;
 }
+
+.card-content p.working-hours {
+  margin-top: 10px;     
+  font-size: 0.95rem;       
+  line-height: 1.4;      
+}
+

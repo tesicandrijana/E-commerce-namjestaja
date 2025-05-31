@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from './AuthProvider';
-import { useNavigate } from 'react-router-dom';
-import './LoginModal.css';
+// src/context/LoginModal.jsx
+import React, { useState } from "react";
+import { useAuth } from "./AuthProvider";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import "./LoginModal.css";
 
-function LoginModal({ role, onClose }) {
+function LoginModal({ role = "customer", onClose }) {
   const { handleLogin } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -20,10 +21,7 @@ function LoginModal({ role, onClose }) {
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   async function handleSubmit(e) {
@@ -31,22 +29,25 @@ function LoginModal({ role, onClose }) {
     setErrorMessage("");
 
     if (isLogin) {
-      const data = {
-        username: formData.email,
-        password: formData.password,
-      };
       try {
-        const response = await handleLogin(data);
-        console.log(`Logging in as ${role} with`, response);
+        const response = await handleLogin({
+          username: formData.email,
+          password: formData.password,
+        });
 
-        if (response?.role === "admin") {
+        const userRole = response.role || role;
+
+        if (userRole === "admin") {
           navigate("/admin-dashboard");
-        } else if (response?.role === "manager") {
+        } else if (userRole === "manager") {
           navigate("/manager-dashboard");
-        } else if (response?.role === "support") {
+        } else if (userRole === "support") {
           navigate("/support-dashboard");
-        } else if (response?.role === "delivery") {
+        } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
+        } else {
+          // default to customer dashboard or homepage
+          navigate("/");
         }
 
         onClose();
@@ -67,7 +68,6 @@ function LoginModal({ role, onClose }) {
 
       try {
         await axios.post("http://localhost:8000/users/signup", signupData);
-        console.log(`Signing up as ${role} with`, signupData);
         setErrorMessage("");
         onClose();
       } catch (error) {
@@ -99,21 +99,20 @@ function LoginModal({ role, onClose }) {
         </h2>
         <form onSubmit={handleSubmit}>
           {!isLogin && (
-            <>
-              <div className="input-group">
-                <label htmlFor="name">Full name</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleFormChange}
-                  required
-                  placeholder="Full name"
-                />
-              </div>
-            </>
+            <div className="input-group">
+              <label htmlFor="name">Full name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                required
+                placeholder="Full name"
+              />
+            </div>
           )}
+
           <div className="input-group">
             <label htmlFor="email">Email</label>
             <input
@@ -126,6 +125,7 @@ function LoginModal({ role, onClose }) {
               placeholder="Email"
             />
           </div>
+
           <div className="input-group">
             <label htmlFor="password">Password</label>
             <input
@@ -147,11 +147,7 @@ function LoginModal({ role, onClose }) {
             <button type="submit" className="login-submit">
               {isLogin ? "Log In" : "Sign Up"}
             </button>
-            <button
-              type="button"
-              className="close-button"
-              onClick={onClose}
-            >
+            <button type="button" className="close-button" onClick={onClose}>
               Close
             </button>
           </div>
@@ -160,7 +156,9 @@ function LoginModal({ role, onClose }) {
         {role === "customer" && (
           <div className="toggle-form">
             <p>
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              {isLogin
+                ? "Don't have an account? "
+                : "Already have an account? "}
               <span
                 onClick={toggleForm}
                 style={{ color: "#f39c12", cursor: "pointer" }}
