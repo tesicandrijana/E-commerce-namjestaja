@@ -6,6 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: start;
+  background-image: url("/public/support/pozadinadashboard.png");
 }
 
 .profile-card-wrapper {

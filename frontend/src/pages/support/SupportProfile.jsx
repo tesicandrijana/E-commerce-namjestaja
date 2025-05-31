@@ -45,7 +45,7 @@ const SupportProfile = () => {
       <div className="profile-card-wrapper">
         <div className="profile-card-header">
           <img
-            src="/support/avatar-placeholder.png"
+            src="/support/avatar.png"
             alt="Profile avatar"
             className="profile-avatar"
           />
