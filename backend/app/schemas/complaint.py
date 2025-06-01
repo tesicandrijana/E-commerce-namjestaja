@@ -9,8 +9,11 @@ class ComplaintBase(BaseModel):
     preferred_resolution: Optional[str] = None  # return, refund, repair
     assigned_to: Optional[int] = None
 
-class ComplaintCreate(ComplaintBase):
-    pass
+class ComplaintCreate(BaseModel):  # sad ne nasljeđuje iz ComplaintBase
+    order_id: int
+    description: str
+    status: Optional[str] = "open"
+    preferred_resolution: Optional[str] = None
 
 class Complaint(ComplaintBase):
     id: int

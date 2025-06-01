@@ -34,6 +34,8 @@ import SupportDashboard from "./pages/support/SupportDashboard";
 import SupportProfile from "./pages/support/SupportProfile";
 import ComplaintsList from "./pages/support/ComplaintsList";
 import ComplaintDetails from "./pages/support/ComplaintDetails"
+import SupportOrders from "./pages/support/SupportOrders";
+import SupportOrderDetails from "./pages/support/SupportOrderDetails";
 
 
 // Pages (Delivery)
@@ -98,6 +100,8 @@ function App() {
           <Route path="/support/profile/:id" element={<SupportProfile />} />
           <Route path="/support/complaints" element={<ComplaintsList />} />
           <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
+          <Route path="/support/orders" element={<SupportOrders />} />
+          <Route path="/support/orders/:orderId" element={<SupportOrderDetails />} />
         </Route>
 
           {/* Delivery Pages */}

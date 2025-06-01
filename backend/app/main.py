@@ -5,7 +5,7 @@ from app.database import engine, SessionDep
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart, support, complaint
+from app.routers import user, product, category, order, order_item, review, discount, material, cart, support, complaint, support_orders
 
 
 def create_db_and_tables():
@@ -51,6 +51,7 @@ app.include_router(material.router, prefix="/materials", tags=["Materials"])
 app.include_router(cart.router, prefix="/cart", tags=["Cart"])
 app.include_router(support.router, prefix="/support", tags=["Support"])
 app.include_router(complaint.router, prefix="/complaints", tags=["Complaints"])
+app.include_router(support_orders.router, tags=["Support Orders"])
 
 @app.get("/")
 def read_root():

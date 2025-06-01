@@ -16,6 +16,8 @@ from app.schemas.complaint import ComplaintUpdate
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
+
+#Dashboard
 @router.get("/", tags=["Support Dashboard"])
 def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     return {
@@ -25,6 +27,7 @@ def support_dashboard(current_user: User = Depends(role_check(["support"]))):
         "profile_link": f"/support/profile/{current_user.id}"
     }
 
+# Profil zaposlenika
 @router.get("/profile/{user_id}", tags=["Support Profile"])
 def get_support_profile(
     user_id: int,

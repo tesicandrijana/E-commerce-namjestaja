@@ -131,6 +131,7 @@ class OrderItem(SQLModel, table=True):
     price_per_unit: Decimal
 
     order: Optional[Order] = Relationship(back_populates="items")
+    product: Optional[Product] = Relationship()  #dodatno
 
 
 class Review(SQLModel, table=True):
