@@ -4,6 +4,7 @@ from datetime import datetime
 class MessageBase(BaseModel):
     sender_id: int
     receiver_id: int
+    complaint_id: int
     content: str
 
 class MessageCreate(MessageBase):
@@ -15,3 +16,4 @@ class Message(MessageBase):
 
     class Config:
         from_attributes = True
+

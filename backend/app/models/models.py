@@ -173,8 +173,10 @@ class Complaint(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     response_text: Optional[str] = None  #DODANO POLJE
     assigned_to: Optional[int] = Field(default=None, foreign_key="users.id")  # dodano
+    is_chat_open: bool = Field(default=False)   # dodano
 
     order: Optional[Order] = Relationship()
+    messages: List["Message"] = Relationship(back_populates="complaint")   #dodano
 
 
 class Message(SQLModel, table=True):
@@ -186,6 +188,9 @@ class Message(SQLModel, table=True):
     content: str
     timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
+    complaint_id: int = Field(foreign_key="complaints.id")   #dodano
+
+    complaint: Optional[Complaint] = Relationship(back_populates="messages")   #dodano
     sender: Optional[User] = Relationship(back_populates="messages_sent", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     receiver: Optional[User] = Relationship(back_populates="messages_received", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 

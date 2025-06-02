@@ -18,6 +18,7 @@ import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";  
+import CustomerComplaintChat from "./pages/customer/CustomerComplaintChat";
 
 // Pages (Admin)
 import NewEmployee from "./components/admin/NewEmployee";
@@ -77,6 +78,9 @@ function App() {
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
+           <Route path="/customer/chat/:complaintId" element={<CustomerComplaintChat />} />
+
+
           </Route>
 
           {/* Admin Pages */}
