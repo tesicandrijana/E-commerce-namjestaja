@@ -14,8 +14,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Pages (Customer)
 import Home from "./pages/customer/Home";
-import About from "./pages/customer/About";
-import Contact from "./pages/customer/Contact";
+import About from "./pages/customer/FooterComponents/About";
+import Contact from "./pages/customer/FooterComponents/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";  
@@ -23,6 +23,13 @@ import CheckOut from "./pages/customer/CheckOut";
 import Orders from "./pages/customer/Orders";
 import CustomerComplaints from "./pages/customer/CustomerComplaints";
 import CustomerComplaintChat from "./pages/customer/CustomerComplaintChat";
+import NewArrivals from "./pages/customer/NewArrivals";
+import FAQs from "./pages/customer/FooterComponents/FAQs";
+import Shipping from "./pages/customer/FooterComponents/Shipping";
+import FindUs from "./pages/customer/FooterComponents/FindUs";
+import JoinOurTeam from "./pages/customer/FooterComponents/JoinOurTeam";
+import Returns from "./pages/customer/FooterComponents/Returns";
+
 
 // Pages (Admin)
 import NewEmployee from "./pages/admin/NewEmployee";
@@ -81,21 +88,26 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <div className="app-container">
-            <DynamicHeader />
-            <OptionalHeader2 />
-            <Routes>
-              {/* Shared pages inside MainLayout */}
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/shop-products" element={<ProductList />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/product-details/:id" element={<ProductDetails />} />
-                <Route path="/cart" element={<Cart />} />/customer/complaints
-                <Route path="/checkout" element={<CheckOut />} />
-                <Route path="/orders" element={<Orders />} />
-              </Route>
+          <ScrollToTop /> {/* Scroll to top on route change */}
+          <DynamicHeader />
+          <OptionalHeader2 />
+          <Routes>
+            {/* Shared Pages */}
+            <Route path="/" element={<Home />} />
+            <Route path="/shop-products" element={<ProductList />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/product-details/:id" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />/customer/complaints
+            <Route path="/checkout" element={<CheckOut />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/newarrivals" element={<NewArrivals />} />
+            <Route path="/FAQs" element={<FAQs />} />
+            <Route path="/Shipping" element={<Shipping />} />
+            <Route path="/FindUs" element={<FindUs />} />
+            <Route path="/JoinOurTeam" element={<JoinOurTeam />} />
+            <Route path="/Returns" element={<Returns />} />
+
 
               {/* Customer Protected routes */}
               <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
@@ -145,7 +157,6 @@ function App() {
               </Route>
             </Routes>
             <DynamicFooter />
-          </div>
         </Router>
       </CartProvider>
     </AuthProvider>

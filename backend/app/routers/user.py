@@ -26,6 +26,7 @@ from app.crud.user import (
     get_rating_stats
 )
 
+
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
@@ -254,61 +255,7 @@ def search_employees(
     return query.limit(10).all()
 
 
-
 @router.get("/me")
 async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
     return current_user
-
-
-# Customers can request to become workers
-@router.post("/request-worker/{desired_role}")
-def request_worker_access(
-    desired_role: str,
-    current_user: User = Depends(user_service.get_current_user),
-    db: Session = Depends(get_db)
-):
-    if current_user.role != "customer":
-        raise HTTPException(status_code=400, detail="Only customers can request to become workers")
-
-    if desired_role not in ["manager", "support", "delivery"]:
-        raise HTTPException(status_code=400, detail="Invalid role requested")
-
-    existing_request = get_worker_request(db, current_user.id)
-    if existing_request:
-        raise HTTPException(status_code=400, detail="Worker request already submitted.")
-
-    return create_worker_request(db, current_user.id, desired_role)
-
-
-# Admin approves customer to become a worker
-@router.post("/approve-worker/{user_id}")
-def approve_worker_request(
-    user_id: int,
-    current_user: User = Depends(get_admin_user),
-    db: Session = Depends(get_db)
-):
-    worker_request = get_worker_request_by_user_id(db, user_id)
-    if not worker_request:
-        raise HTTPException(status_code=404, detail="Worker request not found")
-
-    desired_role = worker_request.desired_role
-    if desired_role == "manager":
-        current_managers = user.count_users_by_role(db, "manager")
-        if current_managers >= 3:
-            raise HTTPException(status_code=400, detail="Cannot approve more than 3 managers")
-
-    update_user_role(db, user_id, desired_role)
-    return {"detail": f"Worker request approved, user role updated to '{desired_role}'"}
-
-
-@router.get("/admin/stats")
-def get_admin_dashboard_stats(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(user_service.role_check(["customer"]))
-):
-    return {
-        "users": get_user_stats(db),
-        "sales": get_sales_stats(db),
-        "ratings": get_rating_stats(db),
-    }
 

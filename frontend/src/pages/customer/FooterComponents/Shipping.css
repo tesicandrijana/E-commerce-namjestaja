@@ -1,0 +1,72 @@
+.shipping-top-box {
+  width: 100%;
+  max-width: 1200px; /* ili koliko ti odgovara */
+  padding: 20px;
+  margin: 20px auto 30px auto; /* top, left&right auto, bottom */
+  background-image: url('/public/customer/shipdel.jpg');
+  background-color: #f6f7f6;
+  background-size: contain;          
+  background-repeat: no-repeat;  
+  background-position: right;     
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  padding-left: 30px;  /* unutrašnji razmak sa strane */
+  padding-right: 30px;
+}
+
+
+/* Container under the top box, max width centered */
+.shipping-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 30px;
+  font-family: Arial, sans-serif;
+}
+
+/* Flex container for left and right boxes */
+.shipping-bottom-container {
+  display: flex;
+  gap: 20px;
+  /* Responsive wrap on small screens */
+  flex-wrap: wrap;
+}
+
+/* Left box: takes about 70% */
+.shipping-left-box {
+  flex: 1 1 65%;
+  padding: 20px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  min-width: 300px;
+  text-align: center;  /* dodato za centriranje teksta */
+}
+
+
+/* Right box: takes about 30% */
+.tracking-right-box {
+  flex: 1 1 30%;
+  background-image: url('/public/customer/laptop_12.jpg');
+  background-size: contain;          
+  background-repeat: no-repeat;  
+  background-position: right;  
+  padding: 20px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  min-width: 250px;
+  color: #e67e22;
+  text-align: center;
+
+  display: flex;            
+  flex-direction: column;   
+  justify-content: center; 
+  align-items: center;
+
+}
+
+/* Novi box oko teksta sa senkom */
+.tracking-text-box {
+  background-color: rgba(255, 255, 255, 0.4);
+  padding: 15px 25px;
+  max-width: 100%;
+  font-weight: 600;
+}

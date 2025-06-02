@@ -36,10 +36,10 @@ const Footer = () => {
             <div>
               <h4>Support</h4>
               <ul>
-                <li>Contact</li>
-                <li>FAQs</li>
-                <li>Shipping</li>
-                <li>Returns</li>
+                <li><Link to="/contact">Contact</Link></li>
+                <li><Link to="/FAQs">FAQs</Link></li>
+                <li><Link to="/Shipping">Shipping</Link></li>
+                <li><Link to="/Returns">Returns</Link></li>
               </ul>
             </div>
           </div>
@@ -49,13 +49,6 @@ const Footer = () => {
             <p>1234 Street Name, City, Country</p>
             <p>Email: support@brandname.com</p>
             <p>Phone: +1 (234) 567-890</p>
-
-            {/*
-<div className="newsletter"> 
-  <input type="email" placeholder="Your email" />
-  <button>Subscribe</button>
-</div>
-*/}
 
             <div className="social-icons">
               <i className="fab fa-facebook-f" aria-label="Facebook" />
