@@ -3,7 +3,7 @@ import "./JoinOurTeam.css";
 
 export default function JoinOurTeam() {
   const [formData, setFormData] = useState({
-    fullname: "",
+    name: "",
     email: "",
     phone: "",
     address: "",
@@ -20,21 +20,59 @@ export default function JoinOurTeam() {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log("Form submitted:", formData);
+  // Prvo šalješ samo podatke (bez fajla) na backend - JSON
+  const data = {
+    name: formData.name,
+    email: formData.email,
+    phone: formData.phone,
+    address: formData.address,
+    role: formData.role,
+  };
+
+  try {
+    const response = await fetch("http://localhost:8000/job-application/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) throw new Error("Failed to submit application");
+
+    const createdJobApp = await response.json();
+
+    // Sada, šalješ fajl u drugom requestu na upload endpoint
+    const formDataToSend = new FormData();
+    formDataToSend.append("cv_file", formData.cv);
+
+    const uploadResponse = await fetch(
+      `http://localhost:8000/job-application/${createdJobApp.id}/upload-cv`,
+      {
+        method: "POST",
+        body: formDataToSend,
+      }
+    );
+
+    if (!uploadResponse.ok) throw new Error("Failed to upload CV");
 
     alert("Thank you for joining our team! We will review your application.");
+
     setFormData({
-      fullname: "",
+      name: "",
       email: "",
       phone: "",
       address: "",
       role: "",
       cv: null,
     });
-  };
+  } catch (error) {
+    alert("Error submitting application: " + error.message);
+  }
+};
+
+
 
   return (
     <>
@@ -54,8 +92,8 @@ export default function JoinOurTeam() {
           Full Name:
           <input
             type="text"
-            name="fullname"
-            value={formData.fullname}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
             placeholder="Enter your full name"

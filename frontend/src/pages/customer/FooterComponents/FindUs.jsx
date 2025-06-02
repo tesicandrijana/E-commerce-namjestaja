@@ -1,6 +1,6 @@
 import React from "react";
-import Card from "../../components/dashboard/Card";
-import "../../components/dashboard/Card.css";
+import Card from "../../../components/dashboard/Card";
+import "../../../components/dashboard/Card.css";
 import "./FindUs.css"
 
 export default function FindUs() {

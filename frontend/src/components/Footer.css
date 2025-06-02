@@ -118,6 +118,7 @@
 
 /* Contact Section */
 .footer-contact {
+  text-align: center;
   max-width: 250px;
 }
 
@@ -168,6 +169,7 @@
 
 /* Social Icons */
 .social-icons {
+  margin-left: 70px;
   margin-top: 1rem;
   display: flex;
   gap: 1rem;

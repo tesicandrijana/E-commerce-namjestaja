@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from app.database import engine, SessionDep
-from app.routers import user, product, category, order, review, discount, material, support_complaints
+from app.routers import user, product, category, order, review, discount, material, support_complaints, job_application
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
@@ -51,6 +51,8 @@ app.include_router(discount.router, prefix="/discounts", tags=["Discounts"])
 app.include_router(material.router, prefix="/materials", tags=["Materials"])
 app.include_router(cart.router, prefix="/cart", tags=["Cart"])
 app.include_router(support_complaints.router, prefix="/support/complaints", tags=["Support - Complaints"])
+app.include_router(job_application.router, prefix="/job-application", tags=["Job Application"])
+
 
 @app.get("/")
 def read_root():

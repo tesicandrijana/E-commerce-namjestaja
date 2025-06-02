@@ -194,3 +194,15 @@ class WorkerRequest(SQLModel, table=True):
     desired_role: str = Field(index=True)
     status: str = Field(default="pending")  # pending, approved, rejected
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class JobApplication(SQLModel, table=True):
+    __tablename__ = "job_applications"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    email: str
+    phone: str
+    address: Optional[str] = None
+    role: str
+    processed: bool = Field(default=False)
+    cv_file: Optional[str] = None

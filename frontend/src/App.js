@@ -14,15 +14,16 @@ import ScrollToTop from './components/ScrollToTop'; // Dodan ScrollToTop
 
 // Pages (Customer)
 import Home from "./pages/customer/Home";
-import About from "./pages/customer/About";
-import Contact from "./pages/customer/Contact";
+import About from "./pages/customer/FooterComponents/About";
+import Contact from "./pages/customer/FooterComponents/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import NewArrivals from "./pages/customer/NewArrivals";
-import FAQs from "./pages/customer/FAQs";
-import Shipping from "./pages/customer/Shipping";
-import FindUs from "./pages/customer/FindUs";
-import JoinOurTeam from "./pages/customer/JoinOurTeam";
+import FAQs from "./pages/customer/FooterComponents/FAQs";
+import Shipping from "./pages/customer/FooterComponents/Shipping";
+import FindUs from "./pages/customer/FooterComponents/FindUs";
+import JoinOurTeam from "./pages/customer/FooterComponents/JoinOurTeam";
+import Returns from "./pages/customer/FooterComponents/Returns";
 import Cart from "./pages/customer/Cart";
 
 
@@ -81,6 +82,8 @@ function App() {
             <Route path="/Shipping" element={<Shipping />} />
             <Route path="/FindUs" element={<FindUs />} />
             <Route path="/JoinOurTeam" element={<JoinOurTeam />} />
+            <Route path="/Returns" element={<Returns />} />
+
 
 
 
