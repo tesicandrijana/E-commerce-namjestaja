@@ -1,0 +1,111 @@
+.chat-box-container {
+  margin-top: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Poppins', sans-serif;
+}
+
+.chat-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  border-left: 4px solid #3b82f6;
+  padding-left: 0.8rem;
+}
+
+.chat-messages {
+  position: relative;
+  max-height: 450px;
+  overflow-y: auto;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  scroll-behavior: smooth;
+}
+
+.message-row {
+  display: flex;
+  margin-bottom: 0.8rem;
+  max-width: 80%;
+}
+
+.message-left {
+  justify-content: flex-start;
+}
+
+.message-right {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.message-bubble {
+  padding: 0.6rem 1rem;
+  border-radius: 18px;
+  max-width: 100%;
+  word-break: break-word;
+  position: relative;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.message-left .message-bubble {
+  background-color: #e0f2fe; /* svijetloplava */
+  color: #1e3a8a;
+  border-bottom-left-radius: 4px;
+}
+
+.message-right .message-bubble {
+  background-color: #c7d2fe; /* ljubičasta nijansa */
+  color: #1e1b4b;
+  border-bottom-right-radius: 4px;
+}
+
+.message-meta {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+  background: #fff;
+}
+
+.chat-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.chat-send-btn {
+  padding: 0.7rem 1.4rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.chat-send-btn:hover {
+  background-color: #2563eb;
+  transform: translateY(-2px);
+}

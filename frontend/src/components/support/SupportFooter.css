@@ -1,12 +1,13 @@
 .support-footer {
   background-color: #1a1a1a;
   color: #bbb;
-  padding: 1rem 2rem;
+  padding: 4rem 2rem;
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   border-top: 1px solid #333;
   text-align: center;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.15);
+  margin: 0 auto;
 }
 
 .support-footer-content {

@@ -2,11 +2,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from app.database import engine, SessionDep
-from app.routers import user, product, category, order, review, discount, material, support_complaints
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart
+from app.routers import user, product, category, order, order_item, review, discount, material, cart, support, complaint, support_orders, chat_ws
 
 
 def create_db_and_tables():
@@ -50,7 +49,10 @@ app.include_router(review.router, prefix="/reviews", tags=["Reviews"])
 app.include_router(discount.router, prefix="/discounts", tags=["Discounts"])
 app.include_router(material.router, prefix="/materials", tags=["Materials"])
 app.include_router(cart.router, prefix="/cart", tags=["Cart"])
-app.include_router(support_complaints.router, prefix="/support/complaints", tags=["Support - Complaints"])
+app.include_router(support.router, prefix="/support", tags=["Support"])
+app.include_router(complaint.router, prefix="/complaints", tags=["Complaints"])
+app.include_router(support_orders.router, tags=["Support Orders"])
+app.include_router(chat_ws.router)
 
 @app.get("/")
 def read_root():
@@ -59,3 +61,7 @@ def read_root():
 @app.post("/cart/add")
 async def add_to_cart():
     return {"message": "Product added to cart!"}
+
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}

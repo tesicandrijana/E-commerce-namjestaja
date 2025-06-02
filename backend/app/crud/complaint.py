@@ -2,13 +2,19 @@
 from sqlalchemy.orm import Session
 from app.models.models import Complaint
 from app.schemas.complaint import ComplaintCreate
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException
 
-def create_complaint(db: Session, complaint: ComplaintCreate):
-    db_complaint = Complaint(**complaint.dict())
-    db.add(db_complaint)
-    db.commit()
-    db.refresh(db_complaint)
-    return db_complaint
+def create_complaint(db: Session, complaint_data: ComplaintCreate):
+    try:
+        new_complaint = Complaint(**complaint_data.dict())
+        db.add(new_complaint)
+        db.commit()
+        db.refresh(new_complaint)
+        return new_complaint
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Invalid data. Check if order exists.")
 
 def get_complaints(db: Session, offset: int = 0, limit: int = 100):
     return db.query(Complaint).offset(offset).limit(limit).all()

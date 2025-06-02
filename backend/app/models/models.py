@@ -131,6 +131,7 @@ class OrderItem(SQLModel, table=True):
     price_per_unit: Decimal
 
     order: Optional[Order] = Relationship(back_populates="items")
+    product: Optional[Product] = Relationship()  #dodatno
 
 
 class Review(SQLModel, table=True):
@@ -165,11 +166,17 @@ class Complaint(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
     description: str
-    status: str = Field(default="open")
-    complaint_type: str = Field(default="complaint")  
+    status: str = Field(default="open")   # open, in_progress, resolved, declined
+    preferred_resolution: Optional[str] = Field(default=None)  # return, refund, repair
+    final_resolution: Optional[str] = Field(default=None)      # zaposlenik odlučuje
+    response_text: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     response_text: Optional[str] = None  #DODANO POLJE
+    assigned_to: Optional[int] = Field(default=None, foreign_key="users.id")  # dodano
+    is_chat_open: bool = Field(default=False)   # dodano
 
     order: Optional[Order] = Relationship()
+    messages: List["Message"] = Relationship(back_populates="complaint")   #dodano
 
 
 class Message(SQLModel, table=True):
@@ -181,6 +188,9 @@ class Message(SQLModel, table=True):
     content: str
     timestamp: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
+    complaint_id: int = Field(foreign_key="complaints.id")   #dodano
+
+    complaint: Optional[Complaint] = Relationship(back_populates="messages")   #dodano
     sender: Optional[User] = Relationship(back_populates="messages_sent", sa_relationship_kwargs={"foreign_keys": "[Message.sender_id]"})
     receiver: Optional[User] = Relationship(back_populates="messages_received", sa_relationship_kwargs={"foreign_keys": "[Message.receiver_id]"})
 

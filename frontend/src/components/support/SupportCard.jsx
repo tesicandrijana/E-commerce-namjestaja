@@ -4,7 +4,8 @@ import "./SupportCard.css";
 
 const SupportCard = ({ section }) => {
   return (
-    <Link to={section.link} className="support-card">
+    //inline stilovi za kartice
+    <Link to={section.link} className={`support-card ${section.className || ""}`}>
       <img src={section.image} alt={section.title} loading="lazy" />
       <div className="card-content">
         <h2>{section.title}</h2>
