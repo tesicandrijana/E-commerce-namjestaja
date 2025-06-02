@@ -61,3 +61,7 @@ def read_root():
 @app.post("/cart/add")
 async def add_to_cart():
     return {"message": "Product added to cart!"}
+
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}

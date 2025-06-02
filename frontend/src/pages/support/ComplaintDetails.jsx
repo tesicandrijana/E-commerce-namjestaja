@@ -15,8 +15,7 @@ export default function ComplaintDetails() {
   const [currentUser, setCurrentUser]= useState(null);
 
   useEffect(() => {
-     axios
-      .get(`http://localhost:8000/support/complaints/${id}`, {
+     axios.get(`http://localhost:8000/support/complaints/${id}`, {
         withCredentials: true, //  za cookie autentifikaciju
       })
       .then((res) => {
@@ -69,7 +68,9 @@ export default function ComplaintDetails() {
       .then((res) => setCurrentUser(res.data))
       .catch((err) => console.error("Greška pri dohvaćanju korisnika:", err));
   }, []);
-    if (!complaint) return <p className="loading">Loading complaint...</p>;
+
+
+  if (!complaint) return <p className="loading">Loading complaint...</p>;
 
   return (
     <div className="complaint-flex-okvir">
