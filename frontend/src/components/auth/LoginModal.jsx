@@ -43,7 +43,7 @@ function LoginModal({ role = "customer", onClose }) {
         } else if (userRole === "manager") {
           navigate("/manager-dashboard");
         } else if (userRole === "support") {
-          navigate("/support-dashboard");
+          navigate("/support");
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {

@@ -1,0 +1,128 @@
+.order-details-container {
+  max-width: 960px;
+  margin: 2rem auto;
+  background: #ffffff;
+  padding: 2rem 2.5rem;
+  border-radius: 18px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.06);
+  font-family: "Poppins", sans-serif;
+  color: #2f2f2f;
+  transition: all 0.4s ease;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  border-left: 5px solid #3498db;
+  padding-left: 1rem;
+  color: #2c3e50;
+}
+
+.order-section {
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1.5rem;
+}
+
+.order-section h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: #1f2937;
+}
+
+.order-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem 2rem;
+}
+
+.order-info-grid p {
+  margin: 0.2rem 0;
+  line-height: 1.5;
+  font-size: 1.05rem;
+}
+
+.items-list {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fdfdfd;
+  padding: 1rem 1.2rem;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.2rem;
+}
+
+.item-meta {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.item-total {
+  font-weight: bold;
+  color: #27ae60;
+  font-size: 1rem;
+}
+
+.back-link {
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border: none;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-link:hover {
+  background-color: #d1d5db;
+  transform: translateX(-3px);
+}
+
+.loading {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 3rem;
+  color: #666;
+}
+
+.error-message {
+  color: #c0392b;
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 2rem;
+}

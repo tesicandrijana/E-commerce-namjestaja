@@ -1,5 +1,5 @@
 .support-card {
-  background-color: #ffffff;
+  background-color: #faf9f9;
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
   overflow: hidden;
@@ -16,11 +16,32 @@
   border: 1px solid #f0f0f0;
 }
 
-.support-card:hover {
+.complaints-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
   border-color: #f4a300;
+  box-shadow: 0 12px 28px rgba(244, 163, 0, 0.2);
 }
+
+.messages-card:hover {
+  border-color: #66b2ff;
+  box-shadow: 0 12px 28px rgba(102, 178, 255, 0.2);
+  transform: translateY(-6px);
+}
+
+
+.orders-card:hover {
+  border-color: #319359;
+  box-shadow: 0 12px 28px rgba(46, 204, 113, 0.2);
+  transform: translateY(-6px);
+}
+
+
+.profile-card:hover {
+  border-color: #ff8c66;
+  box-shadow: 0 12px 28px rgba(255, 140, 102, 0.2);
+  transform: translateY(-6px);
+}
+
 
 .support-card img {
   width: 90px;

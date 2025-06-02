@@ -33,5 +33,3 @@ def get_db():
 
 # SessionDep se koristi za dependency injection u FastAPI
 SessionDep = Annotated[Session, Depends(get_db)]
-
-

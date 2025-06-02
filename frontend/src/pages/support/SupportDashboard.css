@@ -1,11 +1,9 @@
-/* SupportDashboard.css */
-
 .support-dashboard-container {
   font-family: 'Poppins', sans-serif;
   color: #2c3e50;
   background-color: #f9f9f9;
   min-height: 100vh;
-  padding-bottom: 3rem;
+  padding-bottom: 0;
 }
 
 .dashboard-hero {
@@ -17,22 +15,42 @@
   text-align: center;
   color: white;
   box-shadow: inset 0 -8px 20px rgba(0, 0, 0, 0.25);
-  height: 300px;
+  height: 350px;
 }
+
 
 .support-dashboard-title {
   font-size: 2.5rem;
   font-weight: 800;
+  margin-top: 5rem;
   margin-bottom: 1rem;
-  color: white;
+  color: #fff;
+  text-shadow:
+    0 0 4px rgba(255, 255, 255, 0.5),
+    0 0 8px rgba(244, 163, 0, 0.4),
+    0 0 12px rgba(244, 163, 0, 0.3);
+  transition: text-shadow 0.3s ease;
 }
 
+.support-dashboard-title:hover {
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.7),
+    0 0 12px rgba(244, 163, 0, 0.6),
+    0 0 18px rgba(244, 163, 0, 0.4);
+}
 
 .support-dashboard-subtext {
   font-size: 1.2rem;
-  max-width: 720px;
-  margin: 0 auto;
+  max-width: 650px;
+  margin: 30px auto;
   color: #f1f1f1;
+}
+
+.support-grid-okvir{
+  background-image: url("/public/support/pozadinadashboard.png");
+  background-size: contain;
+  margin: 0 auto;
+
 }
 
 .support-grid {
@@ -44,82 +62,65 @@
   margin: 0 auto;
 }
 
-.support-card {
-  background-color: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding-bottom: 1rem;
-}
-
-.support-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-}
-
-.support-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-
-.card-content {
-  padding: 1rem;
-}
-
-.card-content h2 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-}
-
-.card-content p {
-  font-size: 0.95rem;
-  color: #666;
+.support-info-section-okvir{
+  background-image: url("/public/support/pozadinadashboard.png");
+  background-size: contain;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+  
 }
 
 .support-info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background-color: #ffffff;
-  padding: 3rem 2rem;
-  text-align: center;
-  max-width: 900px;
+  padding: 1.5rem 3rem;
+  max-width: 1000px;
   margin: 0 auto;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  gap: 2rem;
+  flex-wrap: wrap; /* da se lijepo složi na manjim ekranima */
+}
+
+.support-info-section .info-text {
+  flex: 1 1 20%;
+  min-width: 300px;
+  text-align: justify;
 }
 
 .support-info-section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
+  font-weight: 700;
+  color: #f4a300;
+  letter-spacing: 0.5px;
+}
+
+
+.support-info-section h2:hover {
+    text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.7),
+    0 0 12px rgba(244, 163, 0, 0.6),
+    0 0 18px rgba(244, 163, 0, 0.4);
 }
 
 .support-info-section p {
   font-size: 1.05rem;
-  color: #444;
-  margin-bottom: 1rem;
+  color: #555;
   line-height: 1.6;
 }
 
-.support-disclaimer {
-  font-size: 0.9rem;
-  color: #888;
-  font-style: italic;
-}
-
 .dashboard-image {
-  margin-top: 2rem;
+  flex: 1 1 45%;
   max-width: 100%;
   height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  min-width: 280px;
 }
+
 
 @media (max-width: 768px) {
   .dashboard-hero {
