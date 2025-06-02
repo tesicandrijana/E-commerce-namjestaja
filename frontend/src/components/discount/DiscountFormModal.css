@@ -1,0 +1,78 @@
+.discount-form {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+}
+
+.discount-form h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+.discount-form label {
+  text-align: left;
+  display: flex;
+  padding-bottom: 5%;
+  flex-direction: column;
+  font-weight: 500;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.discount-form input {
+  font-size: 1rem;
+  padding: 6px;
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.discount-form input:focus {
+  outline: none;
+  border-color: #3f51b5;
+}
+
+.modal-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 5%;
+}
+
+.modal-btns button[type="submit"] {
+  background-color: #fff;
+  color: #ff9800;
+  border: 1px solid #ff9800;
+}
+
+.modal-btns button[type="submit"]:hover {
+  background-color: #fff3e0;
+}
+
+.modal-btns button[type="button"] {
+  background-color: #ff9800;
+  color: #fff;
+}
+
+.modal-btns button[type="button"]:hover {
+  background-color: #fb8c00;
+}
+
+.alert-error {
+  padding: 12px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 6px;
+  white-space: pre-line;
+  font-size: 0.95rem;
+  border: 1px solid #f5c6cb;
+}

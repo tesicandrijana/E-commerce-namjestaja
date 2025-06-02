@@ -68,6 +68,7 @@ class Product(SQLModel, table=True):
     reviews: List["Review"] = Relationship(back_populates="product")
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
+    order_items:List["OrderItem"] = Relationship(back_populates="product")
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -131,7 +132,7 @@ class OrderItem(SQLModel, table=True):
     price_per_unit: Decimal
 
     order: Optional[Order] = Relationship(back_populates="items")
-    product: Optional[Product] = Relationship()  #dodatno
+    product: Optional[Product] = Relationship(back_populates="order_items")
 
 
 class Review(SQLModel, table=True):

@@ -25,6 +25,7 @@ function LoginModal({ role = "customer", onClose }) {
   };
 
   async function handleSubmit(e) {
+    console.log("LOG IN")
     e.preventDefault();
     setErrorMessage("");
 
@@ -46,7 +47,6 @@ function LoginModal({ role = "customer", onClose }) {
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {
-          // default to customer dashboard or homepage
           navigate("/");
         }
 
@@ -94,8 +94,8 @@ function LoginModal({ role = "customer", onClose }) {
       <div className="login-modal">
         <h2>
           {isLogin
-            ? `Log In as ${role.charAt(0).toUpperCase() + role.slice(1)}`
-            : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
+            ? `Log In`
+            : `Sign Up`}
         </h2>
         <form onSubmit={handleSubmit}>
           {!isLogin && (
@@ -153,7 +153,7 @@ function LoginModal({ role = "customer", onClose }) {
           </div>
         </form>
 
-        {role === "customer" && (
+        
           <div className="toggle-form">
             <p>
               {isLogin
@@ -167,7 +167,7 @@ function LoginModal({ role = "customer", onClose }) {
               </span>
             </p>
           </div>
-        )}
+        
       </div>
     </div>
   );

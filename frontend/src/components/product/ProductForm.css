@@ -2,23 +2,22 @@
   display: flex;
   box-sizing: border-box;
   flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  width: 70%;
-  margin: 2rem auto;
-  padding: 2rem;
-  border: 1px solid #ccc;
-  border-radius: 12px;
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
   background-color: #ffffff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #444;
 }
-.form{
+
+.form {
   display: flex;
+  overflow: wrap;
   box-sizing: border-box;
   flex-direction: row;
   gap: 2rem;
 }
+
 .product-form section {
   flex: 1;
   display: flex;
@@ -29,7 +28,7 @@
 .product-form label {
   display: flex;
   flex-direction: column;
-  font-weight: 500;
+  font-weight: light;
   color: #444;
 }
 
@@ -45,7 +44,8 @@
   margin-top: 0.3rem;
   transition: border-color 0.3s;
 }
-.product-form select{
+
+.product-form select {
   width: 85%;
 }
 
@@ -68,7 +68,7 @@
 }
 
 
-.size{
+.size {
   display: flex;
   flex-direction: row;
   align-content: space-between;
@@ -78,7 +78,8 @@
 .size input {
   width: 50%;
 }
-.left-section{
+
+.left-section {
   margin-left: 2rem;
   border-right: 1px solid #f8c69c;
 
@@ -86,7 +87,7 @@
 
 .dropzone {
   width: 70%;
-  margin:1rem 0;
+  margin: 1rem 0;
   padding: 2rem;
   border: 2px dashed #007bff;
   background-color: #f9f9f9;
@@ -114,5 +115,15 @@
   border-radius: 5px;
 }
 
+@media (max-width: 768px) {
+  .form {
+    width:auto;
+    flex-direction: column;
+    overflow: scroll;
+  }
 
-
+  .left-section {
+  margin-left: 1rem;
+  border-right: 0px solid #f8c69c;
+}
+}

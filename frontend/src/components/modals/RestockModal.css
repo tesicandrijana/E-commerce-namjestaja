@@ -30,14 +30,14 @@
     color: #333;
 }
 
-.modal-content label {
+.restock-label {
     display: block;
     margin-bottom: 1rem;
     font-size: 1rem;
     color: #444;
 }
 
-.modal-content input[type="number"] {
+.restock-input {
     width: 100%;
     padding: 0.5rem;
     font-size: 1rem;

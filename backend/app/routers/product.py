@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File, Query
 from typing import List, Annotated
 from sqlmodel import Session
 from app.crud.product import get_product_with_category
@@ -30,14 +30,39 @@ def create_product(
     return product_service.create_product(
         session, name, description, material_id, category_id, length, width, height, price, quantity, images
     )
+# Read all products for manager products view
+@router.get("/manager")
+def read_products_search_filter_sort(
+    session: SessionDep,
+    offset: int = 0,
+    limit: int = 100,
+    sort_by: Annotated[str, Query(enum=["name", "price","active_discount", "total_sold", "rating"])] = "name",
+    sort_dir: Annotated[str,Query(enum=["asc", "desc"])] = "asc",
+    out_of_stock: bool | None = None,
+    material_id: int | None = None,
+    category_id: int | None = None,
+    search:  str | None = None,
+    ):
+    return product_service.get_products_search_filter_sort(session, offset,limit, sort_by, sort_dir,out_of_stock,material_id, category_id, search)
+
+# returns total number of products, average rating, number of items that are out of stock
+@router.get("/stats")
+def product_stats(session: SessionDep):
+    return product_service.products_stats(session)
+
+# total number of products
+@router.get("/count" )
+def product_count(session: SessionDep): 
+    return product_service.count_filtered_products(session)
 
 # Read all products
 @router.get("/", response_model=List[product_schema.ProductRead])
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return product.get_products(db, skip=skip, limit=limit)
 
+
 # Multipart PATCH for image updates and metadata
-@router.patch("/{product_id}/form")
+@router.patch("/{product_id}")
 def update_product_form(
     session: SessionDep,
     product_id: int,
@@ -75,6 +100,11 @@ def update_product(
 def read_product(session: SessionDep, id: int):
     return product_service.get_product(session,id)
 
+#bulk delete products
+@router.delete("/bulk-delete")
+def bulk_delete(session:SessionDep, req: product_schema.ProductBulkDeleteReq):
+    return product_service.bulk_delete(session, req)
+
 # Delete product
 @router.delete("/{id}")
 def delete_product(session: SessionDep, id: int):
@@ -88,3 +118,4 @@ def restock_product(
     session: SessionDep,
 ):
     return product_service.restock(session, product_id, restock_request.added)
+

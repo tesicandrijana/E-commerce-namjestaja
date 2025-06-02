@@ -1,5 +1,5 @@
 from sqlmodel import Session
-from app.schemas.product import ProductCreate
+from app.schemas.product import ProductCreate, ManagerProductResponse, ProductBulkDeleteReq
 from app.models.models import Product
 from app.repositories import product_repository
 from app.models.models import Product
@@ -9,7 +9,7 @@ import os
 import shutil
 import uuid
 
-
+#save one image to static folder
 def save_image(product_name: str,image: Annotated[UploadFile, File(...)]):
     upload_dir = "static/product_images"
     
@@ -35,6 +35,7 @@ def save_image(product_name: str,image: Annotated[UploadFile, File(...)]):
 
     return filename
 
+#delete an image
 def delete_image_file(image_filename: str):
     image_path = image_filename.replace("/", os.sep)
     
@@ -44,6 +45,7 @@ def delete_image_file(image_filename: str):
     else:
         return False
     
+#upload a list of images   
 def images_upload(session: Session, product: Product, images: Annotated[list[UploadFile],File(...)]):
     for image in images:
             product_url = save_image(product.name,image)
@@ -54,7 +56,6 @@ def delete_images_for_product(session: Session, product: Product):
             path = product_repository.delete_product_image(session, image.id)
             delete_image_file(path)
         
-
 def create_product(session: Session,
                    name: Annotated[str, Form()],
                    description: Annotated[str, Form()],
@@ -131,3 +132,64 @@ def restock(session:Session, id:int, added: int):
     product = product_repository.get_product(session, id)
     new_quantity = product.quantity + added
     return product_repository.restock(session, product, new_quantity)
+
+def get_products_search_filter_sort(
+    session: Session, 
+    offset: int = 0,
+    limit: int = 100,
+    sort_by: str | None = "name",
+    sort_dir: str | None = "asc",
+    out_of_stock: bool | None = None,
+    material_id: int | None = None,
+    category_id: int | None = None,
+    search: str | None = None,
+    ):
+    filters = []
+
+    if out_of_stock:
+        filters.append(Product.quantity == 0)
+    if material_id:
+        filters.append(Product.material_id == material_id)
+    if category_id:
+        filters.append(Product.category_id == category_id)
+    if search:
+        filters.append(Product.name.ilike(f"%{search}%"))
+
+    products = []
+    rows = product_repository.get_products_sorted_and_filtered(session,offset,limit,sort_by,sort_dir,filters)
+
+    for product, avg_rating, order_count,active_discount in rows:
+        products.append(ManagerProductResponse(
+            id=product.id,
+            name=product.name,
+            price=product.price,
+            quantity=product.quantity,
+            rating=avg_rating,
+            order_count=order_count or 0,
+            active_discount= active_discount or 0,
+            images=product.images
+        ))
+
+    total_count = product_repository.count_filtered_products(session, filters)
+
+    return {
+        "total": total_count,
+        "products": products
+    }
+
+def count_products(session:Session):
+    return {"count": product_repository.count_filtered_products(session)}
+
+def products_stats(session:Session):
+    avg_rating = product_repository.avg_rating(session)
+    stats = {
+        "total": product_repository.count_filtered_products(session),
+        "out_of_stock_count": product_repository.count_filtered_products(session, [Product.quantity == 0]) ,
+        "avg_rating": avg_rating if avg_rating else 0
+    }
+    return stats
+
+
+def bulk_delete(session:Session, req: ProductBulkDeleteReq):
+    for id in req.ids:
+        delete_product(session,id)

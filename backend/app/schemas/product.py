@@ -1,7 +1,10 @@
 from typing import Optional, List
 from decimal import Decimal
 from sqlmodel import SQLModel, Field
-from app.schemas import product_image
+from app.schemas import product_image,order_item,review
+
+class ProductBulkDeleteReq(SQLModel):
+    ids: list[int]
 
 class CategoryRead(SQLModel):
     id: int
@@ -20,6 +23,17 @@ class ProductBase(SQLModel):
     price: Decimal
     quantity: int = 0
     category_id: Optional[int] = None
+    images: Optional[list[product_image.ProductImageBase]] | None = None
+
+
+class ManagerProductResponse(SQLModel):
+    id: int
+    name: str
+    price:Decimal
+    quantity :int
+    order_count: int
+    rating: Decimal | None
+    active_discount: int
     images: Optional[list[product_image.ProductImageBase]] | None = None
 
 class ProductCreate(ProductBase):

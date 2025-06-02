@@ -5,7 +5,8 @@ from app.database import engine, SessionDep
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart, support, complaint, support_orders, chat_ws
+from app.routers import user, product, category, order, order_item, review, discount, material, cart,support, complaint, support_orders, chat_ws
+from sqlalchemy.orm import configure_mappers
 
 
 def create_db_and_tables():
@@ -15,6 +16,7 @@ def create_db_and_tables():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    configure_mappers()
     yield
 
 
