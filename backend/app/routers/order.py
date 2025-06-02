@@ -1,31 +1,127 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from sqlmodel import Session
-from app.schemas.order import OrderCreate, OrderRead
-from app.crud.order import create_order, get_orders, get_order_by_id, update_order, delete_order
-from app.database import get_session
+from decimal import Decimal, ROUND_HALF_UP
+from app.models.models import User, Order, OrderItem
+from app.schemas.order import OrderCreate, OrderRead, PriceCalculationResponse, PriceCalculationRequest
+from app.services.user_service import get_current_user
+from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
+from app.database import get_session, get_db
 
 router = APIRouter()
 
-@router.post("/", response_model=OrderRead, status_code=status.HTTP_201_CREATED)
-def create_new_order(order: OrderCreate, session: Session = Depends(get_session)):
-    return create_order(order, session)
 
-@router.get("/", response_model=List[OrderRead])
-def read_orders(session: Session = Depends(get_session)):
-    return get_orders(session)
 
-@router.get("/{order_id}", response_model=OrderRead)
-def read_order(order_id: int, session: Session = Depends(get_session)):
-    order = get_order_by_id(order_id, session)
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
+@router.get("/myorders", response_model=List[OrderRead])
+def get_my_orders(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    orders = get_orders_by_customer_id(current_user.id, session)
+    if not orders:
+        raise HTTPException(status_code=404, detail="No orders found for this user.")
+    return orders
+
+
+
+
+@router.post("/", status_code=201)
+def create_order(order_data: OrderCreate, session: Session = Depends(get_session)):
+    order = Order(
+        customer_id=order_data.customer_id,
+        address=order_data.address,
+        city=order_data.city,
+        postal_code=order_data.postal_code,
+        payment_method=order_data.payment_method,
+        total_price=order_data.total_price.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP),
+        status="pending",
+        payment_status="pending",
+    )
+    session.add(order)
+    session.commit()
+    session.refresh(order)
+
+    # Save order items
+    for item in order_data.items:
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=item.product_id,
+            quantity=item.quantity,
+            price_per_unit=item.price_per_unit,
+        )
+        session.add(order_item)
+    session.commit()
+
     return order
 
 
+
+
+
+
+@router.get("/", response_model=List[OrderRead])
+def read_orders(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    # Only allow admins to get all orders
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view all orders")
+    return get_orders(session)
+
+
+
+
+
+@router.get("/{order_id}", response_model=OrderRead)
+def read_order(
+    order_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    order = get_order_by_id(order_id, session)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.customer_id != current_user.id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view this order")
+    return order
+
+
+
+
+
 @router.delete("/{order_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_existing_order(order_id: int, session: Session = Depends(get_session)):
+def delete_existing_order(
+    order_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+):
+    order = get_order_by_id(order_id, session)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.customer_id != current_user.id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to delete this order")
     success = delete_order(order_id, session)
     if not success:
         raise HTTPException(status_code=404, detail="Order not found")
 
+
+
+
+
+
+@router.patch("/cancel/{order_id}")
+def cancel_order(order_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
+    order = session.get(Order, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.customer_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized to cancel this order")
+    if order.status != "pending":
+        raise HTTPException(status_code=400, detail="Only pending orders can be cancelled")
+
+    order.status = "cancelled"
+    session.add(order)
+    session.commit()
+    session.refresh(order)
+    return {"message": "Order cancelled successfully", "order_id": order_id}

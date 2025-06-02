@@ -8,11 +8,13 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy import func
 from app.services import user_service
-from app.database import get_db
+from app.database import get_db, get_session
 from app.schemas.user import Token, UserCreate, UserSchema, UserUpdate, LoginWithRole
-from app.services.user_service import hash_password, validate_password_strength,signup_user
+from app.services.user_service import hash_password, validate_password_strength,signup_user, get_current_user
 from app.dependencies import get_admin_user
 from app.crud import user
+from app.crud.order import get_orders_by_customer_id
+from app.schemas.order import OrderRead
 from app.models.models import User
 from app.core.config import settings
 from app.crud.user import (
@@ -56,9 +58,17 @@ def signup(user_create: UserCreate, db: Session = Depends(get_db)):
 def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response) -> Token:
     login_data = {
         "email": form_data.username,
-        "password": form_data.password
+        "password": form_data.password,
     }
     return user_service.login_for_access_token(session, login_data,response)
+
+@router.post("/login/customer")
+def login_for_access_token_customer(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response) -> Token:
+    login_data = {
+        "email": form_data.username,
+        "password": form_data.password,
+    }
+    return user_service.login_for_access_token_customer(session, login_data,response)
 
 @router.post("/logout")
 def logout(response: Response):
@@ -266,3 +276,17 @@ def get_admin_dashboard_stats(
         "sales": get_sales_stats(db),
         "ratings": get_rating_stats(db),
     }
+
+# 1. Get orders for current logged-in user
+
+# 2. Get orders for any customer by their ID (admin only)
+@router.get("/{customer_id}/orders", response_model=List[OrderRead])
+def read_orders_by_customer_id(
+    customer_id: int,
+    current_admin: User = Depends(get_current_user),  # Only admin allowed
+    session: Session = Depends(get_session),
+):
+    orders = get_orders_by_customer_id(customer_id, session)
+    if not orders:
+        raise HTTPException(status_code=404, detail="No orders found for this customer")
+    return orders

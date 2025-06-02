@@ -1,15 +1,12 @@
 from typing import Optional
 from datetime import datetime
 from sqlmodel import SQLModel, Field
+from app.schemas.product import ProductRead
 
 
-class CartItemBase(SQLModel):
+class CartItemCreate(SQLModel):
     product_id: int
     quantity: int
-
-
-class CartItemCreate(CartItemBase):
-    pass
 
 
 class CartItemUpdate(SQLModel):
@@ -21,6 +18,14 @@ class CartItemRead(SQLModel):
     product_id: int
     quantity: int
     added_at: Optional[datetime]
+
+    product: Optional[ProductRead]
+
+    @property
+    def total_price(self) -> Optional[float]:
+        if self.product:
+            return self.quantity * float(self.product.price)
+        return None
 
     class Config:
         orm_mode = True

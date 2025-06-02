@@ -7,7 +7,7 @@ from app.schemas import product as product_schema
 from app.services import product_service, user_service
 from app.database import get_db
 from app.schemas.product import ProductRead
-from app.models.models import Product
+from app.models.models import Product, Discounts
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
@@ -33,7 +33,7 @@ def create_product(
 
 # Read all products
 @router.get("/", response_model=List[product_schema.ProductRead])
-def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_products(skip: int = 0, limit: int = 300, db: Session = Depends(get_db)):
     return product.get_products(db, skip=skip, limit=limit)
 
 # Multipart PATCH for image updates and metadata
@@ -88,3 +88,14 @@ def restock_product(
     session: SessionDep,
 ):
     return product_service.restock(session, product_id, restock_request.added)
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlmodel import Session, select
+from typing import Optional
+from app.schemas.discount import DiscountBase
+
+def get_discount_by_product_id(db: Session, product_id: int) -> Optional[Discounts]:
+    statement = select(Discounts).where(Discounts.product_id == product_id)
+    discount = db.exec(statement).first()
+    return discount
+

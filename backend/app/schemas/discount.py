@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel, Field
 from datetime import date
+from typing import Optional
 
-class DiscountBase(BaseModel):
+class DiscountBase(SQLModel):
     product_id: int
     amount: float
     start_date: date
@@ -10,8 +11,5 @@ class DiscountBase(BaseModel):
 class DiscountCreate(DiscountBase):
     pass
 
-class Discount(DiscountBase):
-    id: int
-
-    class Config:
-        from_attributes = True
+class Discount(DiscountBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)

@@ -3,19 +3,23 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthProvider from './components/auth/AuthProvider';
 import { CartProvider } from './contexts/CartContext';
 
+
 // Layouts and wrappers
-import Header2 from "./components/Header2";
-import Header from "./components/Header";
-import Footer from "./components/Footer"; // ✅ Added Footer
+import Header2 from "./components/home/Header2";
+import Header from "./components/home/Header";
+//import SearchBar from "./pages/customer/SearchBar";
+import Footer from "./components/home/Footer"; // ✅ Added Footer
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 // Pages (Customer)
-import Home from "./pages/customer/Home";
-import About from "./pages/customer/About";
-import Contact from "./pages/customer/Contact";
+import Home from "./components/home/Home";
+import About from "./components/home/About";
+import Contact from "./components/home/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";  
+import CheckOut from "./pages/customer/CheckOut"
+import Orders from "./pages/customer/Orders";
 
 // Pages (Admin)
 import NewEmployee from "./components/admin/NewEmployee";
@@ -35,12 +39,15 @@ import ComplaintDetails from "./pages/support/ComplaintDetails"
 
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import { linkClasses } from "@mui/material";
 
 function App() {
+
   return (
   <AuthProvider>
       <CartProvider>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <>
         <Header />
         <Header2 />
         <Routes>
@@ -52,6 +59,8 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />  
+          <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/orders" element={<Orders />} />
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
@@ -83,8 +92,8 @@ function App() {
             <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
           </Route>
         </Routes>
-
         <Footer /> {/* ✅ Always at the bottom */}
+        </>
       </Router>
     </CartProvider>
     </AuthProvider>

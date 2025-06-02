@@ -45,26 +45,6 @@ def verify_token(token: str, credentials_exception) -> int:
         raise credentials_exception
 
 
-def get_current_customer(
-    token: str = Depends(oauth2_scheme), 
-    db: Session = Depends(get_db)
-) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    user_id = verify_token(token, credentials_exception)
-
-    user = db.get(User, user_id)
-    if not user:
-        logger.warning(f"User not found for id {user_id}")
-        raise credentials_exception
-    if user.role != "customer":
-        logger.warning(f"User {user_id} with role {user.role} tried to access customer endpoint")
-        raise HTTPException(status_code=403, detail="Access restricted to customers only")
-
-    return user
 
 
 # Get current user from token
@@ -84,6 +64,15 @@ def get_current_user(
         raise credentials_exception
     return user
 
+def get_current_customer(
+    current_user: User = Depends(get_current_user)
+) -> User:
+    if current_user.role != "customer":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="The user does not have enough permissions",
+        )
+    return current_user
 
 # Get admin user only
 def get_admin_user(current_user: User = Depends(get_current_user)) -> User:

@@ -1,0 +1,118 @@
+body {
+   min-height: 100vh;
+}
+
+
+.orders-background {
+
+  /* url(https://images.squarespace-cdn.com/content/v1/588bdafa2994ca8c2ad76a44/1586123901773-Q166JBXTHHH52T2FX3V5/ke17ZwdGBToddI8pDm48kNvT88LknE-K9M4pGNO0Iqd7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1USOFn4xF8vTWDNAUBm5ducQhX-V3oVjSmr829Rco4W2Uo49ZdOtO_QXox0_W7i2zEA/008.jpg); */
+  background-image: linear-gradient(rgba(153, 116, 64, 0.453), rgba(30, 28, 28, 0.234)), url("https://i.pinimg.com/originals/1a/a0/e4/1aa0e4e4dfd7fcac2ad960abb64bd4cb.jpg");
+  max-width: 1600px;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 60px;
+  margin: 0 auto;
+  max-width: 1600px;
+}
+
+.orders-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #f6fbff46;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+}
+
+.orders-heading {
+  text-align: center;
+  color: #222;
+  margin-bottom: 1.5rem;
+}
+
+.orders-error {
+  color: #b00020;
+  background-color: #fddede;
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.orders-empty {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+.orders-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.orders-item {
+  background-color: #dbdfe0db;
+  backdrop-filter: blur(2px);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  flex-wrap: wrap;
+  gap: 6rem;
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-number {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.3rem;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.order-status {
+  font-weight: 600;
+  color: #77522a;
+}
+
+.order-total {
+  font-weight: 700;
+  color: #252727;
+}
+
+.cancel-button {
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: #ffffff;
+  color: #414040;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.8s ease;
+}
+
+.cancel-button:hover {
+  background-color: #2a2928e7;
+  color: #fbfbfbe2;
+}
+
+.order-status.pending { color: orange; }
+.order-status.cancelled { color: red; }
+.order-status.delivered { color: green; }

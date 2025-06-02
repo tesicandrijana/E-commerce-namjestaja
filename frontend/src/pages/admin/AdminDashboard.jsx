@@ -9,6 +9,8 @@ function AdminDashboard() {
 
   return (
     <div className="dashboard-container">
+      {/* You can add a heading here if you want */}
+      {/* <h1 className="dashboard-title">Admin Dashboard</h1> */}
 
       <div className="card-list">
         <Card

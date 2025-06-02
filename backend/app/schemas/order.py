@@ -10,12 +10,14 @@ class OrderBase(SQLModel):
     customer_id: int
     address: str
     city: str
-    postal_code: int
-    status: Optional[str] = "pending"
-    payment_method: Optional[str] = "cash"
-    payment_status: Optional[str] = "pending"
-    transaction_id: Optional[str] = None
-    total_price: Optional[Decimal] = None
+    postal_code: str
+    # REMOVE country_code, subtotal, discount_total, tax, shipping_cost
+    status: Optional[str]
+    payment_method: Optional[str]
+    payment_status: Optional[str]
+    transaction_id: Optional[str]
+    total_price: Decimal  # required here, not optional
+    items: List[OrderItemCreate]
 
 
 class OrderCreate(OrderBase):
@@ -29,14 +31,36 @@ class OrderRead(OrderBase):
 
     class Config:
         orm_mode = True
+        json_encoders = {
+            Decimal: lambda v: float(v),
+        }
 
 
 class OrderUpdate(SQLModel):
     address: Optional[str] = None
     city: Optional[str] = None
-    postal_code: Optional[int] = None
+    postal_code: Optional[str] = None
     status: Optional[str] = None
     payment_method: Optional[str] = None
     payment_status: Optional[str] = None
     transaction_id: Optional[str] = None
     total_price: Optional[Decimal] = None
+
+
+class OrderItemInput(SQLModel):
+    product_id: int
+    quantity: int
+
+class PriceCalculationRequest(SQLModel):
+    items: List[OrderItemInput]
+    country: str
+    region: str
+    postal_code: Optional[str] = None
+    discount_code: Optional[str] = None
+
+class PriceCalculationResponse(SQLModel):
+    subtotal: float
+    tax: float
+    shipping: float
+    discount: float
+    total: float    

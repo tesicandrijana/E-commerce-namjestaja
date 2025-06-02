@@ -1,0 +1,28 @@
+.receipt-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.receipt-mini {
+  flex: 1;
+  padding: 5px;
+}
+
+.receipt-mini:hover {
+  background: #f0f0f0;
+}
+
+.delete-btn {
+  background: red;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}

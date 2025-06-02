@@ -1,0 +1,246 @@
+.empty-cart-msg {
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 20vh; /* replaced margin-bottom: 20% for consistency */
+  font-size: 1.25rem;
+  color: #555;
+  padding-top: 8rem; /* replaced fixed 200px with rem */
+}
+
+button {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Checkout overlay with fixed background */
+.checkout-overlay {
+  font-family: 'Poppins', sans-serif;
+  background-image: url('https://domkapa.com/wp-content/uploads/2024/02/edward-sofa-domkapa-2024-living-room.jpg'); /* Update path if needed */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 3rem 1.5rem;
+  color: #4c3a2d;
+}
+
+.checkout-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 2rem;
+  background-color: #f7f4f062;
+}
+
+.checkout-title {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+/* Grid layout: Summary + Form */
+.checkout-grid {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Cart Summary */
+.checkout-summary {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  height: 75.66vh; /* fixed height to enable scrolling */
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-sizing: border-box;
+  justify-content: space-between;
+}
+
+.checkout-summary h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Scrollable container for items + subtotal/discount/tax */
+.checkout-summary-scrollable {
+  overflow-y: auto;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  padding-right: 8px; /* prevent content hiding behind scrollbar */
+}
+
+/* Scrollbar styling (Webkit) */
+.checkout-summary-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.checkout-summary-scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+/* Cart item lines */
+.checkout-summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Subtotal, discount, tax lines */
+.checkout-summary-totals div {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  font-weight: 600;
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+/* Total always visible outside scroll */
+.checkout-summary-total {
+  font-size: 1.3rem;
+  font-weight: 700;
+  border-top: 2px solid #444;
+  padding-top: 0.75rem;
+  text-align: right;
+}
+
+/* Checkout form styles */
+.checkout-form {
+  flex: 1 1 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkout-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.checkout-form input,
+.checkout-form select {
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #3f3a3a;
+  box-sizing: border-box;
+}
+
+.checkout-form select {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='70,100 30,40 110,40' fill='%237b5e57'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+}
+
+.checkout-form input,
+.checkout-form select:focus {
+  outline: none;
+  border-color: #7b5e57;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(123, 94, 87, 0.35);
+}
+
+.phone-input-group {
+  display: flex;
+  gap: 0.6rem;
+}
+
+
+.calling-code-select {
+  border: 1.5px solid #b8a99f;
+  border-radius: 6px 0 0 6px;
+  background-color: #fdfdfc;
+  font-size: 1rem;
+  color: #4c3a2d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='70,100 30,40 110,40' fill='%237b5e57'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
+}
+
+.calling-code-select:focus {
+  outline: none;
+  border-color: #7b5e57;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(123, 94, 87, 0.35);
+}
+
+.phone-input {
+  flex: 1 1 auto;
+}
+
+.checkout-form button {
+  background-color: #7b5e57;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.checkout-form button:hover,
+.checkout-form button:focus {
+  background-color: #5a403a;
+  box-shadow: 0 4px 10px rgba(90, 64, 58, 0.7);
+  outline: none;
+}
+
+
+.checkout-form button:disabled {
+  background-color: #42413fe1;
+  cursor: not-allowed;
+}
+
+
+/* Success and error messages */
+.form-success {
+  color: green;
+  margin-top: 0.5rem;
+}
+
+.form-error {
+  color: red;
+  margin-top: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .checkout-grid {
+    flex-direction: column;
+  }
+
+  .checkout-summary,
+  .checkout-form {
+    flex: 1 1 100%;
+  }
+
+  .checkout-summary {
+    height: auto;
+  }
+}
+

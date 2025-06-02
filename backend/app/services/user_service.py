@@ -98,6 +98,7 @@ def login_for_access_token(session: SessionDep, login_data: LoginWithRole, respo
     )
     return Token(access_token=access_token, token_type="bearer")
 
+
 def logout(response: Response):
     response.delete_cookie("access_token")  
     
@@ -127,3 +128,42 @@ def role_check(allowed_roles: List[Literal["admin", "manager", "customer", "supp
             raise HTTPException(status_code=403, detail="Permission denied")
         return current_user
     return dependency
+
+
+
+
+
+
+
+
+
+from fastapi import HTTPException, status
+
+def login_for_access_token_customer(session: SessionDep, login_data: LoginWithRole, response: Response) -> Token:
+    db_user = get_user(session, login_data["email"])
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    if not verify_password(login_data["password"], db_user.password):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
+    # Add this role check to allow only customers to login
+    if db_user.role.lower() != "customer":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only customers are allowed to log in here."
+        )
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": db_user.email}, expires_delta=access_token_expires
+    )
+
+    response.set_cookie(
+        key="access_token",
+        value=access_token,
+        httponly=True,
+        samesite="Lax",
+        secure=False  
+    )
+    return Token(access_token=access_token, token_type="bearer")

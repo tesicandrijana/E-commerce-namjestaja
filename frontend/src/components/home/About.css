@@ -1,0 +1,117 @@
+.about-body {
+  background: #f9f6f1;
+  font-family: 'Poppins', serif;
+  color: #3d2e1e;
+  overflow-x: hidden;
+}
+
+.about-hero {
+  background-image: url('https://koala.sh/api/image/v2-dh73j-yfzej.jpg?width=1216&height=832&dream');
+  background-size: cover;
+  background-position: center;
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.about-hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%; width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.about-title {
+  position: relative;
+  color: #fff;
+  font-size: 3.5rem;
+  z-index: 2;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.about-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+  padding: 50px 30px;
+  background-blend-mode: overlay;
+}
+
+.about-subtitle {
+  font-size: 2rem;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  padding-left: 14px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+.about-link {
+  color: #b76e4b;
+  text-decoration: underline;
+}
+
+.about-link:hover {
+  color: #8f4a2f;
+}
+
+.about-step {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin: 30px 0;
+  padding: 20px;
+  background: #fffdfb;
+  border-left: 5px solid #e0c3a3;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.about-step::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -20px;
+  height: 100%;
+  width: 20px;
+  background-size: cover;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.about-step:hover {
+  transform: scale(1.02);
+  background-color: #fefaf6;
+}
+
+/* Stair-step offsets */
+.about-step-1 { margin-left: 0px; }
+.about-step-2 { margin-left: 30px; }
+.about-step-3 { margin-left: 60px; }
+.about-step-4 { margin-left: 90px; }
+.about-step-5 { margin-left: 120px; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .about-step,
+  .about-step-1,
+  .about-step-2,
+  .about-step-3,
+  .about-step-4,
+  .about-step-5 {
+    margin-left: 0;
+  }
+
+  .about-title {
+    font-size: 2.5rem;
+  }
+
+  .about-subtitle {
+    font-size: 1.5rem;
+  }
+}

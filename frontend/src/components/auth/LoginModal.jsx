@@ -1,12 +1,14 @@
 // src/context/LoginModal.jsx
 import React, { useState } from "react";
 import { useAuth } from "./AuthProvider";
+import { useCart } from "../../contexts/CartContext"; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginModal.css";
 
 function LoginModal({ role = "customer", onClose }) {
   const { handleLogin } = useAuth();
+  const { fetchCart } = useCart(); 
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -35,6 +37,9 @@ function LoginModal({ role = "customer", onClose }) {
           password: formData.password,
         });
 
+        // <-- IMPORTANT: fetch cart right after login to update cart badge
+        await fetchCart();
+
         const userRole = response.role || role;
 
         if (userRole === "admin") {
@@ -47,7 +52,7 @@ function LoginModal({ role = "customer", onClose }) {
           navigate("/delivery-dashboard");
         } else {
           // default to customer dashboard or homepage
-          navigate("/");
+          navigate("/products");
         }
 
         onClose();

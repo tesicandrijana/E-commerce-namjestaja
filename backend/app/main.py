@@ -6,8 +6,7 @@ from app.routers import user, product, category, order, review, discount, materi
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart
-
+from app.routers import user, product, category, order, order_item, review, discount, material, cart, shipping, product_image
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
@@ -43,6 +42,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Register routers
 app.include_router(user.router, prefix="/users", tags=["Users"])
 app.include_router(product.router, prefix="/products", tags=["Products"])
+app.include_router(product_image.router, prefix="/product-images", tags=["ProductImage"])
 app.include_router(category.router, prefix="/categories", tags=["Categories"])
 app.include_router(order.router, prefix="/orders", tags=["Orders"])
 app.include_router(order_item.router, prefix="/order_item", tags=["Order_item"])
@@ -51,6 +51,10 @@ app.include_router(discount.router, prefix="/discounts", tags=["Discounts"])
 app.include_router(material.router, prefix="/materials", tags=["Materials"])
 app.include_router(cart.router, prefix="/cart", tags=["Cart"])
 app.include_router(support_complaints.router, prefix="/support/complaints", tags=["Support - Complaints"])
+app.include_router(shipping.router, prefix="/shipping", tags=["Shipping"])
+
+"""app.include_router(checkout.router, prefix="/checkout", tags=["Checkout"])"""
+
 
 @app.get("/")
 def read_root():

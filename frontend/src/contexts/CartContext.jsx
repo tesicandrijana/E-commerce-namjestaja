@@ -1,142 +1,120 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
-// Create the Cart context
 const CartContext = createContext();
 
-// Hook to access cart context easily
 export function useCart() {
   return useContext(CartContext);
 }
 
-// CartProvider component that holds cart state and functions
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
+  const [cartQuantity, setCartQuantity] = useState(0);
 
-  // Fetch initial cart items on mount (optional)
-  useEffect(() => {
-    async function fetchCart() {
-      try {
-        const res = await fetch("http://localhost:8000/cart");
-        if (!res.ok) throw new Error("Failed to fetch cart");
-        const data = await res.json();
-        setCartItems(data);
-      } catch (error) {
-        console.error("Fetch cart error:", error);
-      }
+  // Fetch cart items from backend
+  const fetchCart = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/cart/", {
+        withCredentials: true,
+      });
+      setCartItems(res.data);
+      setCartQuantity(res.data.reduce((sum, item) => sum + item.quantity, 0));
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+      setCartItems([]);
+      setCartQuantity(0);
     }
+  };
+
+  // Add product to cart
+  const addToCart = async (productId, quantity = 1) => {
+    try {
+      // API expects payload { product_id, quantity }
+      const res = await axios.post(
+        "http://localhost:8000/cart/add",
+        { product_id: productId, quantity },
+        { withCredentials: true }
+      );
+
+      // Update cart items with returned cart item or refetch
+      // Here we just refetch full cart for simplicity
+      await fetchCart();
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
+
+  // Remove cart item by cart_item_id
+  const removeFromCart = async (cartItemId) => {
+    try {
+      await axios.delete(`http://localhost:8000/cart/${cartItemId}`, {
+        withCredentials: true,
+      });
+      setCartItems((prev) => {
+        const updated = prev.filter((item) => item.id !== cartItemId);
+        setCartQuantity(updated.reduce((sum, item) => sum + item.quantity, 0));
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to remove item from cart:", error);
+    }
+  };
+
+  // Update quantity of a cart item
+  const updateCartItem = async (cartItemId, quantity) => {
+    try {
+      if (quantity <= 0) {
+        await removeFromCart(cartItemId);
+        return;
+      }
+      const res = await axios.patch(
+        `http://localhost:8000/cart/${cartItemId}`,
+        { quantity },
+        { withCredentials: true }
+      );
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id === cartItemId ? res.data : item
+        )
+      );
+      setCartQuantity(
+        cartItems.reduce((sum, item) =>
+          item.id === cartItemId ? sum + quantity : sum + item.quantity, 0)
+      );
+    } catch (error) {
+      console.error("Failed to update cart item:", error);
+    }
+  };
+
+  // Clear local cart state
+  const clearCart = async () => {
+  try {
+    await axios.delete("http://localhost:8000/cart/clear", { withCredentials: true });
+    setCartItems([]);
+    setCartQuantity(0);
+  } catch (error) {
+    console.error("Failed to clear cart:", error);
+  }
+};
+
+  // Load cart on mount
+  useEffect(() => {
     fetchCart();
   }, []);
 
-  // Add product to cart, or increase quantity if already exists
-  async function addToCart(product, quantity = 1) {
-    try {
-      const response = await fetch("http://localhost:8000/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add auth token here if needed
-        },
-        body: JSON.stringify({ product_id: product.id, quantity }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to add to cart: ${response.statusText}`);
-      }
-
-      const updatedCartItem = await response.json();
-
-      setCartItems((prevItems) => {
-        const index = prevItems.findIndex(
-          (item) => item.product_id === updatedCartItem.product_id
-        );
-        if (index >= 0) {
-          // Update existing item
-          const newItems = [...prevItems];
-          newItems[index] = updatedCartItem;
-          return newItems;
-        } else {
-          // Add new item
-          return [...prevItems, updatedCartItem];
-        }
-      });
-    } catch (error) {
-      console.error("Add to cart error:", error);
-    }
-  }
-
-  // Remove item from cart
-  async function removeFromCart(productId) {
-    try {
-      const response = await fetch(`http://localhost:8000/cart/remove/${productId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to remove from cart: ${response.statusText}`);
-      }
-
-      setCartItems((prevItems) =>
-        prevItems.filter((item) => item.product_id !== productId)
-      );
-    } catch (error) {
-      console.error("Remove from cart error:", error);
-    }
-  }
-
-  // Update quantity of a cart item
-  async function updateCartItem(productId, quantity) {
-    try {
-      const response = await fetch(`http://localhost:8000/cart/update/${productId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update cart item: ${response.statusText}`);
-      }
-
-      const updatedCartItem = await response.json();
-
-      setCartItems((prevItems) => {
-        const index = prevItems.findIndex((item) => item.product_id === productId);
-        if (index >= 0) {
-          const newItems = [...prevItems];
-          newItems[index] = updatedCartItem;
-          return newItems;
-        }
-        return prevItems;
-      });
-    } catch (error) {
-      console.error("Update cart item error:", error);
-    }
-  }
-
-  // Clear the entire cart
-  async function clearCart() {
-    try {
-      const response = await fetch(`http://localhost:8000/cart/clear`, {
-        method: "POST",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to clear cart: ${response.statusText}`);
-      }
-
-      setCartItems([]);
-    } catch (error) {
-      console.error("Clear cart error:", error);
-    }
-  }
-
-  // Context value that will be available to all components using useCart()
-  const value = {
-    cartItems,
-    addToCart,
-    removeFromCart,
-    updateCartItem,
-    clearCart,
-  };
-
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider
+      value={{
+        cartItems,
+        cartQuantity,
+        fetchCart,
+        addToCart,
+        removeFromCart,
+        updateCartItem,
+        clearCart,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
 }

@@ -13,8 +13,7 @@ from app.crud.product_image import (
 )
 from app.dependencies import get_db  # your session dependency
 
-router = APIRouter(prefix="/product_images", tags=["Product Images"])
-
+router = APIRouter()
 
 @router.post("/", response_model=ProductImageRead, status_code=status.HTTP_201_CREATED)
 def create_image(product_image: ProductImageCreate, db: Session = Depends(get_db)):
