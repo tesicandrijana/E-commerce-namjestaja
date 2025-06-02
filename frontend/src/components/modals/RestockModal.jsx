@@ -27,9 +27,10 @@ function RestockModal({ id,onClose }) {
             <div className="modal-content">
                 <h2>Restock Product</h2>
                 <form onSubmit={handleSubmit(submitHandler)}>
-                    <label>
+                    <label className="restock-label">
                         Enter quantity to add:
                         <input
+                            className="restock-input"
                             type="number"
                             {...register('added', { required: true, min: 1 })}
                             placeholder="e.g. 10"

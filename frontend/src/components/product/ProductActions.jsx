@@ -4,12 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import RestockModal from '../modals/RestockModal';
 import ConfirmModal from '../modals/ConfirmModal';
+import ProductForm from './ProductForm';
 
 function ProductActions({ id, stock }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [editFormDrawerOpen, setIsEditFormDrawerOpen] = useState(false);
+
+  const openEditDrawer = () => {
+    setIsEditFormDrawerOpen(true);
+  }
 
 
   const onDelete = async () => {
@@ -39,7 +45,7 @@ function ProductActions({ id, stock }) {
 
         <>
           <button className="action-btn restock-btn" onClick={() => setIsModalOpen(true)}>Restock</button>
-          <button className="action-btn edit-product-btn" onClick={()=> navigate(`/products/${id}/edit`)}>Edit</button>
+          <button className="action-btn edit-product-btn" onClick={/* ()=> navigate(`/products/${id}/edit`) */openEditDrawer}>Edit</button>
           <button className="action-btn delete-product-btn" onClick={()=> setIsConfirmModalOpen(true)}>Delete</button>
         </>
       )}
@@ -63,6 +69,7 @@ function ProductActions({ id, stock }) {
         cancelText="Cancel"
       />
       )}
+      <ProductForm mode={"edit"} id={id} open={editFormDrawerOpen} onClose={()=>setIsEditFormDrawerOpen(false)} />
       
     </div>
   );

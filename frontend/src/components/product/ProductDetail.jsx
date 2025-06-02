@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom'
 import axios from 'axios'
 import './ProductDetail.css'
 import ProductActions from './ProductActions'
+import { Drawer } from '@mui/material';
 import ImageCarousel from './ImageCarousel'
 
-function ProductDetail() {
+function ProductDetail({id}) {
   const [product, setProduct] = useState()
   const [material, setMaterial] = useState()
-  const { id } = useParams()
 
   useEffect(() => {
     const fetchProduct = async () => {

@@ -3,12 +3,13 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import './ProductForm.css';
 import Dropzone from 'react-dropzone'
+import { Drawer } from '@mui/material';
+
 import axios from 'axios'
 
-function ProductForm({ mode }) {
+function ProductForm({ mode, open, onClose, id }) {
     const [categories, setCategories] = useState()
     const [materials, setMaterials] = useState()
-    const { id } = useParams()
     const [pictures, setPictures] = useState()
     const [droppedFiles, setDroppedFiles] = useState([]);
 
@@ -17,7 +18,7 @@ function ProductForm({ mode }) {
     const { register, handleSubmit, reset } = useForm();
 
     const createProduct = async (formData) => {
-
+        console.log("creating product")
         try {
             const response = await axios.post("http://localhost:8000/products", formData,
                 {
@@ -75,12 +76,13 @@ function ProductForm({ mode }) {
     }
 
     const fetchProduct = async () => {
+        console.log("Fetch product")
         try {
             if (id) {
                 console.log("Product id: ", id)
                 const response = await axios.get(`http://localhost:8000/products/${id}`);
                 setPictures(response.data.images.map(img =>
-                    `http://localhost:8000/${img.image_url}`
+                    `http://localhost:8000/static/product_images/${img.image_url}`
                 ));
 
                 reset({
@@ -102,6 +104,7 @@ function ProductForm({ mode }) {
     }
 
     const onSubmit = async (data) => {
+        console.log("On submit")
         const formData = new FormData();
         for (const key in data) {
             formData.append(key, data[key])
@@ -135,104 +138,125 @@ function ProductForm({ mode }) {
 
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="product-form">
-            <h1 className="form-title">{mode === "edit" ? "Edit Product" : "Create Product"}</h1>
-            <div className="form">
-                <section class='left-section'>
-                    <label>
-                        Name
-                        <input {...register("name", { required: true })} />
-                    </label>
+        <Drawer
+            anchor="right"
+            open={open}
+            onClose={onClose}
+            PaperProps={{
+                sx: {
+                    width: {
+                        lg:'60%',
+                        xs: 300,
+                        md:'100%',
+                    },
+                    height:{
+                        xs:'100%',
+                        md: '100%',
+                    },
+                    padding: 0,
+                    boxSizing: 'border-box',
+                    borderRadius:' 15px 0px 0px 15px '
+                }
+            }}
+        >
+            <form onSubmit={handleSubmit(onSubmit)} className="product-form">
+                <h1 className="form-title">{mode === "edit" ? "Edit Product" : "Create Product"}</h1>
+                <div className="form">
+                    <section class='left-section'>
+                        <label>
+                            Name
+                            <input {...register("name", { required: true })} />
+                        </label>
 
-                    <label>
-                        Description
-                        <textarea type="text" {...register("description")} rows={4} />
-                    </label>
-                    <label>
-                        Category
-                        <select {...register("category_id", { required: true })}>
-                            {
-                                categories?.map((category) => (
-                                    <option key={category.id} value={category.id}>{category.name}</option>
-                                )
-                                )
-                            }
-                        </select>
-                    </label>
-                    <label>
-                        Price
-                        <input {...register("price", { required: true })} />
-                    </label>
+                        <label>
+                            Description
+                            <textarea type="text" {...register("description")} rows={4} />
+                        </label>
+                        <label>
+                            Category
+                            <select {...register("category_id", { required: true })}>
+                                {
+                                    categories?.map((category) => (
+                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                    )
+                                    )
+                                }
+                            </select>
+                        </label>
+                        <label>
+                            Price
+                            <input {...register("price", { required: true })} />
+                        </label>
 
-                    <label>
-                        Quantity
-                        <input type="number" {...register("quantity", { min: 0 })} />
-                    </label>
-                </section>
-                <div className='divider'>
+                        <label>
+                            Quantity
+                            <input type="number" {...register("quantity", { min: 0 })} />
+                        </label>
+                    </section>
+                    <div className='divider'>
 
+                    </div>
+
+                    <section>
+                        <div class="size">
+                            <label>
+                                Length
+                                <input {...register("length")} />
+                            </label>
+
+                            <label>
+                                Width
+                                <input {...register("width")} />
+                            </label>
+
+                            <label>
+                                Height
+                                <input {...register("height")} />
+                            </label>
+
+                        </div>
+
+                        <label>
+                            Material
+                            <select {...register("material_id", { required: true })}>
+                                {
+                                    materials?.map((material) => (
+                                        <option key={material.id} value={material.id}>{material.name}</option>
+                                    )
+                                    )
+                                }
+                            </select>
+                        </label>
+
+                        <Dropzone onDrop={acceptedFiles => onChangeDrop(acceptedFiles)}>
+                            {({ getRootProps, getInputProps }) => (
+                                <section>
+                                    <div {...getRootProps()}>
+                                        <input {...getInputProps()} />
+                                        <label>
+                                            Upload photos
+                                            <div className='dropzone'>
+                                                Drag images here or click to upload
+                                            </div>
+                                        </label>
+                                    </div>
+                                </section>
+                            )}
+                        </Dropzone>
+
+                        <div className="image-preview">
+                            {pictures?.map((src, index) => (
+                                <img key={index} src={src} alt={`preview-${index}`} width={100} />
+                            ))}
+                        </div>
+                        <div className='submit'>
+                            <input type="submit" value="Submit" className="submit-btn" />
+                        </div>
+                    </section>
                 </div>
 
-                <section>
-                    <div class="size">
-                        <label>
-                            Length
-                            <input {...register("length")} />
-                        </label>
-
-                        <label>
-                            Width
-                            <input {...register("width")} />
-                        </label>
-
-                        <label>
-                            Height
-                            <input {...register("height")} />
-                        </label>
-
-                    </div>
-
-                    <label>
-                        Material
-                        <select {...register("material_id", { required: true })}>
-                            {
-                                materials?.map((material) => (
-                                    <option key={material.id} value={material.id}>{material.name}</option>
-                                )
-                                )
-                            }
-                        </select>
-                    </label>
-
-                    <Dropzone onDrop={acceptedFiles => onChangeDrop(acceptedFiles)}>
-                        {({ getRootProps, getInputProps }) => (
-                            <section>
-                                <div {...getRootProps()}>
-                                    <input {...getInputProps()} />
-                                    <label>
-                                        Upload photos
-                                        <div className='dropzone'>
-                                            Drag images here or click to upload
-                                        </div>
-                                    </label>
-                                </div>
-                            </section>
-                        )}
-                    </Dropzone>
-
-                    <div className="image-preview">
-                        {pictures?.map((src, index) => (
-                            <img key={index} src={src} alt={`preview-${index}`} width={100} />
-                        ))}
-                    </div>
-                    <div className='submit'>
-                    <input type="submit" value="Submit" className="submit-btn" />
-                    </div>
-                </section>
-            </div>
-
-        </form>
-
+            </form>
+        </Drawer>
     );
 }
 

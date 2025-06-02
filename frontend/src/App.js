@@ -28,7 +28,7 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ProductForm from "./components/product/ProductForm";
-
+import ManagerProductsView from "./pages/manager/ManagerProductsView";
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
 import ComplaintsList from "./pages/support/ComplaintsList";
@@ -46,7 +46,7 @@ const DynamicHeader = () => {
 };
 const OptionalHeader2 = () => {
   const { currentUser } = useAuth();
-  return currentUser?.role !== 'support' ? <Header2 /> : null;
+  return !currentUser || currentUser?.role === 'customer' ? <Header2 />: null;
 };
 const DynamicFooter = () => {
   const { currentUser } = useAuth();
@@ -68,7 +68,7 @@ function App() {
           <Route path="/shop" element={<ProductList />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/products" element={<ProductList />} />
+          {/* <Route path="/products" element={<ProductList />} /> */}
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />  
 
@@ -89,6 +89,7 @@ function App() {
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
             <Route path="/products/:id/edit" element={<ProductForm mode="edit" />} />
             <Route path="/products/create" element={<ProductForm mode="create" />} />
+            <Route path="/products" element={<ManagerProductsView />}/>
           </Route>
 
         {/* Support Pages */}

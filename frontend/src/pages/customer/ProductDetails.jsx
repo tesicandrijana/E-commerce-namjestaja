@@ -139,7 +139,7 @@ class ProductDetails extends React.Component {
       <div className="pd-container">
        {/* <div className="pd-info-wrapper">
             <div className="pd-image"> */}
-            <ProductDetail/>
+            <ProductDetail id={parseInt(this.props.match.params.id, 10)}/>
            {/* <img
               src={
                 product.image?.startsWith("http")

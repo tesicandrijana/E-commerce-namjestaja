@@ -2,6 +2,8 @@
 from typing import Optional
 from sqlmodel import SQLModel
 from decimal import Decimal
+from sqlmodel import SQLModel, Field
+
 
 
 class OrderItemBase(SQLModel):
