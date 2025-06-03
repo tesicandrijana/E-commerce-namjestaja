@@ -1,12 +1,14 @@
 // src/context/LoginModal.jsx
 import React, { useState } from "react";
 import { useAuth } from "./AuthProvider";
+import { useCart } from "../../contexts/CartContext"; 
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginModal.css";
 
 function LoginModal({ role = "customer", onClose }) {
   const { handleLogin } = useAuth();
+  const { fetchCart } = useCart(); 
   const [isLogin, setIsLogin] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
@@ -25,7 +27,6 @@ function LoginModal({ role = "customer", onClose }) {
   };
 
   async function handleSubmit(e) {
-    console.log("LOG IN")
     e.preventDefault();
     setErrorMessage("");
 
@@ -36,6 +37,9 @@ function LoginModal({ role = "customer", onClose }) {
           password: formData.password,
         });
 
+        // <-- IMPORTANT: fetch cart right after login to update cart badge
+        await fetchCart();
+
         const userRole = response.role || role;
 
         if (userRole === "admin") {
@@ -43,11 +47,12 @@ function LoginModal({ role = "customer", onClose }) {
         } else if (userRole === "manager") {
           navigate("/manager-dashboard");
         } else if (userRole === "support") {
-          navigate("/support");
+          navigate("/support-dashboard");
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {
-          navigate("/");
+          // default to customer dashboard or homepage
+          navigate("/products");
         }
 
         onClose();
@@ -94,8 +99,8 @@ function LoginModal({ role = "customer", onClose }) {
       <div className="login-modal">
         <h2>
           {isLogin
-            ? `Log In`
-            : `Sign Up`}
+            ? `Log In as ${role.charAt(0).toUpperCase() + role.slice(1)}`
+            : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
         </h2>
         <form onSubmit={handleSubmit}>
           {!isLogin && (
@@ -153,7 +158,7 @@ function LoginModal({ role = "customer", onClose }) {
           </div>
         </form>
 
-        
+        {role === "customer" && (
           <div className="toggle-form">
             <p>
               {isLogin
@@ -167,7 +172,7 @@ function LoginModal({ role = "customer", onClose }) {
               </span>
             </p>
           </div>
-        
+        )}
       </div>
     </div>
   );

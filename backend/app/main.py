@@ -5,7 +5,7 @@ from app.database import engine, SessionDep
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart,support, complaint, support_orders, chat_ws
+from app.routers import user, product, category, order, order_item, review, discount, material, cart,support, complaint, support_orders, chat_ws, shipping
 from sqlalchemy.orm import configure_mappers
 
 

@@ -7,7 +7,7 @@ import { CartProvider } from './contexts/CartContext';
 import Header2 from "./components/Header2";
 import Header from "./components/Header";
 import SupportHeader from "./components/support/SupportHeader";   //header za zaposlenikaa
-import Footer from "./components/Footer"; // ✅ Added Footer
+import Footer from "./components/Footer"; 
 import SupportFooter from "./components/support/SupportFooter";   //footer za zaposlenika
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
@@ -18,6 +18,8 @@ import Contact from "./pages/customer/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";  
+import CheckOut from "./pages/customer/CheckOut"
+import Orders from "./pages/customer/Orders";
 import CustomerComplaintChat from "./pages/customer/CustomerComplaintChat";
 
 // Pages (Admin)
@@ -69,12 +71,13 @@ function App() {
         <Routes>
           {/* Shared Pages */}
           <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<ProductList />} />
+          <Route path="/shop-products" element={<ProductList />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          {/* <Route path="/products" element={<ProductList />} /> */}
-          <Route path="/products/:id" element={<ProductDetails />} />
+          <Route path="/product-details/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />  
+          <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/orders" element={<Orders />} />
 
           {/* Customer Pages */}
           <Route element={<ProtectedRoute allowedRoles={"customer"} />}>

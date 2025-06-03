@@ -64,7 +64,7 @@ class Product(SQLModel, table=True):
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
-    discounts: List["Discount"] = Relationship(back_populates="product")
+    discounts: List["Discounts"] = Relationship(back_populates="product")
     reviews: List["Review"] = Relationship(back_populates="product")
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
@@ -78,7 +78,7 @@ class ProductImage(SQLModel, table=True):
     product: Product = Relationship(back_populates="images")
 
 
-class Discount(SQLModel, table=True):
+class Discounts(SQLModel, table=True):
     __tablename__ = "discounts"
 
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -87,7 +87,8 @@ class Discount(SQLModel, table=True):
     start_date: date
     end_date: date
 
-    product: Optional[Product] = Relationship(back_populates="discounts")
+    product: Optional["Product"] = Relationship(back_populates="discounts")
+
 
 class CartItem(SQLModel, table=True):
     __tablename__ = "cart_items"
@@ -100,7 +101,7 @@ class CartItem(SQLModel, table=True):
     added_at: datetime = Field(default_factory=datetime.utcnow)
 
     user: Optional[User] = Relationship(back_populates="cart_items")
-    product: Optional[Product] = Relationship()
+    product: Optional[Product] = Relationship(back_populates="cart_items")
 
 
 class Order(SQLModel, table=True):
@@ -110,7 +111,7 @@ class Order(SQLModel, table=True):
     customer_id: int = Field(foreign_key="users.id")
     address: str
     city: str
-    postal_code: int
+    postal_code: str
     date: Optional[datetime] = Field(default_factory=datetime.utcnow)
     status: str = Field(default="pending")
     payment_method: str = Field(default="cash")
@@ -133,6 +134,7 @@ class OrderItem(SQLModel, table=True):
 
     order: Optional[Order] = Relationship(back_populates="items")
     product: Optional[Product] = Relationship(back_populates="order_items")
+
 
 
 class Review(SQLModel, table=True):
@@ -202,3 +204,33 @@ class WorkerRequest(SQLModel, table=True):
     desired_role: str = Field(index=True)
     status: str = Field(default="pending")  # pending, approved, rejected
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class TaxRate(SQLModel, table=True):
+    __tablename__ = "tax_rates"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    country_code: str = Field(max_length=2, unique=True)# e.g., "DE", "FR"
+    vat_rate: Decimal  # e.g., 0.19
+    effective_from: date
+
+
+class PostalCode(SQLModel, table=True):
+    __tablename__ = "postal_codes"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    country_code: str = Field(max_length=2, foreign_key="country_calling_codes.country_code")
+    postal_code: str = Field(max_length=10)
+    city: str = Field(max_length=100)
+
+    calling_code: Optional["CountryCallingCode"] = Relationship(back_populates="postal_codes")
+    
+
+class CountryCallingCode(SQLModel, table=True):
+    __tablename__ = "country_calling_codes"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    country_code: str = Field(max_length=2, unique=True)
+    calling_code: str
+
+    postal_codes: list[PostalCode] = Relationship(back_populates="calling_code")

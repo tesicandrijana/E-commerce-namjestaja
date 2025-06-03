@@ -28,15 +28,13 @@ export default function AuthProvider({ children }) {
     }, [])
 
     async function handleLogin(data) {
-        console.log(data)
         return axios.post("http://localhost:8000/users/login", data, {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         withCredentials: true
     })
-    .then((r) => {
-        console.log(r)
+    .then(() => {
         return fetchUser(); 
     })
     .catch((e) => {

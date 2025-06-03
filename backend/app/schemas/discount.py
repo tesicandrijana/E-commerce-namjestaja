@@ -1,20 +1,19 @@
-from typing import Optional, List
-from decimal import Decimal
 from sqlmodel import SQLModel, Field
-from pydantic import field_validator
 from datetime import date
+from typing import Optional
 
 class DiscountBase(SQLModel):
     product_id: int
-    amount: Decimal = Field(gt=0)
+    amount: float
     start_date: date
     end_date: date
-    
+
 class DiscountCreate(DiscountBase):
     pass
 
-class Discount(DiscountBase):
-    id: int
+class Discount(DiscountBase, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+
 
     class Config:
         from_attributes = True

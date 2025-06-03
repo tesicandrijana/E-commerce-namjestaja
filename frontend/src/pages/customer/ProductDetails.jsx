@@ -1,224 +1,170 @@
-import React from "react";
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useCart } from "../../contexts/CartContext";
-import { FaShoppingCart, FaPaperPlane } from "react-icons/fa";
-import ProductDetail from "../../components/product/ProductDetail"
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import ReviewModal from "../../components/modals/ReviewModal";
+import ProductDetail from "../../components/product/ProductDetail";
+import StarRating from "../../components/modals/StarRating";
 import "./ProductDetails.css";
 
-// StarRating class component
-class StarRating extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hover: 0 };
-  }
+const ProductDetails = () => {
+  const { id } = useParams();
 
-  getClassName(star) {
-    const { rating, editable } = this.props;
-    const { hover } = this.state;
+  const [product, setProduct] = useState(null);
+  const [rating, setRating] = useState(null);
+  const [reviewCount, setReviewCount] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [submitError, setSubmitError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-    if (editable) {
-      if (hover >= star) return "pd-star filled editable";
-      if (!hover && rating >= star) return "pd-star filled editable";
-      return "pd-star editable";
-    }
-    return rating >= star ? "pd-star filled" : "pd-star";
-  }
-
-  render() {
-    const { editable, onChange } = this.props;
-    const stars = [1, 2, 3, 4, 5];
-
-    return (
-      <div className="pd-star-rating">
-        {stars.map((star) => (
-          <span
-            key={star}
-            className={this.getClassName(star)}
-            onMouseEnter={() => editable && this.setState({ hover: star })}
-            onMouseLeave={() => editable && this.setState({ hover: 0 })}
-            onClick={() => editable && onChange(star)}
-            role={editable ? "button" : undefined}
-            aria-label={editable ? `Set rating to ${star}` : undefined}
-            style={{ cursor: editable ? "pointer" : "default" }}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-    );
-  }
-}
-
-class ProductDetails extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      product: null,
-      loading: true,
-      error: null,
-      reviewRating: 0,
-      reviewComment: "",
-      submitError: null,
-      submitSuccess: false,
+  // Fetch product details
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/products/${id}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setProduct(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
-  }
 
-  componentDidMount() {
-    this.fetchProduct();
-  }
+    fetchProduct();
+  }, [id]);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.id !== this.props.match.params.id) {
-      this.fetchProduct();
+  // Fetch average rating
+  const fetchRating = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/reviews/product/${id}/rating`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          setRating(null);
+          setReviewCount(0);
+        } else {
+          throw new Error("Failed to fetch rating");
+        }
+      } else {
+        const data = await response.json();
+        setRating(data.average_rating || null);
+        setReviewCount(data.review_count || 0);
+      }
+    } catch (err) {
+      console.error("Rating fetch error:", err.message);
+      setRating(null);
+      setReviewCount(0);
     }
-  }
-
-  fetchProduct() {
-    const productId = parseInt(this.props.match.params.id, 10);
-
-    this.setState({ loading: true, error: null, product: null });
-
-    fetch(`http://localhost:8000/products/${productId}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        this.setState({ product: data, loading: false });
-      })
-      .catch((err) => {
-        this.setState({ error: err.message, loading: false });
-      });
-  }
-
-  handleSubmitReview = (e) => {
-    e.preventDefault();
-
-    const { reviewRating, reviewComment } = this.state;
-    const productId = parseInt(this.props.match.params.id, 10);
-
-    this.setState({ submitError: null, submitSuccess: false });
-
-    if (reviewRating === 0) {
-      this.setState({ submitError: "Please select a rating." });
-      return;
-    }
-
-    fetch(`http://localhost:8000/products/${productId}/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rating: reviewRating, comment: reviewComment }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed to submit review: ${res.statusText}`);
-        return res.json();
-      })
-      .then((updatedProduct) => {
-        this.setState({
-          reviewRating: 0,
-          reviewComment: "",
-          submitSuccess: true,
-          product: updatedProduct,
-        });
-      })
-      .catch((err) => this.setState({ submitError: err.message }));
   };
 
-  render() {
-    const {
-      product, loading, error, reviewRating, reviewComment,
-      submitError, submitSuccess,
-    } = this.state;
-    const { cart } = this.props;
+  // Fetch all reviews
+  const fetchReviews = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/reviews/product/${id}`);
+      if (!response.ok) throw new Error(`Failed to fetch reviews: ${response.status}`);
+      const data = await response.json();
+      setReviews(data);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
-    if (loading) return <p>Loading product...</p>;
-    if (error) return <p>Error loading product: {error}</p>;
-    if (!product) return <p>Product not found.</p>;
+  // Fetch rating and reviews on load or id change
+  useEffect(() => {
+    fetchRating();
+    fetchReviews();
+  }, [id]);
 
-    return (
-      <div className="pd-container">
-       {/* <div className="pd-info-wrapper">
-            <div className="pd-image"> */}
-            <ProductDetail id={parseInt(this.props.match.params.id, 10)}/>
-           {/* <img
-              src={
-                product.image?.startsWith("http")
-                  ? product.image
-                  : product.image?.startsWith("/static")
-                  ? `http://localhost:8000${product.image}`
-                  : `http://localhost:8000/static/product_images/${product.image}`
-              }
-              alt={product.name}
-              onError={(e) => {
-                e.target.src = "/fallback-image.png";
-              }}
-            />
-          </div>
+  // Called when review is submitted in ReviewModal
+  const handleReviewSubmitted = () => {
+    fetchRating();
+    fetchReviews();
+    setShowModal(false);
+    setSubmitError(null);
+  };
 
-          <div className="pd-summary">
-            <h1>{product.name}</h1>
-            <p className="pd-description">Category: {product.category?.name || "No category"}</p>
-            <p className="pd-price">${product.price}</p>
+  // Helper to get initials for profile icon
+  const getInitials = (name) => {
+    if (!name) return "?";
+    const parts = name.trim().split(" ");
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
 
-            <StarRating rating={product.rating} />
+  if (loading) return <p>Loading product...</p>;
+  if (error) return <p>Error loading product: {error}</p>;
+  if (!product) return <p>Product not found.</p>;
 
-            <button
-              onClick={() => cart.addToCart(product)}
-              className="pd-add-to-cart"
-            >
-              <FaShoppingCart /> Add to Cart
-            </button> */}
-          {/* </div> 
-        </div>*/}
-
-        <div className="pd-add-review">
-          <h2>Submit a Review</h2>
-          {submitError && <p style={{ color: "red" }}>{submitError}</p>}
-          {submitSuccess && <p style={{ color: "green" }}>Review submitted successfully!</p>}
-
-          <form onSubmit={this.handleSubmitReview}>
-            <label>Rating:</label>
-            <StarRating
-              rating={reviewRating}
-              editable={true}
-              onChange={(rating) => this.setState({ reviewRating: rating })}
-            />
-
-            <label htmlFor="comment">Comment:</label>
-            <textarea
-              id="comment"
-              value={reviewComment}
-              onChange={(e) => this.setState({ reviewComment: e.target.value })}
-              rows={4}
-              placeholder="Write your review here..."
-            />
-
-            <button type="submit" className="pd-submit-review pd-add-to-cart">
-              <FaPaperPlane /> Submit Review
-            </button>
-          </form>
-        </div>
-      </div>
-    );
+  function stringToColor(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
+  // Convert hash to an HSL color (for nice spread of colors)
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 60%, 50%)`;
 }
 
-// Wrapper for hooks
-function ProductDetailsWrapper(props) {
-  const params = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const cart = useCart();
 
   return (
-    <ProductDetails
-      {...props}
-      match={{ params }}
-      navigate={navigate}
-      location={location}
-      cart={cart}
-    />
-  );
-}
+    <div className="pd-container">
+      <ProductDetail id={product.id} product={product} rating={rating} reviewCount={reviewCount} />
+    <div className="review-rating-area">
+  {rating !== null && (
+    <div className="average-rating">
+      Rating : <span className="rating-value">{rating.toFixed(1)} / 5</span>
+      <span>({reviewCount} reviews)</span>
+    </div>
+  )}
 
-export default ProductDetailsWrapper;
+  {submitError && <p className="error-message">{submitError}</p>}
+
+  <div className="reviews-section">
+    <h3>Customer Reviews</h3>
+    {reviews.length === 0 ? (
+      <p>No reviews yet.</p>
+    ) : (
+      <ul className="reviews-list">
+        {reviews.map((review) => (
+          <li key={review.id} className="review-item">
+            <div
+  className="profile-icon"
+  title={review.customer_name || "Anonymous"}
+  style={{ backgroundColor: stringToColor(review.customer_name || "Anonymous") }}
+>
+  {getInitials(review.customer_name)}
+</div>
+
+
+            <div className="review-content">
+              <strong>{review.customer_name || "Anonymous"}</strong>
+              <div className="star-rating-wrapper">
+                <StarRating rating={review.rating} editable={false} size={18} justifyContent="left" />
+              </div>
+              <p className="review-comment">{review.comment}</p>
+              <small className="review-date">
+                {new Date(review.created_at).toLocaleDateString()}
+              </small>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+
+  <button className="add-to-cart-btn" onClick={() => setShowModal(true)}>
+    Leave a Review
+  </button>
+
+  <ReviewModal
+    productId={product.id}
+    isOpen={showModal}
+    onClose={() => setShowModal(false)}
+    onReviewSubmitted={handleReviewSubmitted}
+  />
+</div> </div>
+  );
+};
+
+export default ProductDetails;

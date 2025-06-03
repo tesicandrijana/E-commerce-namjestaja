@@ -5,6 +5,7 @@ import axios from 'axios';
 import RestockModal from '../modals/RestockModal';
 import ConfirmModal from '../modals/ConfirmModal';
 import ProductForm from './ProductForm';
+import AddToCartButton from '../modals/AddToCartButton';
 
 function ProductActions({ id, stock }) {
   const { currentUser } = useAuth();
@@ -51,13 +52,9 @@ function ProductActions({ id, stock }) {
       )}
 
       {(currentUser?.role === "customer" || !currentUser) && (
-        <button
-          className="action-btn add-to-cart-btn"
-          disabled={stock === 0}
-          title={stock === 0 ? 'Out of stock' : 'Add to Cart'}
-        >{stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-        </button>
+        <AddToCartButton productId={id} stock={stock} />
       )}
+
       {isConfirmModalOpen && (
         <ConfirmModal
         isOpen={isConfirmModalOpen}
@@ -76,3 +73,8 @@ function ProductActions({ id, stock }) {
 }
 
 export default ProductActions;
+
+
+
+
+
