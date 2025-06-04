@@ -59,6 +59,7 @@ function ProductTableActionsPanel({selectedIds, setSelectedIds, fetchProducts,ha
             )}
       {isDiscountModalOpen && (
         <DiscountForm
+          setSelectedIds={setSelectedIds}
           productIds={selectedIds}
           onClose={()=>setIsDiscountModalOpen(false)}
          />

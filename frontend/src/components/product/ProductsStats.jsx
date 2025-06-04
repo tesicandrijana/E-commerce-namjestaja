@@ -1,9 +1,5 @@
 import { Grid } from '@mui/material';
 import ProductStatsCard from './ProductStatsCard';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import StarIcon from '@mui/icons-material/Star';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import ProductTableActionsPanel from './ProductTableActions';
 
 function ProductsStats({stats}) {
   return (

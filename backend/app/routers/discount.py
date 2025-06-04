@@ -1,5 +1,5 @@
 # app/routers/discount.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel  import Session
 from typing import List, Annotated
 from app.crud import discount
@@ -16,6 +16,20 @@ def create_discounts(session: SessionDep, discount_data: list[discount_schema.Di
     return discount_service.create_discounts(session, discount_data)
 
 
-@router.get("/", response_model=List[discount_schema.Discount])
-def read_discounts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return discount.get_discounts(db, skip=skip, limit=limit)
+@router.get("/", response_model=discount_schema.ReadDiscountsResponse)
+def read_discounts(
+    session: SessionDep,
+    offset: int = 0, 
+    limit: int = 100,
+    sort_by: Annotated[str, Query(enum=["id", "product","amount", "start_date", "end_date"])] = "id",
+    sort_dir: Annotated[str,Query(enum=["asc", "desc"])] = "asc",
+    active: bool | None = None,
+    search:  str | None = None,
+    ):
+
+    return discount_service.get_discounts(session,offset,limit,sort_by, sort_dir,active,search)
+
+
+@router.put("/{discount_id}")
+def edit_discount(session: SessionDep,discount_id:int, discount_data:discount_schema.DiscountUpdate):
+    return discount_service.edit_discount(session,discount_id,discount_data)
