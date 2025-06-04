@@ -30,8 +30,8 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
-import ProductForm from "./components/product/ProductForm";
-import ManagerProductsView from "./pages/manager/ManagerProductsView";
+import ManagerProductsView from "./pages/manager/ManagerProductsView"
+import ManagerDiscountsView from "./pages/manager/ManagerDiscountsView";
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
 import SupportProfile from "./pages/support/SupportProfile";
@@ -97,10 +97,10 @@ function App() {
           {/* Manager Pages */}
           <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
-            <Route path="/products/:id/edit" element={<ProductForm mode="edit" />} />
-            <Route path="/products/create" element={<ProductForm mode="create" />} />
-            <Route path="/products" element={<ManagerProductsView />}/>
+            <Route path="/manager/products" element={<ManagerProductsView />}/>          
+            <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
           </Route>
+
 
         {/* Support Pages */}  
         <Route element={<ProtectedRoute allowedRoles={"support"} />}>

@@ -1,0 +1,22 @@
+.discounts-view-container {
+  display:flex;
+  flex-direction: column;
+  margin: 2% auto;
+  border-radius: 4px;
+  width:80%;
+  overflow-y: hidden;
+}
+
+.discounts-table-nav, .discounts-view-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+ .discounts-view-title{
+  margin-bottom: 1rem;
+ }

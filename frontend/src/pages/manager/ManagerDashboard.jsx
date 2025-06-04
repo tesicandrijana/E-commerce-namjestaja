@@ -20,7 +20,7 @@ function ManagerDashboard() {
           altText="View Products"
           title="View Products"
           description="Click to see all products"
-          onClick={() => navigate("/products")}
+          onClick={() => navigate("/manager/products")}
         />
 
         <Card
@@ -41,6 +41,15 @@ function ManagerDashboard() {
           title="View And Manage Reviews"
           description="Click to View And Manage Reviews"
           onClick={() => navigate("/products/reviews")}
+        />
+        <Card
+          number="03"
+          bgColor="#ff8800"
+          imageSrc="/manager/add-product.jpg"
+          altText="View And Manage Discounts"
+          title="View And Manage Discounts"
+          description="Click to View And Manage Discounts"
+          onClick={() => navigate("/manager/discounts")}
         />
 
       </div>

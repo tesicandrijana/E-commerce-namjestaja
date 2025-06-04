@@ -59,6 +59,7 @@ function ManagerProductsView() {
   const [formDrawerOpen, setFormDrawerOpen] = useState(false);
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
   const [productId, setProductId] = useState();
+  
   const openFormDrawer = () => {
     setFormDrawerOpen(true);
     setProductId(null);
