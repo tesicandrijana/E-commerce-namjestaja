@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { FaShoppingCart, FaSearch, FaTimes } from "react-icons/fa";
-import { useAuth } from "../../components/auth/AuthProvider";
-import LoginModal from "../../components/auth/LoginModal";
+import { FaSearch, FaTimes } from "react-icons/fa";
+import StarRatingOverall from "../../components/modals/StarRatingOverall";
+import AddToCartButton from "../../components/modals/AddToCartButton";
 import "./ProductList.css";
 
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
@@ -11,27 +10,24 @@ const DEFAULT_CATEGORY = { id: 0, name: "All" };
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
+  const [discounts, setDiscounts] = useState([]);
   const [categories, setCategories] = useState([DEFAULT_CATEGORY]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [visibleCount, setVisibleCount] = useState(8);
   const [verticalImages, setVerticalImages] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  const [pendingProduct, setPendingProduct] = useState(null);
+  const [discountsVisible, setDiscountsVisible] = useState({});
 
-  const { currentUser} = useAuth();
   const navigate = useNavigate();
   const { categoryName } = useParams();
 
-  // Fetch categories
   useEffect(() => {
     fetch("http://localhost:8000/categories/")
-      .then((res) => (res.ok ? res.json() : Promise.reject("Failed to fetch categories")))
+      .then((res) => res.json())
       .then((data) => setCategories([DEFAULT_CATEGORY, ...data]))
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
-  // Sync category from URL param after categories load
   useEffect(() => {
     if (categories.length === 0) return;
 
@@ -42,76 +38,50 @@ export default function ProductList() {
       if (cat) {
         setSelectedCategoryId(cat.id);
       } else {
-        // If categoryName param invalid, fallback to All
         setSelectedCategoryId(0);
         navigate("/products", { replace: true });
       }
     } else {
       setSelectedCategoryId(0);
     }
-    setVisibleCount(8);
+    setVisibleCount(15);
   }, [categoryName, categories, navigate]);
 
-  // Fetch products
   useEffect(() => {
     fetch("http://localhost:8000/products/")
-      .then((res) => (res.ok ? res.json() : Promise.reject("Failed to fetch products")))
+      .then((res) => res.json())
       .then((data) => setProducts(data))
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
-  const handleAddToCart = useCallback(
-    async (product) => {
-      if (!currentUser) {
-        setPendingProduct(product);
-        setShowLoginModal(true);
-        return;
-      }
-
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/cart/add",
-          { product_id: product.id, quantity: 1 }, {
-          withCredentials: true
-        }
-
-        );
-
-        alert(`${product.name} added to cart!`);
-        console.log("Add to cart response:", response.data);
-      } catch (error) {
-        console.error("Add to cart error:", error);
-        alert(`Could not add ${product.name} to cart. Please try again.`);
-      }
-    },
-    [currentUser]
-  );
-
-  // Automatically add pending product after login
   useEffect(() => {
-    if (pendingProduct && currentUser) {
-      handleAddToCart(pendingProduct);
-      setPendingProduct(null);
-    }
-  }, [currentUser, pendingProduct, handleAddToCart]);
+    fetch("http://localhost:8000/discounts/")
+      .then((res) => res.json())
+      .then((data) => setDiscounts(data))
+      .catch((err) => console.error("Error fetching discounts:", err));
+  }, []);
 
-  const handleModalClose = () => {
-    setShowLoginModal(false);
-  };
+  const discountMap = useMemo(() => {
+    const map = new Map();
+    discounts.forEach((discount) => {
+      map.set(discount.product_id, discount);
+    });
+    return map;
+  }, [discounts]);
+
+
 
   const handleCategoryClick = (categoryId) => {
     const category = categories.find((cat) => cat.id === categoryId);
     if (category) {
-      const nameForUrl = category.name.toLowerCase();
-      navigate(nameForUrl === "all" ? "/products" : `/products/${nameForUrl}`);
       setSelectedCategoryId(categoryId);
-      setVisibleCount(8);
+      setVisibleCount(15);
       setSearchQuery("");
     }
   };
 
   const handleShowMore = () => {
-    setVisibleCount((prev) => prev + 8);
+    setVisibleCount((prev) => prev + 10);
   };
 
   const handleImageLoad = (e, productId) => {
@@ -137,100 +107,160 @@ export default function ProductList() {
 
   const visibleProducts = filteredProducts.slice(0, visibleCount);
 
+  const toggleDiscountVisibility = (productId) => {
+    setDiscountsVisible((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
+
   return (
     <>
-      <div className="product-list-container">
-        <h1>Our Products</h1>
+      <div className="product-page-background">
+        <div className="product-header-section">
+          <div className="header-overlay">
+            <h1 className="products-heading">Our Products</h1>
+            <div className="category-list-search-container">
+              <div className="filter">
+                {categories.map(({ id, name }) => (
+                  <button
+                    key={id}
+                    onClick={() => handleCategoryClick(id)}
+                    className={`category-btn ${selectedCategoryId === id ? "active" : ""}`}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
 
-        <div className="category-list-search-container">
-          <div className="filter">
-            {categories.map(({ id, name }) => (
-              <button
-                key={id}
-                onClick={() => handleCategoryClick(id)}
-                className={`category-btn ${selectedCategoryId === id ? "active" : ""}`}
-              >
-                {name}
-              </button>
-            ))}
-          </div>
-
-          <div className="search-bar-advanced">
-            <div className={`search-input-wrapper ${searchQuery ? "has-text" : ""}`}>
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="search-input-advanced"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  className="clear-button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Clear search"
-                >
-                  <FaTimes />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="products-grid">
-          {visibleProducts.map((product) => (
-            <div
-              key={product.id}
-              className={`product-card ${verticalImages.has(product.id) ? "vertical" : ""}`}
-            >
-              <Link
-                to={`/products/${product.id}`}
-                className="product-link"
-                style={{ textDecoration: "none", color: "inherit", display: "block" }}
-              >
-                <img
-                  src={getImageUrl(product?.images[0].image_url)}
-                  alt={product.name || "Product image"}
-                  className="product-image"
-                  onLoad={(e) => handleImageLoad(e, product.id)}
-                />
-
-                <div className="product-info">
-                  <h3 className="product-title">{product.name}</h3>
-                  <p className="product-price">
-                    $
-                    {typeof product.price === "number"
-                      ? product.price.toFixed(2)
-                      : product.price}
-                  </p>
-                  <p className="product-rating">
-                    Rating: {product.rating?.toFixed(1) ?? "N/A"} ⭐
-                  </p>
+              <div className="search-bar-advanced">
+                <div className={`search-input-wrapper ${searchQuery ? "has-text" : ""}`}>
+                  <FaSearch className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    className="search-input-advanced"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {searchQuery && (
+                    <button
+                      className="clear-button"
+                      onClick={() => setSearchQuery("")}
+                      aria-label="Clear search"
+                    >
+                      <FaTimes />
+                    </button>
+                  )}
                 </div>
-              </Link>
-
-              <button
-                onClick={() => handleAddToCart(product)}
-                className="add-to-cart-btn"
-                aria-label={`Add ${product.name} to cart`}
-              >
-                <FaShoppingCart /> Add to Cart
-              </button>
+              </div>
             </div>
-          ))}
+          </div>
         </div>
 
-        {visibleCount < filteredProducts.length && (
-          <div className="show-more-wrapper">
-            <button onClick={handleShowMore} className="show-more-btn">
-              Show More <span>➔</span>
-            </button>
+        <div className="products-blurred-background">
+          <div className="products-grid">
+            {visibleProducts.map((product) => {
+              const discount = discountMap.get(product.id);
+              const showDiscountDetails = discountsVisible[product.id];
+
+              return (
+                <div
+                  key={product.id}
+                  className={`product-card ${verticalImages.has(product.id) ? "vertical" : ""}`}
+                >
+                  {discount && (
+                    <div
+                      className="discount-badge"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleDiscountVisibility(product.id);
+                      }}
+                      title="Click to toggle discount details"
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        backgroundColor: "#e63946",
+                        color: "white",
+                        padding: "4px 8px",
+                        borderRadius: "12px",
+                        cursor: "pointer",
+                        userSelect: "none",
+                        fontWeight: "bold",
+                        fontSize: "0.85rem",
+                        zIndex: 10,
+                      }}
+                    >
+                      -{discount.amount}%
+                      {showDiscountDetails && (
+                        <div
+                          className="discount-details"
+                          style={{
+                            marginTop: 6,
+                            backgroundColor: "white",
+                            color: "#e63946",
+                            borderRadius: 8,
+                            padding: "6px 10px",
+                            fontSize: "0.75rem",
+                            fontWeight: "normal",
+                            boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Save {discount.amount}% on this product!
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  <Link
+                    to={`/product-details/${product.id}`}
+                    className="product-link"
+                    style={{ textDecoration: "none", color: "inherit", display: "block" }}
+                  >
+                    <div className="image-wrap">
+                      <img
+                        src={getImageUrl(product?.images[0]?.image_url)}
+                        alt={product.name || "Product image"}
+                        className="product-image"
+                        onLoad={(e) => handleImageLoad(e, product.id)}
+                      />
+                    </div>
+                    <div className="product-info">
+                      <div className="product-title-wrapper">
+                        <h3 className="product-title">{product.name}</h3>
+                        <div className="product-title-tooltip">{product.name}</div>
+                      </div>
+                      <div className="rating-price">
+                        <p className="product-price">
+                          {typeof product.price === "number"
+                            ? product.price.toFixed(2)
+                            : product.price}{" "}
+                          KM
+                        </p>
+                        <p className="product-rating">
+                          <StarRatingOverall productId={product.id} size={18} />
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <AddToCartButton productId={product.id} stock={product.quantity} />
+                </div>
+              );
+            })}
           </div>
-        )}
+
+          {visibleCount < filteredProducts.length && (
+            <div className="show-more-wrapper">
+              <button onClick={handleShowMore} className="show-more-btn">
+                Show More <span>➔</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
-      {showLoginModal && <LoginModal role="customer" onClose={handleModalClose} />}
     </>
   );
 }

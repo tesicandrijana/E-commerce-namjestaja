@@ -34,8 +34,7 @@ export default function AuthProvider({ children }) {
         },
         withCredentials: true
     })
-    .then((r) => {
-        console.log(r)
+    .then(() => {
         return fetchUser(); 
     })
     .catch((e) => {

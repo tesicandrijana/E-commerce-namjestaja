@@ -60,6 +60,18 @@ def login_for_access_token(session: SessionDep, form_data: Annotated[OAuth2Passw
     }
     return user_service.login_for_access_token(session, login_data,response)
 
+
+# Login SAMO ZA CUSTOMERA    -----  CART-ICON IN HEADER
+@router.post("/login/customer")
+def login_for_access_token_customer(session: SessionDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response) -> Token:
+    login_data = {
+        "email": form_data.username,
+        "password": form_data.password,
+    }
+    return user_service.login_for_access_token_customer(session, login_data,response)
+
+
+
 @router.post("/logout")
 def logout(response: Response):
     return user_service.logout(response)

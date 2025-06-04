@@ -8,7 +8,7 @@ class DiscountBase(SQLModel):
     amount: Decimal = Field(ge=0)
     start_date: date
     end_date: date
-    
+
 class DiscountCreate(DiscountBase):
     pass
 

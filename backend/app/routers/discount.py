@@ -8,7 +8,6 @@ from app.services import discount_service
 from app.dependencies import get_db
 
 router = APIRouter()
-
 SessionDep = Annotated[Session, Depends(get_db)]
 
 @router.post("/")

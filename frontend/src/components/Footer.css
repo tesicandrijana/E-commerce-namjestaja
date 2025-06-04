@@ -1,7 +1,8 @@
 .footer-container {
   position: relative;
   overflow: hidden;
-  min-height: 400px; /* ensure enough height for background image */
+  min-height: 400px;
+  width: 100%; /* ensure enough height for background image */
 }
 
 .footer-bg-image {
