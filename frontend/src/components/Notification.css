@@ -1,0 +1,74 @@
+.notification-bell {
+  position: relative;
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.bell-icon {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: relative;
+  color: #eb8621;
+  transition: transform 0.2s;
+}
+
+.bell-icon:hover {
+  transform: scale(1.1);
+  color: #ee9842;
+}
+
+.badge {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  background: #e22727ea; /* Crvena */
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  font-weight: bold;
+  box-shadow: 0 0 0 2px white;
+   box-shadow: 
+    
+    0 0 8px 3px #f85656aa;    /* crveni sjaj */
+}
+
+.notif-dropdown {
+  position: absolute;
+  right: -100px;
+  top: 120%;
+  background-color: white;
+  width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  z-index: 10;
+  animation: fadeIn 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.notif-item {
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  color: #111827;
+  transition: background 0.2s;
+}
+
+.notif-item:hover {
+  background-color: #f0f9ff; /* svijetloplava na hover */
+}
+
+/* Animacija */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

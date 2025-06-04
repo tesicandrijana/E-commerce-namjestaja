@@ -52,8 +52,8 @@ function LoginModal({ role = "customer", onClose }) {
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {
-          // default to customer dashboard or homepage
-          navigate("/products");
+          //preusmjeri na pocetnu?
+          navigate("/");
         }
 
         onClose();

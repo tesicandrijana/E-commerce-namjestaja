@@ -79,10 +79,56 @@ async def chat_endpoint(websocket: WebSocket, complaint_id: int, db: Session = D
                     "message": content,
                     "timestamp": msg.timestamp.isoformat()
                 })
+            
+            #salje notif u globalni notification kanal??
+            notif_payload = {
+                "from": user.name,
+                "receiver_id": receiver_id,
+                "message": content,
+                "complaint_id": complaint.id,
+            }
+            for user_id, conn in notification_connections:   # posalji notif samo onom ko je receiver
+                if user_id == receiver_id:
+                    await conn.send_json(notif_payload)
+
+
 
     except WebSocketDisconnect:
         active_connections[key].remove(websocket)
         print("Disconnected from chat:", key)
+
+notification_connections = []  #lista parova: (user_id, websocket)
+
+@router.websocket("/ws/notifications")
+async def notification_ws(websocket: WebSocket, db: Session = Depends(get_db)):
+    await websocket.accept()
+
+    #uzmi token iz cookija
+    token = websocket.cookies.get("access_token")
+    if not token:
+        await websocket.close(code=1008)
+        return
+
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email = payload.get("sub")
+        user = get_user(db, email)
+        if not user:
+            raise Exception("User not found")
+    except Exception as e:
+        print("Auth error:", str(e))
+        await websocket.close(code=1008)
+        return
+
+    #dodaj u listu aktivnih slusalaca??
+    notification_connections.append((user.id, websocket))
+
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        notification_connections.remove((user.id, websocket))
+
 
 # chat api
 
