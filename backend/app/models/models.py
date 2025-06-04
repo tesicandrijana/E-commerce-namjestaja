@@ -64,7 +64,7 @@ class Product(SQLModel, table=True):
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
-    discounts: List["Discounts"] = Relationship(back_populates="product")
+    discounts: List["Discount"] = Relationship(back_populates="product")
     reviews: List["Review"] = Relationship(back_populates="product")
     cart_items: List["CartItem"] = Relationship(back_populates="product")
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
@@ -78,7 +78,7 @@ class ProductImage(SQLModel, table=True):
     product: Product = Relationship(back_populates="images")
 
 
-class Discounts(SQLModel, table=True):
+class Discount(SQLModel, table=True):
     __tablename__ = "discounts"
 
     id: Optional[int] = Field(default=None, primary_key=True)

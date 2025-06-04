@@ -1,6 +1,6 @@
 # crud/order.py
 from sqlmodel import Session, select
-from app.models.models import Order, OrderItem, CartItem, Product, Discounts, TaxRate
+from app.models.models import Order, OrderItem, CartItem, Product, Discount, TaxRate
 from app.schemas.order_item import OrderItemCreate
 from typing import List, Optional
 from decimal import Decimal

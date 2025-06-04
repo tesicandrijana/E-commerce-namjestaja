@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models.models import Product, ProductImage,Review,OrderItem,Discounts
+from app.models.models import Product, ProductImage,Review,OrderItem,Discount
 from app.schemas import product as product_schema
 from sqlalchemy import func,desc,and_, case
 from typing import Any
@@ -67,9 +67,9 @@ def get_products_sorted_and_filtered(
     active_discount_amount = func.max(
         case(
             (and_(
-                Discounts.start_date <= today,
-                Discounts.end_date >= today
-            ), Discounts.amount),
+                Discount.start_date <= today,
+                Discount.end_date >= today
+            ), Discount.amount),
             else_=None
         )
     ).label("active_discount")
@@ -78,7 +78,7 @@ def get_products_sorted_and_filtered(
         select(Product, rating_avg, total_sold,active_discount_amount)
         .outerjoin(Review, Product.id == Review.product_id)
         .outerjoin(OrderItem, Product.id == OrderItem.product_id)
-        .outerjoin(Discounts, Product.id == Discounts.product_id)
+        .outerjoin(Discount, Product.id == Discount.product_id)
         .group_by(Product.id)
         .offset(offset)
         .limit(limit)
