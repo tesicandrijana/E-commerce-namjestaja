@@ -40,9 +40,12 @@ const SupportHeader = () => {
           <Link to="/support/inquiries" className="support-btn inquiries-btn">
             Inquiries
           </Link>
-           <Link to="/support/profile" className="support-btn profile-btn">
-             My Profile
-          </Link>
+          {/* dodano jer je bacalo gresku - ako currentUser === null jer ses jos ucitava s backenda*/}
+          {currentUser && (     
+            <Link to={`/support/profile/${currentUser.id}`} className="support-btn profile-btn">
+              My Profile
+            </Link>
+          )}
           <Notification currentUser={currentUser} />
           <button
             onClick={() => {

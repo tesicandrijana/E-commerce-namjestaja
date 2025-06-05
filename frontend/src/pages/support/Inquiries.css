@@ -98,3 +98,24 @@
   border-color: #f59e0b;
 }
 
+
+.back-link {
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  background-color: #e5e7eb;
+  color: #1f2937;
+  border: none;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-link:hover {
+  background-color: #d1d5db;
+  transform: translateX(-3px);
+}

@@ -27,7 +27,7 @@ const SupportOrderDetails = () => {
   return (
     <div className="order-details-container">
       <button className="back-link" onClick={() => navigate(-1)}>
-        ← Back
+        ←
       </button>
 
       <h1 className="title">Order Details #{order.id}</h1>

@@ -1,4 +1,3 @@
-// Inquiries.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -18,16 +17,30 @@ function Inquiries() {
         setInquiries(response.data);
       })
       .catch((error) => {
-        console.error("Greška pri dohvatu upita", error);
+        console.error("Greska pri dohvatu upita", error);
       });
   }, []);
 
-  const filteredInquiries = inquiries.filter((inquiry) =>
-    activeTab === "unresponded" ? !inquiry.response : inquiry.response
-  );
+  let filteredInquiries = [];
+
+    if (activeTab === "unresponded") {
+      // prikaz samo neodgovorenih upita ili ako je odgovor prazan string
+    filteredInquiries = inquiries.filter((inquiry) => {
+        return !inquiry.response || inquiry.response.trim() === "";
+    });
+    } else if (activeTab === "responded") {
+       // prikaz samo oodgovorenih upita
+    filteredInquiries = inquiries.filter((inquiry) => {
+        return inquiry.response && inquiry.response.trim() !== "";
+    });
+    }
+
 
   return (
     <div className="inquiries-wrapper">
+      <button className="back-link" onClick={() => navigate(-1)}>
+        ←
+      </button>
       <h1 className="inquiries-title">Customer Inquiries</h1>
 
       <div className="tabs">
@@ -46,39 +59,48 @@ function Inquiries() {
       </div>
 
       <div className="inquiries-list">
+        {/* Ako nema nijednog upita*/}
         {filteredInquiries.length === 0 ? (
-          <p>No inquiries in this tab.</p>
+            <p>No inquiries in this tab.</p>
         ) : (
-          filteredInquiries.map((inquiry) => (
-            <div className="inquiry-card" key={inquiry.id}>
-              <div className="inquiry-header">
-                <strong>#{inquiry.id}</strong>
-                <span>{new Date(inquiry.created_at).toLocaleDateString()}</span>
-              </div>
-
-              <div className="inquiry-body">
-                <p><strong>Name:</strong> {inquiry.name}</p>
-                <p><strong>Email:</strong> {inquiry.email}</p>
-                <p><strong>Message:</strong> {inquiry.message}</p>
-                {inquiry.response && (
-                  <p><strong>Response:</strong> {inquiry.response}</p>
-                )}
-              </div>
-
-              {activeTab === "unresponded" && (
-                <div className="inquiry-actions">
-                  <button
-                    className="reply-button"
-                    onClick={() => navigate(`/support/inquiries/${inquiry.id}`)}
-                  >
-                    Respond
-                  </button>
+            // prikazi pomocu .map
+            filteredInquiries.map((inquiry) => {
+            return (
+                <div className="inquiry-card" key={inquiry.id}>
+                
+                <div className="inquiry-header">
+                    <strong>#{inquiry.id}</strong>
+                    <span>{new Date(inquiry.created_at).toLocaleDateString()}</span>
                 </div>
-              )}
-            </div>
-          ))
+
+                {/*kartica*/}
+                <div className="inquiry-body">
+                    <p><strong>Name:</strong> {inquiry.name}</p>
+                    <p><strong>Email:</strong> {inquiry.email}</p>
+                    <p><strong>Message:</strong> {inquiry.message}</p>
+
+                    {/*prikazi odgovor ako postoji */}
+                    {inquiry.response && inquiry.response.trim() !== "" && (
+                    <p><strong>Response:</strong> {inquiry.response}</p>
+                    )}
+                </div>
+
+                {/*ako su unresponded dodaj dugme za odgovor*/}
+                {activeTab === "unresponded" && (
+                    <div className="inquiry-actions">
+                    <button
+                        className="reply-button"
+                        onClick={() => navigate(`/support/inquiries/${inquiry.id}`)}
+                    >
+                        Respond
+                    </button>
+                    </div>
+                )}
+                </div>
+            );
+            })
         )}
-      </div>
+        </div>
     </div>
   );
 }

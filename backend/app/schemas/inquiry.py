@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 #korisnik salje
 class UserInquiryCreate(BaseModel):
@@ -11,6 +12,9 @@ class UserInquiryCreate(BaseModel):
 class UserInquiryRead(UserInquiryCreate):
     id: int
     created_at: datetime
+    response: Optional[str]
+    responded_at: Optional[datetime]
+
 
     class Config:
         orm_mode = True
