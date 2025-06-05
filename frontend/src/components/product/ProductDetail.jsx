@@ -54,7 +54,7 @@ function ProductDetail({ id }) {
           <p className="description">{product.description}</p>
 
           <div className="dimensions">
-            <span>Dimensions:</span> (W) {product.length}cm × (D) {product.width}cm × (H) {product.height}cm <small>W × D × H</small>
+            <span>Dimensions:</span> {product.length}cm × {product.width}cm × {product.height}cm <small>(W × D × H)</small>
           </div>
 
           <div className="meta">

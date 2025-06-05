@@ -62,41 +62,43 @@ export default function Header() {
           <div className="header-icons">
             {/* Cart icon and badge */}
             {(!currentUser || currentUser.role === "customer") && (
-              <div
-                className={`cart-icon-wrapper ${
-                  currentUser && currentUser.role === "customer" ? "logged-in" : ""
-                }`}
-                title={
-                  !currentUser
-                    ? "Please log in to access your cart"
-                    : `View Cart (${cartQuantity} items)`
-                }
-                style={{ cursor: "pointer", position: "relative" }}
-                onClick={(e) => {
-                  if (!currentUser) {
-                    e.preventDefault();
-                    setIsCustomerLoginOpen(true);
-                  }
-                }}
-              >
-                <Link
-                  to={currentUser && currentUser.role === "customer" ? "/cart" : "#"}
-                  className="cart-link"
-                  onClick={(e) => {
-                    if (!currentUser) e.preventDefault();
-                  }}
-                >
-                  <FaShoppingCart size={24} />
-                  {!currentUser ? (
-                    <span className="cart-badge no-background">
-                      <FaLock size={15} />
-                    </span>
-                  ) : cartQuantity > 0 ? (
-                    <span className="cart-badge">{cartQuantity}</span>
-                  ) : null}<label className="cart-label">Current Cart Insight</label>
-                </Link>
-              </div>
-            )}
+  <div
+    className={`cart-icon-wrapper ${
+      currentUser && currentUser.role === "customer" ? "logged-in" : ""
+    }`}
+    title={
+      !currentUser
+        ? "Please log in to access your cart"
+        : `View Cart (${cartQuantity} items)`
+    }
+    style={{ cursor: "pointer", position: "relative" }}
+    onClick={(e) => {
+      if (!currentUser) {
+        e.preventDefault();
+        setIsCustomerLoginOpen(true);
+      }
+    }}
+  >
+    <Link
+      to={currentUser && currentUser.role === "customer" ? "/cart" : "#"}
+      className="cart-link"
+      onClick={(e) => {
+        if (!currentUser) e.preventDefault();
+      }}
+    >
+      <FaShoppingCart size={24} />
+      {!currentUser ? (
+        <span className="cart-badge no-background">
+          <FaLock size={15} />
+        </span>
+      ) : cartQuantity > 0 ? (
+        <span className="cart-badge">{cartQuantity}</span>
+      ) : null}
+      <label className="cart-label">Current Cart Insight</label>
+    </Link>
+  </div>
+)}
+
             
             <div className="auth-buttons">
               {currentUser ? (

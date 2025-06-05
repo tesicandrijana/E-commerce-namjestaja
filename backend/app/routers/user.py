@@ -278,3 +278,4 @@ def get_admin_dashboard_stats(
         "sales": get_sales_stats(db),
         "ratings": get_rating_stats(db),
     }
+

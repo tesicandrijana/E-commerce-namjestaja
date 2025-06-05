@@ -4,6 +4,7 @@ from typing import Optional, List
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 from decimal import Decimal
+from .cart import CartItemRead
 from .order_item import OrderItemCreate, OrderItemRead
 
 
@@ -52,16 +53,17 @@ class OrderItemInput(SQLModel):
     product_id: int
     quantity: int
 
-class PriceCalculationRequest(SQLModel):
-    items: List[OrderItemInput]
-    country: str
-    region: str
-    postal_code: Optional[str] = None
-    discount_code: Optional[str] = None
 
-class PriceCalculationResponse(SQLModel):
+class OrderCalculationRequest(SQLModel):
+    cart: List[CartItemRead]
+    country_code: str  # e.g., "+387", "+1"
+    promo_code: Optional[str] = None
+
+
+class OrderCalculationResponse(SQLModel):
     subtotal: float
+    discount: float
     tax: float
     shipping: float
-    discount: float
-    total: float    
+    total: float
+
