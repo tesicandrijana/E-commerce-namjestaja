@@ -47,6 +47,7 @@ import InquiryDetails from "./pages/support/InquiryDetails";
 
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import ManagerReviewsView from "./pages/manager/ManagerReviewsView";
 
 
 
@@ -105,6 +106,7 @@ function App() {
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
             <Route path="/manager/products" element={<ManagerProductsView />}/>          
             <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
+            <Route path="/manager/reviews" element={<ManagerReviewsView />}/>
           </Route>
 
 

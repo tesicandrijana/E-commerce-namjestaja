@@ -68,7 +68,8 @@ def get_products_sorted_and_filtered(
         case(
             (and_(
                 Discounts.start_date <= today,
-                Discounts.end_date >= today
+                Discounts.end_date >= today,
+                Discounts.amount != 0,
             ), Discounts.amount),
             else_=None
         )

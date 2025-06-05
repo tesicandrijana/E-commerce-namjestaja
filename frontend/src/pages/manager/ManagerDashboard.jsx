@@ -40,7 +40,7 @@ function ManagerDashboard() {
           altText="View And Manage Reviews"
           title="View And Manage Reviews"
           description="Click to View And Manage Reviews"
-          onClick={() => navigate("/products/reviews")}
+          onClick={() => navigate("/manager/reviews")}
         />
         <Card
           number="03"

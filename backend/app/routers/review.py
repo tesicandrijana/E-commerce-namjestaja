@@ -1,17 +1,19 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,Query
 from sqlmodel import Session, select
-from app.schemas.review import ReviewCreate, ReviewRead, ReviewOut, ReviewUpdate
+from app.schemas.review import ManagerReviewResponse,ReviewCreate, ReviewRead, ReviewOut, ReviewUpdate
 from app.crud.review import create_review, get_reviews_by_product, get_all_reviews
 from app.dependencies import  get_admin_user, get_db
 from app.models.models import User, Review
 from sqlalchemy import func
 from app.services.user_service import get_current_user
-from typing import List
+from app.services import review_service
+from typing import List, Annotated
 
 router = APIRouter()
 
+SessionDep = Annotated[Session, Depends(get_db)]
 
-@router.post("/", response_model=ReviewRead)
+@router.post("/", response_model=ReviewCreate)
 def submit_review(
     review: ReviewCreate,
     db: Session = Depends(get_db),
@@ -21,6 +23,21 @@ def submit_review(
         raise HTTPException(status_code=403, detail="Only customers can leave reviews")
     return create_review(db, current_user.id, review)
 
+@router.get("/manager",response_model = list[ManagerReviewResponse])
+def read_sorted_and_filtered_reviews(
+    session: SessionDep, 
+    offset: int = 0, 
+    limit: int = 100,
+    sort_by: Annotated[str, Query(enum=["rating", "created_at"])] = "rating",
+    sort_dir: Annotated[str,Query(enum=["asc", "desc"])] = "asc",
+    rating: int | None = None,
+    search:  str | None = None,
+    ):
+    return review_service.read_sorted_and_filtered_reviews(session, offset,limit,sort_by, sort_dir, rating, search)
+
+@router.delete("/{review_id}")
+def delete_review(session: SessionDep, review_id: int):
+    return review_service.delete_review(session, review_id)
 
 
 @router.put("/{review_id}")
