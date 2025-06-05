@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthProvider, { useAuth } from './components/auth/AuthProvider';
 import { CartProvider } from './contexts/CartContext';
+import "./App.css";
 
 // Layouts and wrappers
 import Header2 from "./components/Header2";
@@ -44,9 +45,9 @@ import Inquiries from "./pages/support/Inquiries";
 import InquiryDetails from "./pages/support/InquiryDetails";
 
 
-
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+
 
 
 //prikaz header i footera za zaposlenika
@@ -64,8 +65,9 @@ const DynamicFooter = () => {
 };
 
 
-
 function App() {
+
+
   return (
   <AuthProvider>
       <CartProvider>

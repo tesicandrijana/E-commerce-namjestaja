@@ -3,7 +3,7 @@ from typing import List
 from sqlmodel import Session
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.models import User, Order, OrderItem
-from app.schemas.order import OrderCreate, OrderRead, PriceCalculationResponse, PriceCalculationRequest
+from app.schemas.order import OrderCreate, OrderRead
 from app.services.user_service import get_current_user
 from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
 from app.database import get_session, get_db

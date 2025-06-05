@@ -11,6 +11,7 @@ export default function Checkout() {
   const [callingCodes, setCallingCodes] = useState([]);
   const [discountsMap, setDiscountsMap] = useState({});
   const [taxRate, setTaxRate] = useState(0);
+  const [shippingCost, setShippingRate] = useState(0); // Shipping cost state
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(null);
   const [formError, setFormError] = useState(null);
@@ -27,6 +28,7 @@ export default function Checkout() {
     paymentMethod: "credit_card",
   });
 
+  // Fetch all products and create a map for quick lookup
   useEffect(() => {
     async function fetchProducts() {
       try {
@@ -43,10 +45,13 @@ export default function Checkout() {
     fetchProducts();
   }, []);
 
+  // Fetch calling codes for phone input
   useEffect(() => {
     async function fetchCallingCodes() {
       try {
-        const res = await fetch("http://localhost:8000/shipping/calling-codes/");
+        const res = await fetch(
+          "http://localhost:8000/taxes-shipping/calling-codes/"
+        );
         if (!res.ok) throw new Error("Failed to fetch calling codes");
         const data = await res.json();
         setCallingCodes(data);
@@ -57,6 +62,7 @@ export default function Checkout() {
     fetchCallingCodes();
   }, []);
 
+  // Fetch discounts if cart has items
   useEffect(() => {
     async function fetchDiscounts() {
       try {
@@ -64,7 +70,7 @@ export default function Checkout() {
         if (!res.ok) throw new Error("Failed to fetch discounts");
         const data = await res.json();
         const map = {};
-        data.forEach(discount => {
+        data.forEach((discount) => {
           map[discount.product_id] = discount;
         });
         setDiscountsMap(map);
@@ -75,173 +81,184 @@ export default function Checkout() {
     if (cartItems.length > 0) fetchDiscounts();
   }, [cartItems]);
 
-  
-
+  // Fetch tax and shipping rates based on selected calling code
   useEffect(() => {
-  async function fetchTaxByCallingCode() {
+    async function fetchTaxAndShippingByCallingCode() {
+      if (!orderData.calling_code) {
+        setTaxRate(0);
+        setShippingRate(0);
+        return;
+      }
+
+      try {
+        const selectedCountry = callingCodes.find(
+          (code) => code.calling_code === orderData.calling_code
+        );
+
+        if (!selectedCountry) {
+          setTaxRate(0);
+          setShippingRate(0);
+          return;
+        }
+
+        // Fetch tax rates
+        const taxRes = await fetch(`http://localhost:8000/taxes-shipping/taxes`);
+        if (!taxRes.ok) throw new Error("Failed to fetch tax rates");
+        const taxData = await taxRes.json();
+
+        const countryTaxRate = taxData.find(
+          (rate) => rate.country_code === selectedCountry.country_code
+        );
+        setTaxRate(
+          countryTaxRate ? parseFloat(countryTaxRate.vat_rate) : 0
+        ); // Convert percentage to decimal
+
+        // Fetch shipping rates
+        const shippingRes = await fetch(
+          `http://localhost:8000/taxes-shipping/shipping`
+        );
+        if (!shippingRes.ok) throw new Error("Failed to fetch shipping rates");
+        const shippingData = await shippingRes.json();
+
+        const countryShipping = shippingData.find(
+          (rate) => rate.country_code === selectedCountry.country_code
+        );
+        setShippingRate(
+          countryShipping ? parseFloat(countryShipping.shipping_rate) : 0
+        ); // Convert percentage to decimal
+      } catch (error) {
+        console.error("Error fetching tax or shipping rates:", error);
+        setTaxRate(0);
+        setShippingRate(0);
+      }
+    }
+
+    fetchTaxAndShippingByCallingCode();
+  }, [orderData.calling_code, callingCodes]);
+
+  // Calculate totals with discounts, tax, and shipping
+  const calculateTotals = () => {
+    let subtotal = 0;
+    let discountTotal = 0;
+
+    cartItems.forEach((item) => {
+      const product = productsMap[item.product_id];
+      if (!product) return;
+
+      const productPriceTotal = product.price * item.quantity;
+      subtotal += productPriceTotal;
+
+      const discountPercentRaw = discountsMap[item.product_id]?.amount ?? 0;
+      const discountPercent = parseFloat(discountPercentRaw);
+
+      const totalDiscountForItem = (discountPercent / 100) * productPriceTotal;
+      discountTotal += totalDiscountForItem;
+    });
+
+    const afterDiscount = subtotal - discountTotal;
+    const tax = afterDiscount * taxRate;
+    const total = afterDiscount + tax + shippingCost;
+
+    return {
+      subtotal,
+      discountTotal,
+      tax,
+      shipping: shippingCost,
+      total,
+    };
+  };
+
+  const { subtotal, discountTotal, tax, shipping, total } = calculateTotals();
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setOrderData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormSubmitting(true);
+    setFormError(null);
+    setFormSuccess(null);
+
+    if (cartItems.length === 0) {
+      setFormError("Your cart is empty.");
+      setFormSubmitting(false);
+      return;
+    }
+
     if (!orderData.calling_code) {
-      setTaxRate(0); // Default tax rate if no calling code is selected
+      setFormError("Please select your country calling code.");
+      setFormSubmitting(false);
       return;
     }
 
     try {
-      // Find the country code corresponding to the calling code
-      const selectedCountry = callingCodes.find(
-        (code) => code.calling_code === orderData.calling_code
-      );
+      const orderItems = cartItems.map((item) => {
+        const product = productsMap[item.product_id];
+        return {
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price_per_unit: Number(product?.price || 0),
+        };
+      });
 
-      if (selectedCountry) {
-        // Fetch the tax rates from the backend
-        const res = await fetch(`http://localhost:8000/shipping/tax-rates/`);
-
-        if (!res.ok) throw new Error("Failed to fetch tax rates");
-
-        const data = await res.json(); // Get all tax rates
-
-        // Find the tax rate based on the selected country's country_code
-        const countryTaxRate = data.find(
-          (rate) => rate.country_code === selectedCountry.country_code
-        );
-
-        if (countryTaxRate) {
-  // Convert VAT percentage (e.g. 20) to decimal (0.20)
-  setTaxRate(parseFloat(countryTaxRate.vat_rate) / 100);
-} else {
-  setTaxRate(0);
-}
-
-      }
-    } catch (err) {
-      console.error(err);
-      setTaxRate(0); // Default to 0 in case of error
-    }
-  }
-
-  fetchTaxByCallingCode();
-}, [orderData.calling_code, callingCodes]);
-
-
-  const calculateTotals = () => {
-  let subtotal = 0;
-  let discountTotal = 0;
-
-  cartItems.forEach(item => {
-    const product = productsMap[item.product_id];
-    if (!product) return;
-
-    const productPriceTotal = product.price * item.quantity;
-    subtotal += productPriceTotal;
-
-    // Discount amount is percentage, e.g. 15 means 15%
-    const discountPercentRaw = discountsMap[item.product_id]?.amount ?? 0;
-    const discountPercent = parseFloat(discountPercentRaw);
-
-    // Calculate discount amount by applying percentage on product price total
-    const totalDiscountForItem = (discountPercent / 100) * productPriceTotal;
-
-    discountTotal += totalDiscountForItem;
-  });
-
-  const afterDiscount = subtotal - discountTotal;
-
-  // Tax is calculated by multiplying after discount total by the tax rate
-  const tax = afterDiscount * (taxRate*100);  // taxRate is already in percentage (e.g., 0.25 for 25%)
-
-  const total = afterDiscount + tax;
-
-  return { subtotal, discountTotal, tax, total };
-};
-
-  const { subtotal, discountTotal, tax, total } = calculateTotals();
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setOrderData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setFormSubmitting(true);
-  setFormError(null);
-  setFormSuccess(null);
-
-  if (cartItems.length === 0) {
-    setFormError("Your cart is empty.");
-    setFormSubmitting(false);
-    return;
-  }
-
-  if (!orderData.calling_code) {
-    setFormError("Please select your country calling code.");
-    setFormSubmitting(false);
-    return;
-  }
-
-  try {
-    const orderItems = cartItems.map((item) => {
-      const product = productsMap[item.product_id];
-      return {
-        product_id: item.product_id,
-        quantity: item.quantity,
-        price_per_unit: Number(product?.price || 0),
+      const payload = {
+        customer_id: currentUser?.id || 1,
+        address: orderData.address,
+        city: orderData.city,
+        postal_code: orderData.postal_code,
+        country_code: orderData.country_code,
+        phone: `${orderData.calling_code}${orderData.phone}`,
+        payment_method: orderData.paymentMethod,
+        status: "pending",
+        payment_status: "pending",
+        items: orderItems,
+        transaction_id: null,
+        subtotal,
+        discount: discountTotal,
+        tax,
+        shipping_cost: shipping, // Include shipping cost in order payload
+        total_price: total,
       };
-    });
 
-    const payload = {
-      customer_id: currentUser?.id || 1,
-      address: orderData.address,
-      city: orderData.city,
-      postal_code: orderData.postal_code,
-      country_code: orderData.country_code,
-      phone: `${orderData.calling_code}${orderData.phone}`,
-      payment_method: orderData.paymentMethod,
-      status: "pending",
-      payment_status: "pending",
-      items: orderItems,
-      transaction_id: null,
-      subtotal,
-      discount: discountTotal,
-      tax,
-      total_price: total,
-    };
+      const res = await fetch("http://localhost:8000/orders/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
 
-    const res = await fetch("http://localhost:8000/orders/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify(payload),
-    });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || "Failed to place order");
+      }
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.detail || "Failed to place order");
+      setFormSuccess("Order placed successfully!");
+      setOrderData({
+        name: currentUser?.name || "",
+        email: currentUser?.email || "",
+        calling_code: "",
+        country_code: "",
+        phone: "",
+        address: "",
+        city: "",
+        postal_code: "",
+        paymentMethod: "credit_card",
+      });
+      clearCart();
+    } catch (error) {
+      console.error(error);
+      setFormError("Failed to place order. Please try again.");
+    } finally {
+      setFormSubmitting(false);
     }
-
-    setFormSuccess("Order placed successfully!");
-    setOrderData({
-      name: currentUser?.name || "",
-      email: currentUser?.email || "",
-      calling_code: "",
-      country_code: "",
-      phone: "",
-      address: "",
-      city: "",
-      postal_code: "",
-      paymentMethod: "credit_card",
-    });
-    clearCart();
-  } catch (error) {
-    console.error(error);
-    setFormError("Failed to place order. Please try again.");
-  } finally {
-    setFormSubmitting(false);
-  }
-};
+  };
 
   if (cartItems.length === 0)
     return <p className="empty-cart-msg">Your cart is empty.</p>;
 
-return (
+  return (
     <div className="checkout-overlay">
       <div className="checkout-wrapper">
         <h2 className="checkout-title">Finalize your order</h2>
@@ -274,7 +291,9 @@ return (
                 <div>
                   <span>Tax:</span> <span>+ ${tax.toFixed(2)}</span>
                 </div>
-                {/* <div>Shipping: + ${shipping.toFixed(2)}</div> */}
+                <div>
+                  <span>Shipping:</span> <span>+ ${shipping.toFixed(2)}</span>
+                </div>
               </div>
             </div>
 
@@ -309,38 +328,35 @@ return (
 
             <label>
               Phone
-              <div className="phone-input-group">
+              <div className="phone-input-wrapper">
                 <select
                   name="calling_code"
                   value={orderData.calling_code}
                   onChange={(e) => {
-                    const selected = callingCodes.find(
+                    handleInputChange(e);
+                    const country = callingCodes.find(
                       (c) => c.calling_code === e.target.value
                     );
                     setOrderData((prev) => ({
                       ...prev,
-                      calling_code: e.target.value,
-                      country_code: selected?.country_code || "",
+                      country_code: country ? country.country_code : "",
                     }));
                   }}
                   required
-                  className="calling-code-select"
                 >
-                  <option value="">Calling Code</option>
+                  <option value="">Select</option>
                   {callingCodes.map((code) => (
-                    <option key={code.id} value={code.calling_code}>
-                      {code.calling_code} ({code.country_code})
+                    <option key={code.calling_code} value={code.calling_code}>
+                      {code.country_name} ({code.calling_code})
                     </option>
                   ))}
                 </select>
-
                 <input
                   name="phone"
                   type="tel"
                   value={orderData.phone}
                   onChange={handleInputChange}
                   required
-                  className="phone-input"
                   placeholder="Phone number"
                 />
               </div>
@@ -382,6 +398,7 @@ return (
                 name="paymentMethod"
                 value={orderData.paymentMethod}
                 onChange={handleInputChange}
+                required
               >
                 <option value="credit_card">Credit Card</option>
                 <option value="paypal">PayPal</option>
@@ -389,12 +406,16 @@ return (
               </select>
             </label>
 
-            <button type="submit" disabled={formSubmitting}>
-              {formSubmitting ? "Submitting..." : "Place Order"}
+            <button
+              className="checkout-btn"
+              type="submit"
+              disabled={formSubmitting}
+            >
+              {formSubmitting ? "Placing Order..." : "Place Order"}
             </button>
 
-            {formSuccess && <p className="form-success">{formSuccess}</p>}
             {formError && <p className="form-error">{formError}</p>}
+            {formSuccess && <p className="form-success">{formSuccess}</p>}
           </form>
         </div>
       </div>
