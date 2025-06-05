@@ -234,3 +234,14 @@ class CountryCallingCode(SQLModel, table=True):
     calling_code: str
 
     postal_codes: list[PostalCode] = Relationship(back_populates="calling_code")
+
+# Za odgovarnje zaposlenika na upite kupaca
+class UserInquiry(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    email: str
+    message: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+#dodatna polja za odgovor 
+    response: Optional[str]=None
+    responded_at: Optional[datetime]=None
