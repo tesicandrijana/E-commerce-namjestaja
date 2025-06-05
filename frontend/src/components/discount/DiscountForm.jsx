@@ -5,7 +5,7 @@ import "./DiscountFormModal.css"
 import "../modals/RestockModal.css"
 import { Alert, Button } from '@mui/material'
 
-function DiscountForm({ productIds, onClose }) {
+function DiscountForm({ setSelectedIds, productIds, onClose }) {
     const [errorMessage, setErrorMessage] = useState();
     const { register, handleSubmit, control, formState: { errors } } = useForm();
 
@@ -19,6 +19,7 @@ function DiscountForm({ productIds, onClose }) {
             }))
             const res = await axios.post("http://localhost:8000/discounts", discounts)
             onClose();
+            setSelectedIds([]);
         }
         catch (e) {
             console.error(e);
@@ -30,7 +31,7 @@ function DiscountForm({ productIds, onClose }) {
     return (
         <div className="modal-overlay">
             <div className="modal-content">
-                                    <h2>Add discount</h2>
+                <h2>Add discount</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="discount-form">
                     <label>
@@ -47,7 +48,7 @@ function DiscountForm({ productIds, onClose }) {
                     </label>
                     {errorMessage && (
                         <Alert severity="error" style={{ whiteSpace: 'pre-line' }}>
-                            {errorMessage}
+                            {typeof errorMessage === "string" ? errorMessage : 'Unknown error'}
                         </Alert>
                     )}
                     <div className="modal-btns"><Button variant="outlined" type="submit">Submit</Button><Button variant="contained" onClick={onClose}>Cancel</Button></div>

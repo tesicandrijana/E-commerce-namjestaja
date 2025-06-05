@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import axios from 'axios'
 
 const AuthContext = createContext(undefined)
@@ -6,7 +7,7 @@ const AuthContext = createContext(undefined)
 export default function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState()
     const [token, setToken] = useState()
-
+    
 
     async function fetchUser() {
         try {
@@ -14,7 +15,6 @@ export default function AuthProvider({ children }) {
             const response = await axios.get("http://localhost:8000/users/me", {
                 withCredentials: true
             });
-            console.log(response);
             const user = response.data;
 
             setCurrentUser(user);
