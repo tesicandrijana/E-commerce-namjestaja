@@ -1,0 +1,30 @@
+.reviews-view-container {
+  display:flex;
+  flex-direction: column;
+  margin: 2% auto;
+  border-radius: 4px;
+  width:80%;
+  overflow-y: hidden;
+}
+
+.reviews-view-nav, .reviews-view-title {
+  display: flex;
+  flex-direction: row;
+    border: 1px solid #ddd;
+  margin-bottom: 1rem;
+
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 1rem;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+.review-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-radius: 8px;
+}
+

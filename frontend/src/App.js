@@ -43,6 +43,7 @@ import SupportOrderDetails from "./pages/support/SupportOrderDetails";
 
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import ManagerReviewsView from "./pages/manager/ManagerReviewsView";
 
 
 //prikaz header i footera za zaposlenika
@@ -99,6 +100,7 @@ function App() {
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
             <Route path="/manager/products" element={<ManagerProductsView />}/>          
             <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
+            <Route path="/manager/reviews" element={<ManagerReviewsView />}/>
           </Route>
 
 

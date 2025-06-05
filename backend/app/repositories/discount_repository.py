@@ -1,10 +1,10 @@
 from sqlmodel import Session, select
-from app.models.models import Discount, Product
+from app.models.models import Discounts, Product
 from sqlalchemy import func,desc,and_, case
 from typing import Any
 
 #create discount
-def create_discount(session: Session, discount: Discount):
+def create_discount(session: Session, discount: Discounts):
     session.add(discount)
 
     return discount
@@ -19,7 +19,7 @@ def get_discounts(
         sort_dir: str | None = "asc",
         filters: list[Any] = []):
     
-    stmt = select(Discount).join(Product).offset(offset).limit(limit)
+    stmt = select(Discounts).join(Product).offset(offset).limit(limit)
     
 
     if filters:
@@ -28,7 +28,7 @@ def get_discounts(
     if sort_by == "product":
         order_column = Product.name
     else:
-        order_column = getattr(Discount, sort_by, Discount.id)
+        order_column = getattr(Discounts, sort_by, Discounts.id)
 
 
     stmt = stmt.order_by(desc(order_column).nulls_last() if sort_dir == "desc" else order_column.nulls_last())
@@ -36,21 +36,21 @@ def get_discounts(
     return session.exec(stmt).all()
 
 # find all discounts that overlap with argument
-def overlapping_discount(session: Session, discount: Discount):
-    stmt = select(Discount).where(
-        Discount.product_id == discount.product_id,
-        Discount.start_date <= discount.end_date,
-        Discount.amount > 0,
-        Discount.end_date >= discount.start_date,
+def overlapping_discount(session: Session, discount: Discounts):
+    stmt = select(Discounts).where(
+        Discounts.product_id == discount.product_id,
+        Discounts.start_date <= discount.end_date,
+        Discounts.amount > 0,
+        Discounts.end_date >= discount.start_date,
     ) 
     return session.exec(stmt).all()
 
 
 def get_discount_by_id(session: Session, discount_id: int):
-    return session.exec(select(Discount).where(Discount.id == discount_id)).first()
+    return session.exec(select(Discounts).where(Discounts.id == discount_id)).first()
 
 
-def edit_discount(session: Session, discount: Discount):
+def edit_discount(session: Session, discount: Discounts):
     session.add(discount)
     session.commit()
     session.refresh(discount)
@@ -58,7 +58,7 @@ def edit_discount(session: Session, discount: Discount):
 
 
 def discount_count(session: Session,filters: list[Any] = []):
-    stmt = select(func.count(Discount.id))
+    stmt = select(func.count(Discounts.id))
     if filters:
         stmt = stmt.where(*filters)
     return session.exec(stmt).one()
