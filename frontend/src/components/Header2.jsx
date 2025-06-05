@@ -21,12 +21,12 @@ const Header2 = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Show dropdown on hover (button or dropdown)
+ 
   const showDropdown = () => {
     setDropdownVisible(true);
   };
 
-  // Toggle dropdown on button click
+ 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
     if (dropdownVisible) {
@@ -37,11 +37,11 @@ const Header2 = () => {
 
 
   const handleCategoryClick = () => {
-    navigate(`/products/`);
+    navigate(`/shop-products/`);
     setDropdownVisible(false);
     setHoveredCategory(null);
   };
-  // Close dropdown if clicking outside
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -61,8 +61,30 @@ const Header2 = () => {
     };
   }, [dropdownVisible]);
 
+
+
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
+const [visible, setVisible] = useState(true);
+
+useEffect(() => {
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset;
+    const isScrollingUp = prevScrollPos > currentScrollPos;
+
+    setVisible(isScrollingUp || currentScrollPos < 100);
+    setPrevScrollPos(currentScrollPos);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, [prevScrollPos]);
+
+
   return (
-    <header className="secondary-header">
+    <header className={`secondary-header ${visible ? "visible" : "hidden"}`}>
       <div className="fs-container fs-flex">
         <div
           className="dropdown-wrapper"

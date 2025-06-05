@@ -55,7 +55,7 @@ export default function ProductList() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/discounts/")
+    fetch("http://localhost:8000/discounts/all")
       .then((res) => res.json())
       .then((data) => setDiscounts(data))
       .catch((err) => console.error("Error fetching discounts:", err));
@@ -169,9 +169,9 @@ export default function ProductList() {
                   key={product.id}
                   className={`product-card ${verticalImages.has(product.id) ? "vertical" : ""}`}
                 >
-                  {discount && (
-                    <div
-                      className="discount-badge"
+                  {discount && discount.amount > 0 && (
+                   <div
+                    className="discount-badge"
                       onClick={(e) => {
                         e.preventDefault();
                         toggleDiscountVisibility(product.id);
@@ -220,12 +220,19 @@ export default function ProductList() {
                     style={{ textDecoration: "none", color: "inherit", display: "block" }}
                   >
                     <div className="image-wrap">
-                      <img
-                        src={getImageUrl(product?.images[0]?.image_url)}
-                        alt={product.name || "Product image"}
-                        className="product-image"
-                        onLoad={(e) => handleImageLoad(e, product.id)}
-                      />
+    <img
+      src={getImageUrl(product?.images[0]?.image_url)}
+      alt={product.name || "Product image"}
+      className="product-image"
+      onLoad={(e) => handleImageLoad(e, product.id)}
+    />
+
+    {product.quantity === 0 && (
+    <>
+      <div className="gradient-overlay"></div>
+      <div className="sold-out-banner"><small>OUT OF STOCK</small></div>
+    </>
+  )}
                     </div>
                     <div className="product-info">
                       <div className="product-title-wrapper">
@@ -233,19 +240,37 @@ export default function ProductList() {
                         <div className="product-title-tooltip">{product.name}</div>
                       </div>
                       <div className="rating-price">
-                        <p className="product-price">
-                          {typeof product.price === "number"
-                            ? product.price.toFixed(2)
-                            : product.price}{" "}
-                          KM
-                        </p>
-                        <p className="product-rating">
-                          <StarRatingOverall productId={product.id} size={18} />
-                        </p>
-                      </div>
+  {discount && discount.amount > 0 ? (
+    <>
+      <p className="product-price original-price" style={{ textDecoration: "line-through", marginRight: "8px" }}>
+        {typeof product.price === "number"
+          ? product.price.toFixed(2)
+          : product.price}{" "}
+        KM
+      </p>
+      <p className="product-price discounted-price" style={{ fontWeight: "bold" }}>
+        {typeof product.price === "number"
+          ? (product.price * (1 - discount.amount / 100)).toFixed(2)
+          : product.price}{" "}
+        KM
+      </p>
+    </>
+  ) : (
+    <p className="product-price">
+      {typeof product.price === "number"
+        ? product.price.toFixed(2)
+        : product.price}{" "}
+      KM
+    </p>
+  )}
+
+  
+</div>
                     </div>
-                  </Link>
-                  <AddToCartButton productId={product.id} stock={product.quantity} />
+                  </Link><p className="product-rating">
+    <StarRatingOverall productId={product.id} size={20} /><AddToCartButton productId={product.id} stock={product.quantity} iconOnly/>
+  </p>
+                  
                 </div>
               );
             })}

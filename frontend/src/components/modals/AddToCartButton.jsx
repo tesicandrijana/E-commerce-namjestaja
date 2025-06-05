@@ -5,7 +5,7 @@ import { useCart } from '../../contexts/CartContext';
 import LoginModal from '../auth/LoginModal';
 import { FaShoppingCart } from 'react-icons/fa';
 
-function AddToCartButton({ productId, stock }) {
+function AddToCartButton({ productId, stock, iconOnly = false }) {
   const { currentUser } = useAuth();
   const { addToCart } = useCart();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -38,7 +38,16 @@ function AddToCartButton({ productId, stock }) {
         title={stock === 0 ? 'Out of stock' : 'Add to Cart'}
         onClick={handleAddToCart}
       >
-        {stock === 0 ? 'Out of Stock' : <><FaShoppingCart /> Add to Cart</>}
+        {iconOnly ? (
+          <FaShoppingCart />
+        ) : stock === 0 ? (
+          'Out of Stock'
+        ) : (
+          <>
+            <FaShoppingCart style={{ marginRight: '5px' }} />
+            Add to Cart
+          </>
+        )}
       </button>
 
       {isLoginModalOpen && (

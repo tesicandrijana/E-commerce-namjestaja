@@ -144,7 +144,6 @@
   .product-price {
     font-size: 0.9rem; 
   }
-
 }
 
 @media (max-width: 480px) {
@@ -263,7 +262,6 @@
   justify-content: center;
 }
 
-/* Wrapper with icon and clear button */
 .search-input-wrapper {
   position: relative;
   width: 100%;
@@ -275,12 +273,10 @@
   box-sizing: border-box;
 }
 
-/* Input field */
-/* Input field */
 .search-input-advanced {
   width: 100%;
-  max-width: 500px;   /* keep consistent max-width */
-  padding: 12px 48px 12px 48px; /* keep padding same on focus */
+  max-width: 500px;  
+  padding: 12px 48px 12px 48px;
   font-size: 1rem;
   font-family: 'Poppins', sans-serif;
   border: none;
@@ -289,16 +285,14 @@
   color: #333;
   outline: none;
   transition: background-color 0.2s ease;
-  box-sizing: border-box; /* add this */
+  box-sizing: border-box; 
 }
 
 
-/* Input focus effect */
 .search-input-advanced:focus {
   background-color: #f9f9f9;
 }
 
-/* Search icon on the left */
 .search-icon {
   position: absolute;
   left: 16px;
@@ -309,12 +303,11 @@
   pointer-events: none;
 }
 
-/* Clear (×) button */
 .clear-button {
   position: absolute;
   right: 16px;
   top: 50%;
-  transform: translateX(10px); /* starts slightly off to the right */
+  transform: translateX(10px); 
   font-size: 1.3rem;
   background: none;
   border: none;
@@ -325,7 +318,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* When there is text, show the clear button smoothly */
 .search-input-wrapper.has-text .clear-button {
   opacity: 1;
   transform: translateY(-40%) translateX(0);
@@ -349,13 +341,6 @@
   position: relative;
   overflow: visible;
 }
-
-
-.product-card {
-  position: relative; /* needed for the badge */
-  /* other existing styles */
-}
-
 
 
 
@@ -390,9 +375,6 @@
   object-fit: contain;
 }
 
-.product-details {
-  text-align: center;
-}
 
 .product-title-wrapper {
   position: relative;
@@ -438,23 +420,20 @@
   display: flex;
   max-height: 15px;
   margin-top: 0;
-  
-}
-
-.product-price {
-  flex: 2;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1a1f25d4;
+  font-size: 17px;
 }
 
 .product-rating {
-  font-size: 1.1rem;
-  color: #666;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  text-align: center;
+  padding-inline: 15px;
+  padding-left: 25px;
+  margin-top: 15px;
+  margin-bottom: 10px;
 }
 
-/* Add to Cart Button */
-/* Add to Cart Button */
 .add-to-cart-btn {
   padding: 7px 15px;
   background-color: #11304de9; /* soft blue */
@@ -466,15 +445,84 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   margin-top: 0;
-  margin: 15px;
 }
 
-.add-to-cart-btn:hover {
-  background-color: #416691; /* deeper blue on hover */
+.add-to-cart-btn:not(:disabled):hover {
+  background-color: #416691; 
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.add-to-cart-btn:active {
+.add-to-cart-btn:not(:disabled):active {
   transform: scale(0.98);
+}
+
+.add-to-cart-btn:disabled {
+  background-color: #ccc;      
+  color: #444;         
+  filter: grayscale(100%) contrast(0.8);
+  box-shadow: none;
+  transform: none;
+}
+
+
+.original-price {
+  text-decoration: line-through;
+  color: #434343;
+  font-size: 17px;
+  text-overflow: ellipsis;
+}
+
+.discounted-price {
+  color: #e63946;
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.product-image-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.product-image-container img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.image-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+
+.image-wrap.sold-out .product-image {
+  filter: brightness(0.5);
+}
+
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(32, 49, 49, 0.618), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sold-out-banner {
+  position: absolute;
+  top: 26px;
+  left: -40px;
+  background-color: rgba(230, 57, 70, 0.95); 
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 4px 50px;
+  transform: rotate(-45deg);
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }

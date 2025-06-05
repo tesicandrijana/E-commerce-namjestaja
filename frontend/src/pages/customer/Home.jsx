@@ -66,7 +66,7 @@ const Home = () => {
               Discover stylish, high-quality furniture tailored for comfort and
               elegance.
             </p>
-            <Link to="./products" className="btn-primary">
+            <Link to="./shop-products" className="btn-primary">
               Shop Now
             </Link>
           </div>

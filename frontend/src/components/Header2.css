@@ -4,9 +4,19 @@
   border-bottom: 1px solid #eaeaea;
   padding: 6px 0; /* reduced from 12px */
   font-family: 'Segoe UI', sans-serif;
-  position: relative;
+  top: 73px;
+  position: sticky;
   z-index: 999;
-  font-size: 13px; /* smaller font size */
+  font-size: 13px; 
+  transition: transform 0.3s ease;
+}
+
+.secondary-header.hidden {
+  transform: translateY(-100%);
+}
+
+.secondary-header.visible {
+  transform: translateY(0);
 }
 
 .fs-container {

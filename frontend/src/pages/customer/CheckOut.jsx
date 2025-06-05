@@ -63,14 +63,14 @@ export default function Checkout() {
   }, []);
 
   // Fetch discounts if cart has items
-  useEffect(() => {
+ useEffect(() => {
     async function fetchDiscounts() {
       try {
-        const res = await fetch("http://localhost:8000/discounts/");
+        const res = await fetch("http://localhost:8000/discounts/all");
         if (!res.ok) throw new Error("Failed to fetch discounts");
         const data = await res.json();
         const map = {};
-        data.forEach((discount) => {
+        data.forEach(discount => {
           map[discount.product_id] = discount;
         });
         setDiscountsMap(map);
@@ -328,26 +328,27 @@ export default function Checkout() {
 
             <label>
               Phone
-              <div className="phone-input-wrapper">
+              <div className="phone-input-group">
                 <select
                   name="calling_code"
                   value={orderData.calling_code}
                   onChange={(e) => {
-                    handleInputChange(e);
-                    const country = callingCodes.find(
+                    const selected = callingCodes.find(
                       (c) => c.calling_code === e.target.value
                     );
                     setOrderData((prev) => ({
                       ...prev,
-                      country_code: country ? country.country_code : "",
+                      calling_code: e.target.value,
+                      country_code: selected?.country_code || "",
                     }));
                   }}
                   required
+                  className="calling-code-select"
                 >
-                  <option value="">Select</option>
+                  <option value="">Calling Code</option>
                   {callingCodes.map((code) => (
-                    <option key={code.calling_code} value={code.calling_code}>
-                      {code.country_name} ({code.calling_code})
+                    <option key={code.id} value={code.calling_code}>
+                      {code.calling_code} ({code.country_code})
                     </option>
                   ))}
                 </select>
@@ -357,6 +358,7 @@ export default function Checkout() {
                   value={orderData.phone}
                   onChange={handleInputChange}
                   required
+                  className="phone-input"
                   placeholder="Phone number"
                 />
               </div>

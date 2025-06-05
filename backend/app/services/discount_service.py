@@ -3,12 +3,12 @@ from typing import Annotated
 from fastapi import HTTPException
 from app.schemas import discount as discount_schema
 from app.repositories import discount_repository
-from app.models.models import Discount, Product
+from app.models.models import Discounts, Product
 from sqlalchemy import and_
 from datetime import date
 
 def overlapping_discount(session: Session, discount_data: discount_schema.DiscountCreate):
-    discount = Discount(**discount_data.model_dump())
+    discount = Discounts(**discount_data.model_dump())
     return discount_repository.overlapping_discount(session,discount)
 
 def create_discount(session: Session, discount_data: discount_schema.DiscountCreate):
@@ -26,7 +26,7 @@ def create_discount(session: Session, discount_data: discount_schema.DiscountCre
                 status_code=400,
                 detail=f"{product_name}:"+"\n".join(overlaps_info)
             )
-        discount = Discount(**discount_data.model_dump())
+        discount = Discounts(**discount_data.model_dump())
         return discount_repository.create_discount(session,discount)
 
 def create_discounts(session: Session, discounts: list[discount_schema.DiscountCreate]):
@@ -61,7 +61,7 @@ def get_discounts(
     today = date.today()
     filters = []
     if active is True:
-        filters.append(and_(Discount.start_date <= today, Discount.end_date >= today))
+        filters.append(and_(Discounts.start_date <= today, Discounts.end_date >= today))
     if search:
         filters.append(Product.name.ilike(f"%{search}%"))
 

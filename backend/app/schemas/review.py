@@ -6,8 +6,8 @@ from datetime import datetime
 
 class ReviewCreate(SQLModel):
     product_id: int
-    rating: int = Field(..., ge=1, le=5)  # validation here too
-    comment: Optional[str] = None
+    rating: int   
+    comment: str
 
 class ReviewUpdate(SQLModel):
     rating: Optional[int] = Field(None, ge=1, le=5)
@@ -21,7 +21,7 @@ class ReviewRead(SQLModel):
     rating: int
     comment: Optional[str]
     created_at: datetime
-    customer_name: str  # Add this field
+    customer_name: str  
 
 
 class ReviewOut(SQLModel):

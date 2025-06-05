@@ -17,7 +17,6 @@ const ProductDetails = () => {
   const [submitError, setSubmitError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -35,7 +34,6 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id]);
 
-  // Fetch average rating
   const fetchRating = async () => {
     try {
       const response = await fetch(`http://localhost:8000/reviews/product/${id}/rating`);
@@ -58,7 +56,6 @@ const ProductDetails = () => {
     }
   };
 
-  // Fetch all reviews
   const fetchReviews = async () => {
     try {
       const response = await fetch(`http://localhost:8000/reviews/product/${id}`);
@@ -70,13 +67,11 @@ const ProductDetails = () => {
     }
   };
 
-  // Fetch rating and reviews on load or id change
   useEffect(() => {
     fetchRating();
     fetchReviews();
   }, [id]);
 
-  // Called when review is submitted in ReviewModal
   const handleReviewSubmitted = () => {
     fetchRating();
     fetchReviews();
@@ -84,7 +79,6 @@ const ProductDetails = () => {
     setSubmitError(null);
   };
 
-  // Helper to get initials for profile icon
   const getInitials = (name) => {
     if (!name) return "?";
     const parts = name.trim().split(" ");
@@ -101,7 +95,6 @@ const ProductDetails = () => {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  // Convert hash to an HSL color (for nice spread of colors)
   const hue = Math.abs(hash) % 360;
   return `hsl(${hue}, 60%, 50%)`;
 }
