@@ -1,17 +1,17 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
-from typing import Optional
-from app.models.models import TaxRate, PostalCode, CountryCallingCode
-from app.database import get_db
+from typing import List
+from datetime import datetime
+from app.services.user_service import get_current_user
+from app.models.models import PostalCode, CountryCallingCode, CartItem, Product, Discounts, OrderItem, User
+from app.schemas.shipping import CountryCallingCodeBase
+from app.database import get_db, get_session
 from app.crud.shipping import (
-    get_tax_rates, 
     get_postal_codes, 
     create_country_calling_code,
     get_country_calling_codes)
 
 from app.schemas.shipping import (
-    RegionRateRead, ShippingZoneRead,
-    TaxRateCreate, TaxRateRead,
     PostalCodeCreate, PostalCodeRead,
     CountryCallingCodeCreate, CountryCallingCodeRead
 )
@@ -20,35 +20,23 @@ router = APIRouter()
 
 @router.get("/")
 def shipping_root():
-    return {"message": "Shipping API root. Available endpoints: /region-rates, /tax-rates, /postal-codes, /calling-codes"}
+    return {"message": "Shipping API root. Available endpoints: /postal-codes, /calling-codes"}
 
 
-@router.get("/country-code/")
-def get_country_code(
-    city: str = Query(..., description="City name"),
-    postal_code: str = Query(..., description="Postal code"),
-    db: Session = Depends(get_db)
-):
-    statement = select(PostalCode).where(
-        PostalCode.city == city,
-        PostalCode.postal_code == postal_code
-    )
-    result = db.exec(statement).first()
-    
-    if not result:
-        raise HTTPException(status_code=404, detail="Country code not found for given city and postal code")
 
-    return {"country_code": result.country_code}
+@router.get("/taxes")
+def get_tax_rates(session: Session = Depends(get_session)):
+    statement = select(CountryCallingCode.country_code, CountryCallingCode.tax_rate)
+    results = session.exec(statement).all()
+    return [{"country_code": code, "vat_rate": rate} for code, rate in results]
 
 
-@router.post("/tax-rates/", response_model=TaxRateRead)
-def create_tax_rate(tr: TaxRateCreate, db: Session = Depends(get_db)):
-    tr_obj = TaxRate(**tr.dict())
-    return create_tax_rate(db, tr_obj)
+@router.get("/shipping")
+def get_shipping_fees(session: Session = Depends(get_session)):
+    statement = select(CountryCallingCode.country_code, CountryCallingCode.shipping_fee)
+    results = session.exec(statement).all()
+    return [{"country_code": code, "shipping_rate": fee} for code, fee in results]
 
-@router.get("/tax-rates/", response_model=list[TaxRateRead])
-def read_tax_rates(db: Session = Depends(get_db)):
-    return get_tax_rates(db)
 
 
 @router.post("/postal-codes/", response_model=PostalCodeRead)
@@ -70,13 +58,6 @@ def create_calling_code(cc: CountryCallingCodeCreate, db: Session = Depends(get_
 def read_calling_codes(db: Session = Depends(get_db)):
     return get_country_calling_codes(db)
 
-@router.get("/tax-rate")
-def get_tax_rate_by_country_code(country_code: str = Query(...), db: Session = Depends(get_db)):
-    tax_rate = db.exec(
-        select(TaxRate)
-        .where(TaxRate.country_code == country_code)
-        .order_by(TaxRate.effective_from.desc())
-    ).first()
-    if not tax_rate:
-        raise HTTPException(status_code=404, detail="Tax rate not found for country_code: " + country_code)
-    return {"tax_rate": float(tax_rate.vat_rate)}
+
+
+

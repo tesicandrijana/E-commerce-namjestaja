@@ -54,7 +54,7 @@ app.include_router(cart.router, prefix="/cart", tags=["Cart"])
 app.include_router(support.router, prefix="/support", tags=["Support"])
 app.include_router(complaint.router, prefix="/complaints", tags=["Complaints"])
 app.include_router(support_orders.router, tags=["Support Orders"])
-app.include_router(shipping.router, prefix="/shipping", tags=["Shipping"])
+app.include_router(shipping.router, prefix="/taxes-shipping", tags=["TaxRate"])
 app.include_router(chat_ws.router)
 
 @app.get("/")
@@ -68,3 +68,5 @@ async def add_to_cart():
 @app.get("/ping")
 def ping():
     return {"status": "ok"}
+
+

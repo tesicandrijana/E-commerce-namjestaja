@@ -206,13 +206,6 @@ class WorkerRequest(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class TaxRate(SQLModel, table=True):
-    __tablename__ = "tax_rates"
-
-    id: Optional[int] = Field(default=None, primary_key=True)
-    country_code: str = Field(max_length=2, unique=True)# e.g., "DE", "FR"
-    vat_rate: Decimal  # e.g., 0.19
-    effective_from: date
 
 
 class PostalCode(SQLModel, table=True):
@@ -232,5 +225,8 @@ class CountryCallingCode(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     country_code: str = Field(max_length=2, unique=True)
     calling_code: str
+    tax_rate: float = Field(default=0.0)
+    shipping_fee: float = Field(default=0.0)
+
 
     postal_codes: list[PostalCode] = Relationship(back_populates="calling_code")
