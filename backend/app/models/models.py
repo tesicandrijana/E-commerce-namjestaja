@@ -195,6 +195,7 @@ class WorkerRequest(SQLModel, table=True):
     status: str = Field(default="pending")  # pending, approved, rejected
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+
 class JobApplication(SQLModel, table=True):
     __tablename__ = "job_applications"
 
@@ -204,5 +205,8 @@ class JobApplication(SQLModel, table=True):
     phone: str
     address: Optional[str] = None
     role: str
-    processed: bool = Field(default=False)
+
+    status: str = Field(default="waiting", nullable=False, index=True)  
+    interview_time: Optional[datetime] = None  
+
     cv_file: Optional[str] = None
