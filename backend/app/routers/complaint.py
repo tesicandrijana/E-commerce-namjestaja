@@ -8,6 +8,8 @@ from sqlmodel import select
 from app.crud import complaint
 from app.schemas import complaint as complaint_schema
 from app.dependencies import get_db
+from app.schemas.complaint import ComplaintOut
+
 
 router = APIRouter()
 
@@ -45,6 +47,31 @@ def read_my_complaint(
     if not complaint or complaint.order.customer_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to access this complaint")
     return complaint
+
+
+@router.get("/assigned", response_model=List[ComplaintOut])
+def get_assigned_complaints_for_customer(
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if not current_user or current_user.role != "customer":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Get IDs of orders that belong to this customer
+    orders = db.query(Order.id).filter(Order.customer_id == current_user.id).subquery()
+
+    # Get complaints linked to these orders that are assigned (assigned_to IS NOT NULL)
+    complaints = (
+        db.query(Complaint)
+        .filter(
+            Complaint.order_id.in_(orders),
+            Complaint.assigned_to.isnot(None),
+        )
+        .all()
+    )
+    return complaints
+
+
 
 
 

@@ -80,7 +80,7 @@ export default function Orders() {
       body: JSON.stringify({
         order_id: selectedOrderId,
         description: message,
-        preferred_resolution: subject,
+        subject: subject,
       }),
     })
       .then(async (res) => {

@@ -169,14 +169,14 @@ class Complaint(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
     description: str
-    status: str = Field(default="open")   # open, in_progress, resolved, declined
-    preferred_resolution: Optional[str] = Field(default=None)  # return, refund, repair
-    final_resolution: Optional[str] = Field(default=None)      # zaposlenik odlučuje
+    status: str = Field(default="open")  
+    subject: Optional[str] = Field(default=None) 
+    final_resolution: Optional[str] = Field(default=None)      
     response_text: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    response_text: Optional[str] = None  #DODANO POLJE
+    response_text: Optional[str] = None 
     assigned_to: Optional[int] = Field(default=None, foreign_key="users.id")  # dodano
-    is_chat_open: bool = Field(default=False)   # dodano
+    is_chat_open: bool = Field(default=False)   
 
     order: Optional[Order] = Relationship()
     messages: List["Message"] = Relationship(back_populates="complaint")   #dodano

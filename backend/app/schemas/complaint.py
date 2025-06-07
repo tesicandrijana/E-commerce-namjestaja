@@ -6,7 +6,7 @@ class ComplaintBase(SQLModel):
     order_id: int
     description: str
     status: Optional[str] = "open"
-    preferred_resolution: Optional[str] = None  # return, refund, repair
+    subject: Optional[str] = None  # return, refund, repair
     assigned_to: Optional[int] = None
 
 class ComplaintCreate(ComplaintBase):
@@ -20,6 +20,21 @@ class Complaint(ComplaintBase):
 
     class Config:
         from_attributes = True
+
+class ComplaintOut(SQLModel):
+    id: int
+    order_id: int
+    description: str
+    status: str
+    subject: Optional[str] = None
+    final_resolution: Optional[str] = None
+    response_text: Optional[str] = None
+    created_at: datetime
+    assigned_to: Optional[int] = None
+    is_chat_open: bool
+
+    class Config:
+        orm_mode = True
 
 
 class ComplaintUpdate(SQLModel):
@@ -36,7 +51,7 @@ class ComplaintWithCustomer(SQLModel):
     id: int
     description: str
     status: str
-    preferred_resolution: Optional[str]
+    subject: Optional[str]
     final_resolution: Optional[str]
     assigned_to: Optional[int]
     response_text: Optional[str] = None

@@ -262,3 +262,20 @@ body {
   align-items: center;
   gap: 0.8rem; /* some space between cart and auth buttons */
 }
+
+.complaint-notification {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px 20px;
+  text-align: center;
+  font-weight: 500;
+  border-bottom: 1px solid #ffc107;
+  font-size: 15px;
+}
+
+.complaint-notification a {
+  color: #0c5460;
+  margin-left: 8px;
+  font-weight: bold;
+  text-decoration: underline;
+}
