@@ -118,7 +118,6 @@ class Order(SQLModel, table=True):
     payment_status: str = Field(default="pending")
     transaction_id: Optional[str] = None
     total_price: Optional[Decimal] = None
-    total_discount: Optional[Decimal] = None 
 
     customer: Optional[User] = Relationship(back_populates="orders")
     items: List["OrderItem"] = Relationship(back_populates="order")
@@ -132,7 +131,6 @@ class OrderItem(SQLModel, table=True):
     product_id: int = Field(foreign_key="products.id")
     quantity: int
     price_per_unit: Decimal
-    discount_amount: Optional[Decimal] = Field(default=None, nullable=True)
 
     order: Optional[Order] = Relationship(back_populates="items")
     product: Optional[Product] = Relationship(back_populates="order_items")

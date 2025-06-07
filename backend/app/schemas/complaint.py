@@ -9,12 +9,8 @@ class ComplaintBase(SQLModel):
     preferred_resolution: Optional[str] = None  # return, refund, repair
     assigned_to: Optional[int] = None
 
-class ComplaintCreate(SQLModel):
-    order_id: int
-    subject: str
-    message: str
-    status: Optional[str] = "open"
-    preferred_resolution: Optional[str] = None
+class ComplaintCreate(ComplaintBase):
+    pass
 
 class Complaint(ComplaintBase):
     id: int

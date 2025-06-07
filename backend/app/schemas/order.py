@@ -17,7 +17,7 @@ class OrderBase(SQLModel):
     payment_method: Optional[str]
     payment_status: Optional[str]
     transaction_id: Optional[str]
-    total_price: Decimal  # required here, not optional
+    total_price: Decimal 
     items: List[OrderItemCreate]
 
 

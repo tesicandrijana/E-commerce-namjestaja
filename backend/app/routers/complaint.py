@@ -5,7 +5,6 @@ from typing import List
 from app.services.user_service import get_current_user
 from app.models.models import User, Complaint, Order
 from sqlmodel import select
-
 from app.crud import complaint
 from app.schemas import complaint as complaint_schema
 from app.dependencies import get_db
