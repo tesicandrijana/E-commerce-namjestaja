@@ -46,6 +46,7 @@ import InquiryDetails from "./pages/support/InquiryDetails";
 
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
+import ManagerReviewsView from "./pages/manager/ManagerReviewsView";
 
 import { Outlet } from "react-router-dom";
 
@@ -110,14 +111,12 @@ function App() {
                 </Route>
               </Route>
 
-              {/* Manager Protected routes */}
-              <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
-                <Route element={<MainLayout />}>
-                  <Route path="/manager-dashboard" element={<ManagerDashboard />} />
-                  <Route path="/manager/products" element={<ManagerProductsView />} />
-                  <Route path="/manager/discounts" element={<ManagerDiscountsView />} />
-                </Route>
-              </Route>
+          {/* Manager Pages */}
+          <Route element={<ProtectedRoute allowedRoles={"manager"} />}>
+            <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+            <Route path="/manager/products" element={<ManagerProductsView />}/>          
+            <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
+          </Route>
 
               {/* Support Protected routes */}
               <Route element={<ProtectedRoute allowedRoles={"support"} />}>
