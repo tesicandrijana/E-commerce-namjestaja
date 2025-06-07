@@ -33,6 +33,8 @@ import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import EmployeeStatistics from "./pages/admin/EmployeeStatistics";
+import JobApplications from "./pages/admin/JobApplications";
+
 
 // Pages (Manager)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -98,6 +100,8 @@ function App() {
               <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/EmployeeStatistics" element={<EmployeeStatistics />} />
+              <Route path="/JobApplications" element={<JobApplications />} />
+
             </Route>
 
             {/* Manager Pages */}

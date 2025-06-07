@@ -115,7 +115,7 @@ function AdminDashboard() {
             altText="Job Applications"
             title="Job Applications"
             description="Click to see a list of all job applications, scheduled interviews and more"
-            onClick={() => navigate("/ArchivedEmployees")}
+            onClick={() => navigate("/JobApplications")}
           />
       </div>
 

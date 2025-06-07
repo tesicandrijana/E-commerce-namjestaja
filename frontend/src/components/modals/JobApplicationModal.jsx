@@ -126,7 +126,7 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
           <div className="reject-container">
             <button
               className="reject-btn"
-              onClick={() => setConfirmRejectOpen(true)} // otvori modal za potvrdu odbijanja
+              onClick={() => setConfirmRejectOpen(true)} 
             >
               Reject the Request
             </button>
@@ -135,7 +135,6 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
         </div>
       </div>
 
-      {/* Modal za potvrdu zakazivanja intervjua */}
       <ConfirmModal
         isOpen={confirmOpen}
         title="Invitation for interview"
