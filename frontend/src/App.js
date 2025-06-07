@@ -33,6 +33,7 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ManagerProductsView from "./pages/manager/ManagerProductsView"
 import ManagerDiscountsView from "./pages/manager/ManagerDiscountsView";
+
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
 import SupportProfile from "./pages/support/SupportProfile";
@@ -40,6 +41,9 @@ import ComplaintsList from "./pages/support/ComplaintsList";
 import ComplaintDetails from "./pages/support/ComplaintDetails"
 import SupportOrders from "./pages/support/SupportOrders";
 import SupportOrderDetails from "./pages/support/SupportOrderDetails";
+import Inquiries from "./pages/support/Inquiries";
+import InquiryDetails from "./pages/support/InquiryDetails";
+
 
 // Pages (Delivery)
 import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
@@ -112,6 +116,9 @@ function App() {
           <Route path="/support/complaints/:id" element={<ComplaintDetails />} />
           <Route path="/support/orders" element={<SupportOrders />} />
           <Route path="/support/orders/:orderId" element={<SupportOrderDetails />} />
+          <Route path="/support/inquiries" element={<Inquiries />} />
+          <Route path="/support/inquiries/:id" element={<InquiryDetails />} />
+
         </Route>
 
           {/* Delivery Pages */}

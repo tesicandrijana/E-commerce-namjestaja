@@ -13,6 +13,7 @@ export default function ComplaintDetails() {
   const [status, setStatus] =useState("");
   const [showChat, setShowChat] =useState(false);    // za chat
   const [currentUser, setCurrentUser]= useState(null);
+  const [hasMessages, setHasMessages] = useState(false);  //provjera jel chat ima poruka vec
 
   useEffect(() => {
      axios.get(`http://localhost:8000/support/complaints/${id}`, {
@@ -27,6 +28,21 @@ export default function ComplaintDetails() {
       .catch((err) => console.error(err));
   }, [id]);
 
+
+  useEffect(() => {
+    axios.get(`http://localhost:8000/complaints/${id}/messages`, {
+      withCredentials: true,
+    })
+    .then((res) => {
+      if (res.data.length > 0) {
+        setHasMessages(true);
+        setShowChat(true); // otvori chat ako se vec ranije pisalo tj ima poruka
+      }
+    })
+    .catch((err) => console.error("Greška pri dohvacanju poruka:", err));
+  }, [id]);
+
+
   const handleUpdate = () => {
     axios
       .put(`http://localhost:8000/support/complaints/${id}`, {
@@ -39,17 +55,17 @@ export default function ComplaintDetails() {
       .catch((err) => console.error(err));
   };
 
-  const handleRespond = () => {
-    axios
-      .put(`http://localhost:8000/support/complaints/${id}/respond`, {
-        response_text: responseText,
-      }, { withCredentials: true })
-      .then((res) => {
-        console.log("Response sent:", res.data);
-        alert("Response sent successfully!");
-       })
-      .catch((err) => console.error(err));
-  };
+  // const handleRespond = () => {
+  //   axios
+  //     .put(`http://localhost:8000/support/complaints/${id}/respond`, {
+  //       response_text: responseText,
+  //     }, { withCredentials: true })
+  //     .then((res) => {
+  //       console.log("Response sent:", res.data);
+  //       alert("Response sent successfully!");
+  //      })
+  //     .catch((err) => console.error(err));
+  // };
 
   const handleStatusUpdate = () => {
     axios
@@ -64,7 +80,9 @@ export default function ComplaintDetails() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/users/me", { withCredentials: true })
+      .get("http://localhost:8000/users/me", { 
+        withCredentials: true 
+      })
       .then((res) => setCurrentUser(res.data))
       .catch((err) => console.error("Greška pri dohvaćanju korisnika:", err));
   }, []);

@@ -47,12 +47,13 @@ function LoginModal({ role = "customer", onClose }) {
         } else if (userRole === "manager") {
           navigate("/manager-dashboard");
         } else if (userRole === "support") {
-          navigate("/support-dashboard");
+                            // ovdje necu dashboard za support!
+          navigate("/support");                     
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {
-          // default to customer dashboard or homepage
-          navigate("/products");
+          //preusmjeri na pocetnu?
+          navigate("/");
         }
 
         onClose();

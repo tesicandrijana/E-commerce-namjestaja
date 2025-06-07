@@ -29,19 +29,20 @@ const supportSections = [
     image: "/support/complaints.png",
     className: "complaints-card",
   },
-  {
-    title: "User Messages",
-    description: "Communicate with customers via chat",
-    link: "/support/messages",
-    image: "/support/messages.png",
-    className: "messages-card"
-  },
+  
   {
     title: "Customer Orders",
     description: "Access and review user orders",
     link: "/support/orders",
     image: "/support/orders.png",
     className: "orders-card"
+  },
+  {
+    title: "Inquiries",
+    description: "Respond to customer inquiries",
+    link: "/support/inquiries",
+    image: "/support/messages.png",
+    className: "messages-card"
   },
   {
     title: "My Profile",
