@@ -51,9 +51,15 @@ class ProductUpdate(SQLModel):
     category_id: Optional[int] = None
     images: Optional[list[product_image.ProductImageBase]] | None = None
 
+
+class DiscountRead(SQLModel):
+    id: int
+    amount: float  
+    product_id: int
 class ProductRead(ProductBase):
     id: int
-    category: Optional[CategoryRead] = None  
+    category: Optional[CategoryRead] = None
+    discount: Optional[DiscountRead] = None
 
     class Config:
         orm_mode = True

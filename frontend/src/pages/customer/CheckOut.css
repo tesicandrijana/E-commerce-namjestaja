@@ -41,19 +41,17 @@ button {
   text-align: center;
 }
 
-/* Grid layout: Summary + Form */
 .checkout-grid {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
 }
 
-/* Cart Summary */
 .checkout-summary {
   flex: 1 1 300px;
   display: flex;
   flex-direction: column;
-  height: 75.66vh; /* fixed height to enable scrolling */
+  height: 75.66vh; 
   padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -67,15 +65,13 @@ button {
   text-align: center;
 }
 
-/* Scrollable container for items + subtotal/discount/tax */
 .checkout-summary-scrollable {
   overflow-y: auto;
   flex-grow: 1;
   margin-bottom: 1rem;
-  padding-right: 8px; /* prevent content hiding behind scrollbar */
+  padding-right: 8px; 
 }
 
-/* Scrollbar styling (Webkit) */
 .checkout-summary-scrollable::-webkit-scrollbar {
   width: 6px;
 }
@@ -85,7 +81,6 @@ button {
   border-radius: 3px;
 }
 
-/* Cart item lines */
 .checkout-summary-item {
   display: flex;
   justify-content: space-between;
@@ -95,7 +90,6 @@ button {
   color: #333;
 }
 
-/* Subtotal, discount, tax lines */
 .checkout-summary-totals div {
   display: flex;
   justify-content: space-between;
@@ -105,7 +99,6 @@ button {
   font-size: 1rem;
 }
 
-/* Total always visible outside scroll */
 .checkout-summary-total {
   font-size: 1.3rem;
   font-weight: 700;
@@ -114,7 +107,6 @@ button {
   text-align: right;
 }
 
-/* Checkout form styles */
 .checkout-form {
   flex: 1 1 350px;
   display: flex;
@@ -210,14 +202,11 @@ button {
   outline: none;
 }
 
-
 .checkout-form button:disabled {
   background-color: #42413fe1;
   cursor: not-allowed;
 }
 
-
-/* Success and error messages */
 .form-success {
   color: green;
   margin-top: 0.5rem;
@@ -228,7 +217,6 @@ button {
   margin-top: 0.5rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .checkout-grid {
     flex-direction: column;

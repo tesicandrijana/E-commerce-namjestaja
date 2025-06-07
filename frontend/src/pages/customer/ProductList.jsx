@@ -242,30 +242,23 @@ export default function ProductList() {
                       <div className="rating-price">
   {discount && discount.amount > 0 ? (
     <>
-      <p className="product-price original-price" style={{ textDecoration: "line-through", marginRight: "8px" }}>
-        {typeof product.price === "number"
-          ? product.price.toFixed(2)
-          : product.price}{" "}
-        KM
+      <p
+        className="product-price original-price"
+        style={{ textDecoration: "line-through", marginRight: "8px" }}
+      >
+        {Number(product.price).toFixed(2)} KM
       </p>
       <p className="product-price discounted-price" style={{ fontWeight: "bold" }}>
-        {typeof product.price === "number"
-          ? (product.price * (1 - discount.amount / 100)).toFixed(2)
-          : product.price}{" "}
-        KM
+        {(Number(product.price) * (1 - discount.amount / 100)).toFixed(2)} KM
       </p>
     </>
   ) : (
     <p className="product-price">
-      {typeof product.price === "number"
-        ? product.price.toFixed(2)
-        : product.price}{" "}
-      KM
+      {Number(product.price).toFixed(2)} KM
     </p>
   )}
-
-  
 </div>
+
                     </div>
                   </Link><p className="product-rating">
     <StarRatingOverall productId={product.id} size={20} /><AddToCartButton productId={product.id} stock={product.quantity} iconOnly/>

@@ -3,6 +3,7 @@ import './Footer.css';
 
 const Footer = () => {
   return (
+    <div className="main-content">
     <div className="footer-container">
       <div className="footer-bg-image" />
 
@@ -69,6 +70,7 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} FurniStyle. All rights reserved.
         </div>
       </footer>
+    </div>
     </div>
   );
 };

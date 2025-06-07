@@ -1,3 +1,20 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root, /* or your main app container */
+body > div {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;  /* full viewport height */
+}
+
+.main-content {
+  flex: 1;  /* take remaining space */
+}
+
+
 .footer-container {
   position: relative;
   overflow: hidden;

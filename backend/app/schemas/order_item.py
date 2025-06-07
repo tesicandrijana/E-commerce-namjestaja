@@ -3,6 +3,7 @@ from typing import Optional
 from sqlmodel import SQLModel
 from decimal import Decimal
 from sqlmodel import SQLModel, Field
+from app.schemas import product_image
 
 
 
@@ -15,13 +16,24 @@ class OrderItemBase(SQLModel):
 class OrderItemCreate(OrderItemBase):
     pass
 
+class ProductBase(SQLModel):
+    name: str
+    description: Optional[str] = None
+    material_id: Optional[int] = None
+    length: int
+    width: int
+    height: int
+    price: Decimal
+    quantity: int = 0
+    category_id: Optional[int] = None
+    images: Optional[list[product_image.ProductImageBase]] | None = None
 
-class OrderItemRead(OrderItemBase):
+class OrderItemRead(SQLModel):
     id: int
-    order_id: int
-
-    class Config:
-        orm_mode = True
+    product_id: int
+    quantity: int
+    price_per_unit: Decimal
+    product: Optional[ProductBase]
 
 
 class OrderItemUpdate(SQLModel):

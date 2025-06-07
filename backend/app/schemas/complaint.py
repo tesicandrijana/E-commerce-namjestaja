@@ -1,17 +1,18 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel
 from typing import Optional
 from datetime import datetime
 
-class ComplaintBase(BaseModel):
+class ComplaintBase(SQLModel):
     order_id: int
     description: str
     status: Optional[str] = "open"
     preferred_resolution: Optional[str] = None  # return, refund, repair
     assigned_to: Optional[int] = None
 
-class ComplaintCreate(BaseModel):  # sad ne nasljeđuje iz ComplaintBase
+class ComplaintCreate(SQLModel):
     order_id: int
-    description: str
+    subject: str
+    message: str
     status: Optional[str] = "open"
     preferred_resolution: Optional[str] = None
 
@@ -25,17 +26,17 @@ class Complaint(ComplaintBase):
         from_attributes = True
 
 
-class ComplaintUpdate(BaseModel):
+class ComplaintUpdate(SQLModel):
     description: Optional[str] = None
     status: Optional[str] = None  # open, in_progress, resolved
     final_resolution: Optional[str] = None
     assigned_to: Optional[int] = None
     
-class ComplaintResponse(BaseModel):
+class ComplaintResponse(SQLModel):
     response_text: str
 
 
-class ComplaintWithCustomer(BaseModel):
+class ComplaintWithCustomer(SQLModel):
     id: int
     description: str
     status: str

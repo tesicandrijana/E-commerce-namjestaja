@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
-from sqlmodel import Session
+from sqlmodel import Session, select
+from sqlalchemy.orm import selectinload
 from decimal import Decimal, ROUND_HALF_UP
-from app.models.models import User, Order, OrderItem
+from app.models.models import User, Order, OrderItem, Product
 from app.schemas.order import OrderCreate, OrderRead
 from app.services.user_service import get_current_user
 from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
@@ -17,9 +18,15 @@ def get_my_orders(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    orders = get_orders_by_customer_id(current_user.id, session)
+    orders = session.exec(
+        select(Order)
+        .where(Order.customer_id == current_user.id)
+        .options(selectinload(Order.items).selectinload(OrderItem.product))  # <-- this line ensures product is included
+    ).all()
+
     if not orders:
         raise HTTPException(status_code=404, detail="No orders found for this user.")
+
     return orders
 
 
@@ -48,6 +55,7 @@ def create_order(order_data: OrderCreate, session: Session = Depends(get_session
             product_id=item.product_id,
             quantity=item.quantity,
             price_per_unit=item.price_per_unit,
+            
         )
         session.add(order_item)
     session.commit()

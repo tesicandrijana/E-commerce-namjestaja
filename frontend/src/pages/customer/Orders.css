@@ -1,118 +1,330 @@
-body {
-   min-height: 100vh;
-}
-
-
-.orders-background {
-
-  /* url(https://images.squarespace-cdn.com/content/v1/588bdafa2994ca8c2ad76a44/1586123901773-Q166JBXTHHH52T2FX3V5/ke17ZwdGBToddI8pDm48kNvT88LknE-K9M4pGNO0Iqd7gQa3H78H3Y0txjaiv_0fDoOvxcdMmMKkDsyUqMSsMWxHk725yiiHCCLfrh8O1z5QPOohDIaIeljMHgDF5CVlOqpeNLcJ80NK65_fV7S1USOFn4xF8vTWDNAUBm5ducQhX-V3oVjSmr829Rco4W2Uo49ZdOtO_QXox0_W7i2zEA/008.jpg); */
-  background-image: linear-gradient(rgba(153, 116, 64, 0.453), rgba(30, 28, 28, 0.234)), url("https://i.pinimg.com/originals/1a/a0/e4/1aa0e4e4dfd7fcac2ad960abb64bd4cb.jpg");
-  max-width: 1600px;
-  background-position: center;
+/* General Styles */
+.orders-main {
+  font-family: 'Poppins', Arial, sans-serif;
+  margin: 0;
+  position: relative;
+  height: 2000px;
+  padding: 40px;
+  width: 100%;
+  background-image: url('https://image.architonic.com/img_pro2-4/137/7836/black-bowie-0650.jpg');
   background-attachment: fixed;
+  background-position: 0px -100px;
   background-repeat: no-repeat;
   background-size: cover;
-  min-height: 100vh;
-  font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 60px;
+  box-sizing: border-box;
+  background-color: #f4f4f9;
+}
+
+.orders-v1-wrapper {
+  min-height: fit-content;
+  padding: 30px;
+  max-width: 600px;
   margin: 0 auto;
-  max-width: 1600px;
 }
 
-.orders-container {
-  max-width: 700px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: #f6fbff46;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
-}
-
-.orders-heading {
-  text-align: center;
-  color: #222;
-  margin-bottom: 1.5rem;
-}
-
-.orders-error {
-  color: #b00020;
-  background-color: #fddede;
-  padding: 1rem;
-  border-radius: 6px;
-  text-align: center;
-}
-
-.orders-empty {
-  text-align: center;
-  color: #666;
-  font-style: italic;
-}
-
-.orders-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.orders-item {
-  background-color: #dbdfe0db;
-  backdrop-filter: blur(2px);
-  border-radius: 6px;
-  padding: 1rem 1.5rem;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+.orders-v1-stack {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1rem;
   flex-wrap: wrap;
-  gap: 6rem;
+  gap: 6px;
+  height: fit-content;
+  justify-content: flex-start;
 }
 
-.order-info {
-  display: flex;
-  flex-direction: column;
+.order-square {
+  width: 250px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.6s ease;
+}
+
+.order-square.expanded {
+  width: 100%;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
 .order-number {
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.3rem;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #333;
 }
 
-.order-date {
-  font-size: 0.9rem;
-  color: #4b5563;
-}
-
-.order-status {
-  font-weight: 600;
-  color: #77522a;
-}
-
-.order-total {
-  font-weight: 700;
-  color: #252727;
-}
-
-.cancel-button {
-  margin-top: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  background-color: #ffffff;
-  color: #414040;
+.view-details-btn {
+  background-color: #3498db;
+  color: #fff;
   border: none;
-  border-radius: 14px;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.8s ease;
+  transition: background-color 0.6s ease;
 }
 
-.cancel-button:hover {
-  background-color: #2a2928e7;
-  color: #fbfbfbe2;
+.view-details-btn:hover {
+  background-color: #2980b9;
 }
 
-.order-status.pending { color: orange; }
-.order-status.cancelled { color: red; }
-.order-status.delivered { color: green; }
+/* Order details */
+.order-details {
+  padding: 15px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #666;
+}
+
+.status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.status-pending {
+  background-color: #f39c12;
+  color: #fff;
+}
+
+.status-cancelled {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.status-completed {
+  background-color: #2ecc71;
+  color: #fff;
+}
+
+.order-items-section h4 {
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+
+.order-items-section ul {
+  padding-left: 20px;
+}
+
+.order-items-section li {
+  background: #f7f7f7;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.order-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.order-actions button {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.order-actions button:hover {
+  background-color: #c0392b;
+}
+
+.order-actions button:nth-child(2) {
+  background-color: #3498db;
+}
+
+.order-actions button:nth-child(2):hover {
+  background-color: #2980b9;
+}
+
+/* Error & Empty States */
+.orders-v1-error,
+.orders-v1-empty {
+  color: #e74c3c;
+  text-align: center;
+  font-size: 1.2em;
+  margin-top: 20px;
+}
+
+/* Modal Styles */
+.complaint-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.complaint-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.complaint-modal-header {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+.complaint-modal input,
+.complaint-modal textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.complaint-modal textarea {
+  min-height: 120px;
+}
+
+.complaint-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.complaint-modal-actions button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.complaint-modal-actions button:hover {
+  background-color: #2980b9;
+}
+
+.complaint-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.orders-v1-container {
+  position: relative;
+  display: flex;
+  overflow-x: hidden;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Shift order squares right when modal is open */
+.orders-v1-container.shifted .orders-v1-wrapper {
+  transform: translateX(350px); /* Width of modal + margin */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .orders-main {
+    padding: 20px 15px;
+    background-attachment: scroll; /* Disable fixed for better mobile performance */
+    background-position: center top;
+  }
+  
+  .orders-v1-wrapper {
+    max-width: 100%;
+    padding: 20px 10px;
+  }
+  
+  .orders-v1-stack {
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .order-square {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+  }
+  
+  .order-square.expanded {
+    width: 100%;
+  }
+  
+  .view-details-btn,
+  .order-actions button {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  
+  .order-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .order-actions button {
+    width: 100%;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-main {
+    padding: 15px 10px;
+  }
+  
+  .orders-v1-wrapper {
+    padding: 15px 8px;
+  }
+  
+  .order-square {
+    padding: 10px;
+  }
+  
+  .order-number {
+    font-size: 1em;
+  }
+  
+  .order-items-section h4 {
+    font-size: 1em;
+  }
+  
+  .view-details-btn,
+  .order-actions button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .complaint-modal {
+    max-width: 90%;
+    padding: 20px;
+  }
+  
+  .complaint-modal-header {
+    font-size: 1.2em;
+  }
+}

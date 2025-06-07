@@ -13,7 +13,6 @@ class OrderBase(SQLModel):
     address: str
     city: str
     postal_code: str
-    # REMOVE country_code, subtotal, discount_total, tax, shipping_cost
     status: Optional[str]
     payment_method: Optional[str]
     payment_status: Optional[str]
