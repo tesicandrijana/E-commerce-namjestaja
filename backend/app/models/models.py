@@ -170,7 +170,7 @@ class Complaint(SQLModel, table=True):
     order_id: int = Field(foreign_key="orders.id")
     description: str
     status: str = Field(default="open")  
-    subject: Optional[str] = Field(default=None) 
+    preferred_resolution: Optional[str] = Field(default=None) 
     final_resolution: Optional[str] = Field(default=None)      
     response_text: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)

@@ -9,7 +9,7 @@ export default function Orders() {
   const [showComplaint, setShowComplaint] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
-  const [subject, setSubject] = useState("");
+  const [preferred_resolution, setPreferredResolution] = useState("");
   const [message, setMessage] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -68,7 +68,7 @@ export default function Orders() {
   };
 
   const submitComplaint = () => {
-    if (!subject || !message) {
+    if (!preferred_resolution || !message) {
       alert("Please fill in both fields.");
       return;
     }
@@ -80,7 +80,7 @@ export default function Orders() {
       body: JSON.stringify({
         order_id: selectedOrderId,
         description: message,
-        subject: subject,
+        preferred_resolution: preferred_resolution,
       }),
     })
       .then(async (res) => {
@@ -93,7 +93,7 @@ export default function Orders() {
       .then(() => {
         alert("Complaint submitted successfully.");
         setShowComplaint(false);
-        setSubject("");
+        setPreferredResolution("");
         setMessage("");
       })
       .catch((err) => alert(`Error: ${err.message}`));
@@ -195,8 +195,8 @@ export default function Orders() {
       {showComplaint && (
         <ComplaintModal
           selectedOrderId={selectedOrderId}
-          subject={subject}
-          setSubject={setSubject}
+          preferred_resolution={preferred_resolution}
+          setPreferredResolution={setPreferredResolution}
           message={message}
           setMessage={setMessage}
           onClose={() => setShowComplaint(false)}

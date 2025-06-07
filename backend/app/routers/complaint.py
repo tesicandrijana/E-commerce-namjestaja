@@ -49,6 +49,7 @@ def read_my_complaint(
     return complaint
 
 
+
 @router.get("/assigned", response_model=List[ComplaintOut])
 def get_assigned_complaints_for_customer(
     current_user = Depends(get_current_user),

@@ -3,8 +3,8 @@ import "./ComplaintModal.css";
 
 const ComplaintModal = ({
   selectedOrderId,
-  subject,
-  setSubject,
+  preferred_resolution,
+  setPreferredResolution,
   message,
   setMessage,
   onClose,
@@ -63,15 +63,15 @@ const ComplaintModal = ({
           }}
         >
           <label htmlFor="complaint-subject" className="orders-v1-complaint-label">
-            Subject
+            Preferred Solution
           </label>
           <input
             id="complaint-subject"
             className="orders-v1-complaint-input"
             type="text"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Enter subject"
+            value={preferred_resolution}
+            onChange={(e) => setPreferredResolution(e.target.value)}
+            placeholder="Enter preferred resolution"
             required
           />
 
