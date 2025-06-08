@@ -30,7 +30,7 @@ function ManagerDashboard() {
           altText="Manage Orders And Delivery"
           title="Manage Orders And Delivery"
           description="Click to see all orders and manage them"
-          onClick={() => navigate("/orders")}
+          onClick={() => navigate("/manager/orders")}
         />
 
         <Card
@@ -52,9 +52,6 @@ function ManagerDashboard() {
           onClick={() => navigate("/manager/discounts")}
         />
 
-      </div>
-      <div className="statistics-container">
-        <Statistics />
       </div>
     </div>
   )

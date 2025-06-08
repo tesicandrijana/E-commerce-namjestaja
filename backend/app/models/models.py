@@ -121,6 +121,7 @@ class Order(SQLModel, table=True):
 
     customer: Optional[User] = Relationship(back_populates="orders")
     items: List["OrderItem"] = Relationship(back_populates="order")
+    delivery: Optional["Delivery"] = Relationship(back_populates="order")
 
 
 class OrderItem(SQLModel, table=True):
@@ -155,11 +156,11 @@ class Delivery(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
-    delivery_person_id: int = Field(foreign_key="users.id")
-    status: str = Field(default="in_progress")
+    delivery_person_id: Optional[int] = Field(foreign_key="users.id")
+    status: str = Field(default="unassigned")
     date: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
-    order: Optional[Order] = Relationship()
+    order: Optional[Order] = Relationship(back_populates="delivery")
     delivery_person: Optional[User] = Relationship(back_populates="deliveries")
 
 

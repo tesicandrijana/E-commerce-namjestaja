@@ -1,0 +1,51 @@
+.manager-deliveries-container{
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: scroll;
+    align-self: center;
+    margin: 5% 5%;
+}
+
+.manager-deliverer-cards{
+    display:flex;
+    flex-direction: row;
+    gap: 5%;
+}
+
+.order-column-container{
+    display:flex;
+    flex-direction:column;
+    background-color: rgba(224, 213, 213, 0.6);
+    width:300px;
+    height: 400px;
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.order-column-content{
+    display:flex;
+    width: 100%;
+    flex-direction:column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    gap: 0.4rem;
+}
+
+.order-column-content::-webkit-scrollbar,
+.manager-deliveries-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.order-column-content::-webkit-scrollbar-track,
+.manager-deliveries-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.order-column-content::-webkit-scrollbar-thumb,
+.manager-deliveries-containert::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}

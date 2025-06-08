@@ -279,3 +279,6 @@ def get_admin_dashboard_stats(
         "ratings": get_rating_stats(db),
     }
 
+@router.get("/delivery")
+def get_all_delivery(session: SessionDep):
+    return user_service.get_all_delivery(session)

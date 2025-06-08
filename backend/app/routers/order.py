@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
-from sqlmodel import Session, select
+from typing import List,Annotated
+from sqlmodel import Session,select
 from sqlalchemy.orm import selectinload
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.models import User, Order, OrderItem, Product
@@ -8,10 +8,13 @@ from app.schemas.order import OrderCreate, OrderRead
 from app.services.user_service import get_current_user
 from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
 from app.database import get_session, get_db
-
+from app.services import order_service
 router = APIRouter()
+SessionDep = Annotated[Session, Depends(get_db)]
 
-
+@router.get("/unassigned")
+def get_unassigned_orders(session: SessionDep):
+    return order_service.get_unassigned_orders(session)
 
 @router.get("/myorders", response_model=List[OrderRead])
 def get_my_orders(
@@ -28,7 +31,6 @@ def get_my_orders(
         raise HTTPException(status_code=404, detail="No orders found for this user.")
 
     return orders
-
 
 
 
@@ -62,11 +64,6 @@ def create_order(order_data: OrderCreate, session: Session = Depends(get_session
 
     return order
 
-
-
-
-
-
 @router.get("/", response_model=List[OrderRead])
 def read_orders(
     session: Session = Depends(get_session),
@@ -77,11 +74,14 @@ def read_orders(
         raise HTTPException(status_code=403, detail="Not authorized to view all orders")
     return get_orders(session)
 
-
-
-
-
 @router.get("/{order_id}", response_model=OrderRead)
+def read_order(
+    session: SessionDep,
+    order_id: int 
+):
+    return order_service.get_order_by_id(session,order_id)
+
+""" @router.get("/{order_id}", response_model=OrderRead)
 def read_order(
     order_id: int,
     session: Session = Depends(get_session),
@@ -92,7 +92,7 @@ def read_order(
         raise HTTPException(status_code=404, detail="Order not found")
     if order.customer_id != current_user.id and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to view this order")
-    return order
+    return order """
 
 
 

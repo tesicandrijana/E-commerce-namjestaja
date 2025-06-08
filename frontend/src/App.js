@@ -33,6 +33,7 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ManagerProductsView from "./pages/manager/ManagerProductsView";
 import ManagerDiscountsView from "./pages/manager/ManagerDiscountsView";
+import ManagerOrders from "./pages/manager/ManagerOrders";
 
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
@@ -116,6 +117,8 @@ function App() {
             <Route path="/manager-dashboard" element={<ManagerDashboard />} />
             <Route path="/manager/products" element={<ManagerProductsView />}/>          
             <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
+            <Route path="/manager/reviews" element={<ManagerReviewsView />}/>
+            <Route path="/manager/orders" element={<ManagerOrders />}/>
           </Route>
 
               {/* Support Protected routes */}
