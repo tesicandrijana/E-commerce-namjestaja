@@ -1,4 +1,4 @@
-/* Shared wrapper for background */
+
 .product-page-background {
   background-image: url('https://www.publicdomainpictures.net/pictures/570000/velka/japandi-living-room-interior-17061739737XD.jpg');
   background-size: cover;
@@ -6,6 +6,7 @@
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
+ /*  max-width: 1600px; */
   margin: 0 auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #222;
@@ -13,7 +14,6 @@
   flex-direction: column;
 }
 
-/* Header area (no blur) */
 .product-header-section {
   padding: 60px 20px 40px;
   color: white;
@@ -436,7 +436,7 @@
 
 .add-to-cart-btn {
   padding: 7px 15px;
-  background-color: #11304de9; /* soft blue */
+  background-color: #11304de9; 
   color: white;
   font-size: 14px;
   border: none;

@@ -411,7 +411,6 @@
 }
 
 .ot-btn {
-  background-color: #007bff;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -422,9 +421,6 @@
   transition: background-color 0.3s;
 }
 
-.ot-btn:hover {
-  background-color: #0056b3;
-}
 
 
 .ot-empty {
