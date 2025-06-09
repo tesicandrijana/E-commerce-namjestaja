@@ -18,7 +18,7 @@ SessionDep = Annotated[Session, Depends(get_db)]
 
 
 #Dashboard
-@router.get("/", tags=["Support Dashboard"])
+@router.get("/", tags=["Support"])
 def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     return {
         "id": current_user.id,
@@ -28,7 +28,7 @@ def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     }
 
 # Profil zaposlenika
-@router.get("/profile/{user_id}", tags=["Support Profile"])
+@router.get("/profile/{user_id}", tags=["Support"])
 def get_support_profile(
     user_id: int,
     session: SessionDep,
@@ -144,7 +144,7 @@ def respond_to_complaint(
 
 
 # Dodjeljivanje complainta
-@router.put("/complaints/{complaint_id}/assign", response_model=complaint_schema.Complaint, tags=["Support Complaints"])
+@router.put("/complaints/{complaint_id}/assign", response_model=complaint_schema.Complaint, tags=["Support"])
 def assign_complaint_to_self(
     complaint_id: int,
     session: SessionDep,

@@ -7,7 +7,10 @@ const SupportProfile = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const [editData, setEditData] = useState({});
+  const [editData, setEditData] = useState({
+    name: "",
+    password: ""
+  });
 
   useEffect(() => {
     axios.get(`/support/profile/${id}`, { withCredentials: true })
@@ -15,8 +18,7 @@ const SupportProfile = () => {
         setUser(res.data);
         setEditData({
           name: res.data.name || "",
-          phone: res.data.phone || "",
-          about: res.data.about || "",
+          password: ""
         });
       })
       .catch(err => console.error("Failed to fetch user profile", err));
@@ -30,13 +32,25 @@ const SupportProfile = () => {
   };
 
   const handleSave = () => {
-    axios.put(`/support/profile/${id}`, editData, { withCredentials: true })
-      .then(res => {
-        setUser(res.data);
-        setShowEdit(false);
-      })
-      .catch(err => console.error("Failed to update profile", err));
-  };
+  const dataToSend = {};
+  if (editData.name && editData.name.trim() !== "") {
+    dataToSend.name = editData.name;
+  }
+  if (editData.password && editData.password.trim() !== "") {
+    dataToSend.password = editData.password;
+  }
+
+  axios.put(`/support/profile/${id}`, dataToSend, { withCredentials: true })
+    .then(res => {
+      setUser(res.data);
+      setShowEdit(false);
+      setEditData({ ...editData, password: "" });
+    })
+    .catch(err => {
+      console.error("Failed to update profile", err.response?.data || err.message);
+    });
+};
+
 
   if (!user) return <div>Loading profile...</div>;
 
@@ -60,7 +74,6 @@ const SupportProfile = () => {
 
         <div className="profile-details-section">
           <h3>About</h3>
-          <p>{user.about || "No bio added yet."}</p>
 
           <div className="info-row">
             <span className="info-label">Employee ID:</span>
@@ -73,9 +86,10 @@ const SupportProfile = () => {
           </div>
 
           <div className="info-row">
-            <span className="info-label">Phone:</span>
-            <span className="info-value">{user.phone || "Not set"}</span>
+            <span className="info-label">Password:</span>
+            <span className="info-value">••••••••</span>
           </div>
+
         </div>
       </div>
 
@@ -86,11 +100,10 @@ const SupportProfile = () => {
             <label>Full Name:</label>
             <input name="name" value={editData.name} onChange={handleChange} />
 
-            <label>Phone:</label>
-            <input name="phone" value={editData.phone} onChange={handleChange} />
+            <label>New password:</label>
+            <input name="password" type="password" value={editData.password}
+            onChange={handleChange} placeholder="Leave blank to keep current password"/>
 
-            <label>About:</label>
-            <textarea name="about" value={editData.about} onChange={handleChange} />
 
             <div className="edit-buttons">
               <button onClick={handleSave}>Save</button>
