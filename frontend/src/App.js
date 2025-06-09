@@ -88,7 +88,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ScrollToTop /> {/* Scroll to top on route change */}
+         {/* <ScrollToTop />  Scroll to top on route change */}
           <DynamicHeader />
           <OptionalHeader2 />
           <Routes>

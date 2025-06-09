@@ -426,10 +426,6 @@
   background-color: #0056b3;
 }
 
-.ot-btn-complaint {
-  background-color: #ffc107;
-}
-
 
 .ot-empty {
   text-align: center;
@@ -486,9 +482,9 @@
     margin-top: 15px;
   }
 }
-/* Scroll Buttons */
+
 .ot-scroll-btn {
-  background: #b0c4de; /* Light steel blue */
+  background: #b0c4de; 
   border: none;
   color: white;
   font-size: 2rem;
@@ -507,17 +503,16 @@
 
 .ot-scroll-btn:hover,
 .ot-scroll-btn:focus {
-  background: #a0b7d0; /* Slightly darker tone */
+  background: #a0b7d0;
   outline: none;
   box-shadow: 0 0 0 3px rgba(160, 183, 208, 0.5);
 }
 
-/* Buttons */
 .ot-btn {
   flex: 1 1 auto;
-  background: #d3d3d3; /* Light gray */
+  background: #d3d3d3; 
   border: none;
-  color: #e6e3e3; /* Dark gray */
+  color: #e6e3e3; 
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   font-weight: 600;
@@ -535,7 +530,6 @@
   box-shadow: 0 0 0 3px rgba(176, 176, 176, 0.4);
 }
 
-/* Cancel Button */
 .ot-btn-cancel {
   background-color: #5f2a2a; 
 }
@@ -545,31 +539,28 @@
   background-color: #802323; 
 }
 
-/* Remove Button */
 .ot-btn-remove {
-  background-color: #dcdcdc; /* Light gray */
+  background-color: #dcdcdc;
 }
 
 .ot-btn-remove:hover,
 .ot-btn-remove:focus {
-  background-color: #c4c4c4; /* Darker gray */
+  background-color: #c4c4c4; 
 }
 
-/* Complaint Button */
 .ot-btn-complaint {
-  background-color: #354854; /* Light yellow */
-  color: #f2f1ee; /* Darker brown */
+  background-color: #354854; 
+  color: #f2f1ee; 
 }
 
 .ot-btn-complaint:hover,
 .ot-btn-complaint:focus {
-  background-color: #405e7e; /* Darker yellow */
+  background-color: #405e7e; 
 }
 
-/* Details Button */
 .ot-btn-details {
-  background-color: #182b3d; /* Light blue-gray */
-  color: #848484; /* Darker blue-gray */
+  background-color: #182b3d; 
+  color: #848484;
 }
 
 .ot-btn-details:hover,
