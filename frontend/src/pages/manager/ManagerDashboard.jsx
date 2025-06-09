@@ -30,31 +30,28 @@ function ManagerDashboard() {
           altText="Manage Orders And Delivery"
           title="Manage Orders And Delivery"
           description="Click to see all orders and manage them"
-          onClick={() => navigate("/orders")}
+          onClick={() => navigate("/manager/orders")}
         />
 
         <Card
           number="03"
           bgColor="#ff8800"
-          imageSrc="/manager/add-product.jpg"
+          imageSrc="/manager/reviews.png"
           altText="View And Manage Reviews"
           title="View And Manage Reviews"
           description="Click to View And Manage Reviews"
           onClick={() => navigate("/manager/reviews")}
         />
         <Card
-          number="03"
-          bgColor="#ff8800"
-          imageSrc="/manager/add-product.jpg"
+          number="04"
+          bgColor="#ff8801"
+          imageSrc="/manager/discount.png"
           altText="View And Manage Discounts"
           title="View And Manage Discounts"
           description="Click to View And Manage Discounts"
           onClick={() => navigate("/manager/discounts")}
         />
 
-      </div>
-      <div className="statistics-container">
-        <Statistics />
       </div>
     </div>
   )

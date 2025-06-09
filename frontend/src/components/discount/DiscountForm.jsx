@@ -23,7 +23,11 @@ function DiscountForm({ setSelectedIds, productIds, onClose }) {
         }
         catch (e) {
             console.error(e);
-            setErrorMessage(e.response.data.detail);
+            if (e.response && e.response.data && e.response.data.detail) {
+        setErrorMessage(e.response.data.detail);
+    } else {
+        setErrorMessage('Unknown error occurred');
+    }
         }
     }
 

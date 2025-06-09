@@ -9,7 +9,7 @@ from sqlalchemy import and_
 def read_sorted_and_filtered_reviews(
         session: Session, 
         offset: int =  0,
-        limit: int = 100,
+        limit: int | None = None,
         sort_by: str | None = "rating",
         sort_dir: str | None = "asc",
         rating: int | None = None,

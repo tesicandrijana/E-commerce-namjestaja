@@ -79,7 +79,12 @@ function ManagerReviewsView() {
                     }}
                 />
 
-                <ProductSearchBar />
+                <ProductSearchBar 
+                value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+          }}
+          />
             </div>
 
             <div className='review-card-list'>

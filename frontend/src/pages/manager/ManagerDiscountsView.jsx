@@ -48,7 +48,7 @@ function ManagerDiscountsView() {
     useEffect(() => {
 
         fetchDiscounts();
-    }, [page, rowsPerPage, sortColumn, sortOrder, searchQuery])
+    }, [page, rowsPerPage, sortColumn, sortOrder, searchQuery, activeOnly])
     return (
         <div className="discounts-view-container">
             <div className='discounts-view-title'>

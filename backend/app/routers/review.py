@@ -27,7 +27,7 @@ def submit_review(
 def read_sorted_and_filtered_reviews(
     session: SessionDep, 
     offset: int = 0, 
-    limit: int = 100,
+    limit: int | None = None,
     sort_by: Annotated[str, Query(enum=["rating", "created_at"])] = "rating",
     sort_dir: Annotated[str,Query(enum=["asc", "desc"])] = "asc",
     rating: int | None = None,

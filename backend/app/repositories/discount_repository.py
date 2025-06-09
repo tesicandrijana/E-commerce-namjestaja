@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 from app.models.models import Discounts, Product
 from sqlalchemy import func,desc,and_, case
+from sqlalchemy.orm import joinedload
 from typing import Any
 
 #create discount
@@ -58,7 +59,7 @@ def edit_discount(session: Session, discount: Discounts):
 
 
 def discount_count(session: Session,filters: list[Any] = []):
-    stmt = select(func.count(Discounts.id))
+    stmt = select(func.count(Discounts.id)).join(Product)
     if filters:
         stmt = stmt.where(*filters)
     return session.exec(stmt).one()

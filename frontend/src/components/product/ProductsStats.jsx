@@ -10,7 +10,7 @@ function ProductsStats({stats}) {
       },
       mb: 3}}>
       <Grid item><ProductStatsCard title="Total Products" value={stats.total}/></Grid>
-      <Grid item><ProductStatsCard title="Average Rating" value={stats.avg_rating} /></Grid>
+      <Grid item><ProductStatsCard title="Average Rating" value={Number(stats.avg_rating).toFixed(2)} /></Grid>
       <Grid item><ProductStatsCard title="Out Of Stock" value={stats.out_of_stock_count}  /></Grid>
     </Grid>
   );

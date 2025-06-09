@@ -1,23 +1,14 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-/* import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel'; */
 import { Snackbar, Alert, Button, Chip, TextField, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel } from '@mui/material';
 import ProductDetailDrawer from '../product/ProductDetailDrawer';
 import axios from 'axios';
 
 const formatDate = (value) =>
-     new Intl.DateTimeFormat('en-US', {
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric'
+    new Intl.DateTimeFormat('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric'
     }).format(new Date(value));
 
 const isDiscountActive = (amount, start, end) => {
@@ -25,13 +16,13 @@ const isDiscountActive = (amount, start, end) => {
     return new Date(start) <= now && new Date(end) >= now && amount > 0;
 };
 
-function DiscountList({ discountCount, fetchDiscounts,discounts, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, sortColumn, sortOrder, onSort, editRowId, setEditRowId }) {
+function DiscountList({ discountCount, fetchDiscounts, discounts, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, sortColumn, sortOrder, onSort, editRowId, setEditRowId }) {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
     const [productId, setProductId] = useState();
     const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
     const [editedStartDate, setEditedStartDate] = useState();
-    const [editedEndDate,setEditedEndDate] = useState()
+    const [editedEndDate, setEditedEndDate] = useState()
 
     const openDetailDrawer = (id) => {
         setDetailDrawerOpen(true);
@@ -67,16 +58,20 @@ function DiscountList({ discountCount, fetchDiscounts,discounts, page, rowsPerPa
         }
         console.log(payload)
         try {
-            await axios.put(`http://localhost:8000/discounts/${id}`,payload);
+            await axios.put(`http://localhost:8000/discounts/${id}`, payload);
 
             fetchDiscounts();
             setEditRowId(null);
             setEditedEndDate(null);
             setEditedStartDate(null);
-        } catch (error) {
-            console.error('Failed to save row', error.response.data.detail);
+        } catch (e) {
             setSnackbarOpen(true);
-            setErrorMessage(error.response.data.detail);
+            if (e.response && e.response.data && e.response.data.detail) {
+                setErrorMessage(e.response.data.detail);
+            } else {
+                console.error(e)
+                setErrorMessage('Unknown error occurred');
+            }
         }
     };
 
@@ -109,10 +104,10 @@ function DiscountList({ discountCount, fetchDiscounts,discounts, page, rowsPerPa
         },
         { id: 'actions', label: '', align: 'center' }
     ];
-    const onChangeStartDate=(date)=>{
+    const onChangeStartDate = (date) => {
         setEditedStartDate(date);
     }
-    const onChangeEndDate=(date)=>{
+    const onChangeEndDate = (date) => {
         setEditedEndDate(date);
     }
 
@@ -192,9 +187,9 @@ function DiscountList({ discountCount, fetchDiscounts,discounts, page, rowsPerPa
                                                                 onChange={(e) => {
                                                                     field.onChange(e.target.value);
 
-                                                                    if(column.id === "start_date")
+                                                                    if (column.id === "start_date")
                                                                         onChangeStartDate(e.target.value);
-                                                                    else if(column.id === "end_date")
+                                                                    else if (column.id === "end_date")
                                                                         onChangeEndDate(e.target.value);
                                                                 }}
                                                             />
@@ -237,7 +232,7 @@ function DiscountList({ discountCount, fetchDiscounts,discounts, page, rowsPerPa
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
                 <Alert severity="error" onClose={() => setSnackbarOpen(false)}>
-                    {typeof errorMessage==="string" ? errorMessage : 'Unknown error'}
+                    {typeof errorMessage === "string" ? errorMessage : 'Unknown error'}
                 </Alert>
             </Snackbar>
 
