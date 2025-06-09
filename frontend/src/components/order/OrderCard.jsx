@@ -14,9 +14,11 @@ const formatted = (date) => new Date(date).toLocaleString('en-GB', {
 
 
 function OrderCard({ order,status }) {
+
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: order?.id
     });
+    
 
     const style = transform ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -28,7 +30,8 @@ function OrderCard({ order,status }) {
         else if (status === "delivered") return "success"
     }
     return (
-        <div ref={setNodeRef} style={style} {...listeners} {...attributes} className='order-card-container'>
+        <div ref={setNodeRef} style={style}  {...(status !== "in progress" ? listeners : {})}
+            {...(status !== "in progress" ? attributes : {})} className='order-card-container'>
 
             <div className='order-card-content'>
                 <div className='order-card-header'>
@@ -43,6 +46,7 @@ function OrderCard({ order,status }) {
                 </div>
             </div>
         </div>
+
 
     )
 }

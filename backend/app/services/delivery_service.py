@@ -23,13 +23,13 @@ def read_deliveries_and_orders(
             "date":delivery.date,
             "order": order_service.get_order_by_id(session, delivery.order_id)
         })
-    return {
-        "orders" : orders,
-        "deliveries" : deliveries_final
-    }
+    return deliveries
+
+def get_delivery_by_order_id(session: Session, id: int):
+    return delivery_repository.get_delivery_by_order_id(session,id)
 
 def assign_delivery(session: Session, order_id: int, delivery_person_id:int | None = None):
-    db_delivery = delivery_repository.get_delivery_by_id(session, order_id)
+    db_delivery = delivery_repository.get_delivery_by_order_id(session, order_id)
     
     if delivery_person_id != None:
         status = "assigned"

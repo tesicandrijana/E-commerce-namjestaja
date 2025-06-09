@@ -36,16 +36,16 @@ function ManagerDashboard() {
         <Card
           number="03"
           bgColor="#ff8800"
-          imageSrc="/manager/add-product.jpg"
+          imageSrc="/manager/reviews.png"
           altText="View And Manage Reviews"
           title="View And Manage Reviews"
           description="Click to View And Manage Reviews"
           onClick={() => navigate("/manager/reviews")}
         />
         <Card
-          number="03"
-          bgColor="#ff8800"
-          imageSrc="/manager/add-product.jpg"
+          number="04"
+          bgColor="#ff8801"
+          imageSrc="/manager/discount.png"
           altText="View And Manage Discounts"
           title="View And Manage Discounts"
           description="Click to View And Manage Discounts"

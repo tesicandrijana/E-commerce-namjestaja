@@ -22,7 +22,7 @@ function ManagerOrders() {
     const fetchDeliveries = async () => {
         try {
             const res = await axios.get(`http://localhost:8000/deliveries/manager`)
-            setDeliveries(res.data.deliveries)
+            setDeliveries(res.data)
         }
         catch (e) {
             console.error(e);
@@ -57,8 +57,8 @@ function ManagerOrders() {
                     delivery_person_id: newDelivererId
                 }
             });
-            fetchDeliveries();
-            setActiveOrder(null);
+/*             fetchDeliveries();
+ */            setActiveOrder(null);
         }
         catch (e) {
             console.error(e);

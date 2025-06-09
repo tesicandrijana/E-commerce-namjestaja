@@ -99,7 +99,10 @@ function ReviewCard({ review, fetchReviews }) {
                 onClose={() => setSnackbarOpen(false)}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-                {typeof snackbarMessage === "string" ? snackbarMessage : 'Unknown error'}
+                <div>
+                    {typeof snackbarMessage === "string" ? snackbarMessage : 'Unknown error'}
+
+                </div>
             </Snackbar>
 
         </div>

@@ -45,8 +45,8 @@ const OrderDetailsModal = ({ order, onClose }) => {
 
         <div className="order-details-modal-info">
           <strong>Status:</strong>{" "}
-          <span className={`order-details-modal-status order-details-modal-status-${order.status}`}>
-            {order.status}
+          <span className={`order-details-modal-status order-details-modal-status-${(order.status === "assigned" || order.status === "unassigned" || order.status == null) ? 'pending' : order.status}`}>
+            {(order.status === "assigned" || order.status === "unassigned" || order.status == null) ? 'pending' : order.status}
           </span>
         </div>
 

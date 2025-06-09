@@ -4,6 +4,9 @@ from sqlalchemy.orm import joinedload
 
 
 def get_delivery_by_id(session: Session, id: int):
+    return session.exec(select(Delivery).where(Delivery.id == id)).first()
+
+def get_delivery_by_order_id(session: Session, id: int):
     return session.exec(select(Delivery).where(Delivery.order_id == id)).first()
 
 def get_all_deliveries_assigned_to(session: Session, delivery_person_id: int, offset: int = 0, limit: int | None = 0):

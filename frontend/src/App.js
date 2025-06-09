@@ -33,8 +33,7 @@ import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import ManagerProductsView from "./pages/manager/ManagerProductsView";
 import ManagerDiscountsView from "./pages/manager/ManagerDiscountsView";
-import ManagerOrders from "./pages/manager/ManagerOrders";
-
+import MangerOrdersViewAndManage from "./pages/manager/MangerOrdersViewAndManage";
 // Pages (Support)
 import SupportDashboard from "./pages/support/SupportDashboard";
 import SupportProfile from "./pages/support/SupportProfile";
@@ -118,7 +117,7 @@ function App() {
             <Route path="/manager/products" element={<ManagerProductsView />}/>          
             <Route path="/manager/discounts" element={<ManagerDiscountsView />}/>
             <Route path="/manager/reviews" element={<ManagerReviewsView />}/>
-            <Route path="/manager/orders" element={<ManagerOrders />}/>
+            <Route path="/manager/orders" element={<MangerOrdersViewAndManage /> }/>
           </Route>
 
               {/* Support Protected routes */}

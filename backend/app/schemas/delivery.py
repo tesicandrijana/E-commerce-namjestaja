@@ -21,8 +21,11 @@ class Delivery(DeliveryBase):
     class Config:
         from_attributes = True
 
-class DeliveryIncludingOrder(DeliveryBase):
-    order: Optional[Order]
+class DeliveryIncludingOrder(SQLModel):
+    order_id: int
+    delivery_person_id: int |None = None
+    status: str
+    order: Optional[order_schema.OrderRead]
 
 class DeliveriesAndOrders(SQLModel):
     orders: list[order_schema.OrderRead]

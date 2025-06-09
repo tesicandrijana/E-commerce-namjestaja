@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List,Annotated
 from sqlmodel import Session,select
 from sqlalchemy.orm import selectinload
 from decimal import Decimal, ROUND_HALF_UP
 from app.models.models import User, Order, OrderItem, Product
-from app.schemas.order import OrderCreate, OrderRead
+from app.schemas.order import OrderCreate, OrderRead, OrdersWithCount
 from app.services.user_service import get_current_user
 from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
 from app.database import get_session, get_db
@@ -32,7 +32,16 @@ def get_my_orders(
 
     return orders
 
-
+@router.get("/manager", response_model=OrdersWithCount)
+def read_sorted_and_filtered_orders(
+    session: SessionDep, 
+    offset: int = 0, 
+    limit: int | None = None, 
+    sort_by: Annotated[str, Query(enum=["id", "date", "total_price"])] = "id",
+    sort_dir: Annotated[str,Query(enum=["asc", "desc"])] = "asc",
+    status: int | None = None,
+    search:  str |None = None):
+    return order_service.get_sorted_and_filtered_orders(session, offset,limit,sort_by, sort_dir,status,search)
 
 @router.post("/", status_code=201)
 def create_order(order_data: OrderCreate, session: Session = Depends(get_session)):

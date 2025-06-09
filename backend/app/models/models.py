@@ -64,11 +64,11 @@ class Product(SQLModel, table=True):
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
-    discounts: List["Discounts"] = Relationship(back_populates="product")
-    reviews: List["Review"] = Relationship(back_populates="product")
-    cart_items: List["CartItem"] = Relationship(back_populates="product")
+    discounts: List["Discounts"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    reviews: List["Review"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    cart_items: List["CartItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
-    order_items:List["OrderItem"] = Relationship(back_populates="product")
+    order_items:List["OrderItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
