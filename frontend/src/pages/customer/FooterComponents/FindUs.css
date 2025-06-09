@@ -1,0 +1,13 @@
+.locations-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 40px 20px; /* top i bottom 40px, left i right 20px */
+}
+.locations-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 1.4rem;
+}

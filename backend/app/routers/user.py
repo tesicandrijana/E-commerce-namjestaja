@@ -6,7 +6,8 @@ from sqlmodel import Field, Session as SQLSession, SQLModel, create_engine, sele
 from fastapi.security import OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 from pydantic import BaseModel
-from sqlalchemy import func
+from sqlalchemy import func,or_
+
 from app.services import user_service
 from app.database import get_db
 from app.schemas.user import Token, UserCreate, UserSchema, UserUpdate, LoginWithRole
@@ -24,6 +25,7 @@ from app.crud.user import (
     get_sales_stats,
     get_rating_stats
 )
+
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM
@@ -147,10 +149,20 @@ def count_users_by_role(
 
 @router.get("/archived-users", response_model=List[UserSchema])
 def get_archived_users(
+    search: str = '',
     db: Session = Depends(get_db),
     current_user: User = Depends(user_service.role_check(["admin"]))
 ):
-    archived_users = db.query(User).filter(User.is_active == False).all()
+    query = db.query(User).filter(User.is_active == False)
+    
+    if search:
+        search_filter = or_(
+            User.name.ilike(f"%{search}%"),
+            User.role.ilike(f"%{search}%")
+        )
+        query = query.filter(search_filter)
+    
+    archived_users = query.all()
 
     if not archived_users:
         raise HTTPException(status_code=404, detail="No archived users found")
@@ -202,6 +214,7 @@ def restore_user(
     db.refresh(user)
     return {"detail": f"User with ID {user_id} restored successfully"}
 
+
 @router.put("/{user_id}/archive", response_model=UserSchema)
 def archive_user(
     user_id: int,
@@ -221,61 +234,28 @@ def archive_user(
 
     return db_user
 
+@router.get("/employees/search", response_model=List[UserSchema])
+def search_employees(
+    search: str = '',
+    db: Session = Depends(get_db),
+    current_user: User = Depends(user_service.role_check(["admin"]))
+):
+    if not search:
+        return []  # Ako nema unosa, ne vraćaj ništa
+
+    query = db.query(User).filter(
+    User.is_active == True,
+    User.role != "customer",
+    or_(
+        User.name.ilike(f"%{search}%"),
+        User.role.ilike(f"%{search}%")
+    )
+)
+
+    return query.limit(10).all()
+
 
 @router.get("/me")
 async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
     return current_user
-
-
-# Customers can request to become workers
-@router.post("/request-worker/{desired_role}")
-def request_worker_access(
-    desired_role: str,
-    current_user: User = Depends(user_service.get_current_user),
-    db: Session = Depends(get_db)
-):
-    if current_user.role != "customer":
-        raise HTTPException(status_code=400, detail="Only customers can request to become workers")
-
-    if desired_role not in ["manager", "support", "delivery"]:
-        raise HTTPException(status_code=400, detail="Invalid role requested")
-
-    existing_request = get_worker_request(db, current_user.id)
-    if existing_request:
-        raise HTTPException(status_code=400, detail="Worker request already submitted.")
-
-    return create_worker_request(db, current_user.id, desired_role)
-
-
-# Admin approves customer to become a worker
-@router.post("/approve-worker/{user_id}")
-def approve_worker_request(
-    user_id: int,
-    current_user: User = Depends(get_admin_user),
-    db: Session = Depends(get_db)
-):
-    worker_request = get_worker_request_by_user_id(db, user_id)
-    if not worker_request:
-        raise HTTPException(status_code=404, detail="Worker request not found")
-
-    desired_role = worker_request.desired_role
-    if desired_role == "manager":
-        current_managers = user.count_users_by_role(db, "manager")
-        if current_managers >= 3:
-            raise HTTPException(status_code=400, detail="Cannot approve more than 3 managers")
-
-    update_user_role(db, user_id, desired_role)
-    return {"detail": f"Worker request approved, user role updated to '{desired_role}'"}
-
-
-@router.get("/admin/stats")
-def get_admin_dashboard_stats(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(user_service.role_check(["customer"]))
-):
-    return {
-        "users": get_user_stats(db),
-        "sales": get_sales_stats(db),
-        "ratings": get_rating_stats(db),
-    }
 

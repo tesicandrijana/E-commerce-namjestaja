@@ -5,7 +5,7 @@ from app.database import engine, SessionDep
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine
-from app.routers import user, product, category, order, order_item, review, discount, material, cart,support, complaint, support_orders, chat_ws, shipping, support_inquiries
+from app.routers import user, product, category, order, order_item, review, discount, material, cart,support, complaint, support_orders, chat_ws, shipping, support_inquiries,support_complaints, job_application
 from sqlalchemy.orm import configure_mappers
 
 
@@ -57,6 +57,8 @@ app.include_router(support_orders.router, tags=["Support"])
 app.include_router(shipping.router, prefix="/taxes-shipping", tags=["TaxRate"])
 app.include_router(chat_ws.router)
 app.include_router(support_inquiries.router, tags=["Support"])
+app.include_router(support_complaints.router, prefix="/support/complaints", tags=["Support - Complaints"])
+app.include_router(job_application.router, prefix="/job-application", tags=["Job Application"])
 
 
 @app.get("/")

@@ -205,9 +205,6 @@ class WorkerRequest(SQLModel, table=True):
     status: str = Field(default="pending")  # pending, approved, rejected
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-
-
-
 class PostalCode(SQLModel, table=True):
     __tablename__ = "postal_codes"
 
@@ -241,3 +238,14 @@ class UserInquiry(SQLModel, table=True):
 #dodatna polja za odgovor 
     response: Optional[str]=None
     responded_at: Optional[datetime]=None
+class JobApplication(SQLModel, table=True):
+    __tablename__ = "job_applications"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    email: str
+    phone: str
+    address: Optional[str] = None
+    role: str
+    processed: bool = Field(default=False)
+    cv_file: Optional[str] = None
