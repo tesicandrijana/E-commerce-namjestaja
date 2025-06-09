@@ -3,16 +3,18 @@ html, body {
   margin: 0;
 }
 
-#root, /* or your main app container */
+
+/*
 body > div {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;  /* full viewport height */
+  min-height: 100vh;  
 }
 
 .main-content {
-  flex: 1;  /* take remaining space */
-}
+  flex: 1;  
+} 
+*/
 
 
 .footer-container {
@@ -23,7 +25,7 @@ body > div {
 }
 
 .footer-bg-image {
-  background-image:linear-gradient(rgb(0, 0, 0), rgba(128, 128, 128, 0)), url('https://i.pinimg.com/originals/4d/df/7e/4ddf7ebc5f5ee12cca576e8987175302.jpg');
+  background-image: linear-gradient(rgb(0, 0, 0), rgba(128, 128, 128, 0)), url('https://i.pinimg.com/originals/4d/df/7e/4ddf7ebc5f5ee12cca576e8987175302.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -39,7 +41,7 @@ body > div {
 
 .footer {
   position: relative;
-  z-index: 1; /* semi-transparent for image visibility */
+  z-index: 1;
   color: #fff9ec;
   padding: 3rem 2rem 2rem;
   font-family: 'Poppins', sans-serif;
@@ -98,8 +100,40 @@ body > div {
   transition: color 0.3s ease;
 }
 
-.footer-links li:hover {
-  color: #fff;
+/* Linkovi su sivi, ne mijenjaju boju teksta na hover, samo outline na focus */
+.footer-links a {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  /* ne mijenjaj boju teksta, samo možeš malo posvijetliti ako želiš */
+  color: #ddd;
+}
+
+.footer-links a:focus-visible {
+  outline: 3px solid #1e90ff; /* plavi outline */
+  outline-offset: 3px;
+  border-radius: 4px;
+  background-color: rgba(30, 144, 255, 0.15);
+}
+
+/* Kontakt sekcija linkovi, ako ih ima */
+.footer-contact a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  color: #ddd;
+}
+
+.footer-contact a:focus-visible {
+  outline: 3px solid #1e90ff;
+  outline-offset: 3px;
+  border-radius: 4px;
+  background-color: rgba(30, 144, 255, 0.15);
 }
 
 /* Contact Section */
@@ -182,6 +216,21 @@ body > div {
   color: #424242;
   border-top: 1px solid #333333d8;
 }
+
+.footer-links li a,
+.footer-links li .router-link {
+  color: #ccc;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+}
+
+.footer-links li a:hover,
+.footer-links li .router-link:hover {
+  color: #fff;
+  transform: scale(1.05);
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

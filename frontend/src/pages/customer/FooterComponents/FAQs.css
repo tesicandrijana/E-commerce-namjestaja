@@ -13,7 +13,7 @@
 
 .right-box {
   width: 40%;
- /* background-image: url('/public/customer/faqs1.jpg');*/
+  background-image: url('/public/customer/faqs1.jpg');
   background-size: contain;          
   background-repeat: no-repeat;       
   background-position: center center;

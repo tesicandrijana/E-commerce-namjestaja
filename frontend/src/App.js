@@ -11,6 +11,7 @@ import SupportHeader from "./components/support/SupportHeader";
 import Footer from "./components/Footer"; 
 import SupportFooter from "./components/support/SupportFooter";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ScrollToTop from './components/ScrollToTop'; // Dodan ScrollToTop
 
 // Pages (Customer)
 import Home from "./pages/customer/Home";
@@ -18,6 +19,7 @@ import About from "./pages/customer/FooterComponents/About";
 import Contact from "./pages/customer/FooterComponents/Contact";
 import ProductList from "./pages/customer/ProductList";
 import ProductDetails from "./pages/customer/ProductDetails";
+
 import Cart from "./pages/customer/Cart";  
 import CheckOut from "./pages/customer/CheckOut";
 import Orders from "./pages/customer/Orders";
@@ -37,6 +39,7 @@ import Employees from "./pages/admin/Employees";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ArchivedEmployees from "./pages/admin/ArchivedEmployees";
 import EmployeeStatistics from "./pages/admin/EmployeeStatistics";
+import JobApplications from "./pages/admin/JobApplications";
 
 
 // Pages (Manager)
@@ -88,7 +91,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-         {/* <ScrollToTop />  Scroll to top on route change */}
+          <ScrollToTop /> {/* Scroll to top on route change */}
           <DynamicHeader />
           <OptionalHeader2 />
           <Routes>
@@ -102,9 +105,9 @@ function App() {
             <Route path="/checkout" element={<CheckOut />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/newarrivals" element={<NewArrivals />} />
-            <Route path="/FAQs" element={<FAQs />} />
             <Route path="/Shipping" element={<Shipping />} />
             <Route path="/FindUs" element={<FindUs />} />
+            <Route path="/FAQs" element={<FAQs />} />
             <Route path="/JoinOurTeam" element={<JoinOurTeam />} />
             <Route path="/Returns" element={<Returns />} />
 
@@ -118,13 +121,14 @@ function App() {
               </Route>
 
           {/* Admin Pages */}
-          <Route element={<ProtectedRoute allowedRoles={"administrator"} />}>
-            <Route path="/adminTest" element={<CustomerTest />} />
+          <Route element={<ProtectedRoute allowedRoles={"admin"} />}>
             <Route path="/NewEmployee" element={<NewEmployee />} />
             <Route path="/Employees" element={<Employees />} />
             <Route path="/ArchivedEmployees" element={<ArchivedEmployees />} />   {/* NEW */}
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/EmployeeStatistics" element={<EmployeeStatistics />} />
+            <Route path="/JobApplications" element={<JobApplications />} />
+
 
           </Route>
 

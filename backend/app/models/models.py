@@ -4,6 +4,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy import UniqueConstraint
 from passlib.context import CryptContext
+from datetime import datetime
+
 
 
 # Kreiraj instancu CryptContext za hashiranje i verifikaciju lozinke
@@ -61,6 +63,7 @@ class Product(SQLModel, table=True):
     quantity: int = 0
     category_id: Optional[int] = Field(default=None, foreign_key="categories.id")
     image: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
@@ -239,6 +242,7 @@ class UserInquiry(SQLModel, table=True):
 #dodatna polja za odgovor 
     response: Optional[str]=None
     responded_at: Optional[datetime]=None
+    
 class JobApplication(SQLModel, table=True):
     __tablename__ = "job_applications"
 
@@ -248,5 +252,8 @@ class JobApplication(SQLModel, table=True):
     phone: str
     address: Optional[str] = None
     role: str
-    processed: bool = Field(default=False)
+
+    status: str = Field(default="waiting", nullable=False, index=True)  
+    interview_time: Optional[datetime] = None  
+
     cv_file: Optional[str] = None

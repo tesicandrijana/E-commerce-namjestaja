@@ -2,7 +2,7 @@
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  margin: 40px 20px; 
+  margin: 40px 20px; /* top i bottom 40px, left i right 20px */
 }
 .locations-title {
   width: 100%;

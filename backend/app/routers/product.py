@@ -7,9 +7,10 @@ from sqlalchemy.orm import selectinload
 from app.crud.product import get_product_with_category
 from app.crud import product
 from app.schemas import product as product_schema
-from app.services import product_service
-from app.database import get_db
+from app.services import product_service, user_service
+from app.database import get_db, get_session
 from app.models.models import Product, Discounts
+from app.schemas.product import ProductRead
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
@@ -114,9 +115,9 @@ def update_product(
     return updated_product
 
 # Read product (with optional category)
-@router.get("/{id}", response_model = product_schema.ProductRead)
+@router.get("/{id}", response_model=product_schema.ProductRead)
 def read_product(session: SessionDep, id: int):
-    return product_service.get_product(session,id)
+    return product_service.get_product(session, id)
 
 #bulk delete products
 @router.delete("/bulk-delete")

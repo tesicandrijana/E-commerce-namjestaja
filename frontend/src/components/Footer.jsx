@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -18,19 +19,18 @@ const Footer = () => {
             <div>
               <h4>Products</h4>
               <ul>
-                <li>New Arrivals</li>
-                <li>Best Sellers</li>
-                <li>Discounts</li>
-                <li>Collections</li>
+                <li><Link to="/newarrivals">New Arrivals</Link></li>
+                <li><Link to="#best-sellers">Best Sellers</Link></li>
+                <li><Link to="#discounts">Discounts</Link></li>
+                <li><Link to="#collections">Collections</Link></li>
               </ul>
             </div>
             <div>
               <h4>Company</h4>
               <ul>
-                <li>About Us</li>
-                <li>Careers</li>
-                <li>Press</li>
-                <li>Blog</li>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/JoinOurTeam">Join Our Team</Link></li>
+                <li><Link to="/FindUs">Find Us</Link></li>
               </ul>
             </div>
             <div>
@@ -47,7 +47,7 @@ const Footer = () => {
           <div className="footer-contact">
             <h4>Contact Us</h4>
             <p>1234 Street Name, City, Country</p>
-            <p>Email: support@brandname.com</p>
+            <p>Email: furnystyle@gmail.com</p>
             <p>Phone: +1 (234) 567-890</p>
 
             <div className="social-icons">
@@ -69,4 +69,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

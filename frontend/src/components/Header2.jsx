@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react"; 
-//import { FaChair, FaCouch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import './Header2.css';
 
@@ -20,21 +19,21 @@ const Header2 = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
   const dropdownRef = useRef(null);
+  const timeoutRef = useRef(null);
+  const navigate = useNavigate();
 
  
   const showDropdown = () => {
+    clearTimeout(timeoutRef.current);
     setDropdownVisible(true);
   };
 
- 
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
     if (dropdownVisible) {
       setHoveredCategory(null);
     }
   };
- const navigate = useNavigate();
-
 
   const handleCategoryClick = () => {
     navigate(`/shop-products/`);
@@ -90,6 +89,12 @@ useEffect(() => {
           className="dropdown-wrapper"
           ref={dropdownRef}
           onMouseEnter={showDropdown}
+          onMouseLeave={() => {
+            timeoutRef.current = setTimeout(() => {
+              setDropdownVisible(false);
+              setHoveredCategory(null);
+            }, 200);
+          }}
         >
           <button
             className={`fs-dropdown-button ${dropdownVisible ? "active" : ""}`}
@@ -102,40 +107,34 @@ useEffect(() => {
                 <rect y="9" width="20" height="2" rx="1" fill="white" />
                 <rect y="15" width="20" height="2" rx="1" fill="white" />
               </svg>
-            {/*<FaCouch size={40} color="#333" style={{ marginLeft: 10 }} /> */}
             </span>
             <span className="fs-text">Categories</span>
             <span className={`fs-chevron ${dropdownVisible ? "rotate" : ""}`} aria-hidden="true">
               <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="14"
-      height="14"
-      viewBox="0 0 24 14"
-      fill="none"
-      stroke="white"
-      strokeWidth="3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="6 9 12 15 18 9" />
-    </svg>
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 14"
+                fill="none"
+                stroke="white"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
             </span>
           </button>
 
           {dropdownVisible && (
-            <div
-              className="dropdown-panel"
-              onMouseEnter={showDropdown}
-            >
+            <div className="dropdown-panel" onMouseEnter={showDropdown}>
               <div className="category-list">
                 {furnitureCategories.map((cat) => (
                   <div
                     key={cat.id}
                     className={`category-item ${hoveredCategory === cat.id ? "hovered" : ""}`}
-                    
                     onMouseEnter={() => setHoveredCategory(cat.id)}
                     onClick={() => handleCategoryClick(cat.name)}
-                    
                   >
                     {cat.name}
                   </div>

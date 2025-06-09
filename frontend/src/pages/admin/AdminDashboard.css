@@ -22,7 +22,7 @@
 
 .card-lista .card {
     max-width: 420px;
-
+    box-shadow: none;
 }
 
 .right h3 {
@@ -59,3 +59,7 @@
   font-weight: 600;
 }
 
+.right .card{
+  box-shadow: none;
+  margin-left: 65px ;
+}

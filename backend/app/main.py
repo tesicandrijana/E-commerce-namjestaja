@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from app.database import engine, SessionDep
+from app.routers import user, product, category, order, review, discount, material, support_complaints, job_application
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import engine

@@ -64,7 +64,7 @@ function AdminDashboard() {
             number="02"
             bgColor="#66b2ff"
             imageSrc="/admin/allemployees.png"
-            altText="View Employees"
+            altText="All Employees"
             title="View Employees"
             description="Click to see a list of all employees"
             onClick={() => navigate("/employees")}
@@ -74,7 +74,7 @@ function AdminDashboard() {
             bgColor="#0f82fc"
             imageSrc="/admin/statistic.png"
             altText="employee statistics"
-            title="View employee statistics"
+            title="Employee statistics"
             description="Click to see employee statistics"
             onClick={() => navigate("/EmployeeStatistics")}
           />
@@ -82,7 +82,7 @@ function AdminDashboard() {
             number="04"
             bgColor="#66b2ff"
             imageSrc="/admin/archive.png"
-            altText="View archived employees"
+            altText="Archived employees"
             title="View archived employees"
             description="Click to see a list of all archived employees"
             onClick={() => navigate("/ArchivedEmployees")}
@@ -91,7 +91,7 @@ function AdminDashboard() {
       </div>
 
       <div className="right">
-        <h3>Job Applications</h3>
+        <h3>Lattest Job Applications</h3>
         <ul>
           {applications.length === 0 ? (
             <li>No applications found</li>
@@ -107,6 +107,16 @@ function AdminDashboard() {
             ))
           )}
         </ul>
+
+        <Card
+            number=""
+            bgColor=""
+            imageSrc=""
+            altText="Job Applications"
+            title="Job Applications"
+            description="Click to see a list of all job applications, scheduled interviews and more"
+            onClick={() => navigate("/JobApplications")}
+          />
       </div>
 
       <JobApplicationModal
