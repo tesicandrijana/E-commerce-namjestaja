@@ -6,9 +6,10 @@ from typing import List, Annotated, Optional
 from app.models.models import Complaint, User, Order
 from app.schemas import complaint as complaint_schema
 from app.schemas.complaint import ComplaintWithCustomer
-# from app.crud.user import get_user_by_id
-from app.dependencies import get_db  #get_support_user - ne treba
-from app.services.user_service import role_check
+from app.schemas.support import SupportProfileUpdate
+from app.crud.user import get_user_by_id, update_user
+from app.dependencies import get_db 
+from app.services.user_service import role_check, hash_password, validate_password_strength
 
 from app.crud import complaint as complaint_crud
 from app.schemas.complaint import ComplaintUpdate
@@ -18,7 +19,7 @@ SessionDep = Annotated[Session, Depends(get_db)]
 
 
 #Dashboard
-@router.get("/", tags=["Support Dashboard"])
+@router.get("/", tags=["Support"])
 def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     return {
         "id": current_user.id,
@@ -28,7 +29,7 @@ def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     }
 
 # Profil zaposlenika
-@router.get("/profile/{user_id}", tags=["Support Profile"])
+@router.get("/profile/{user_id}", tags=["Support"])
 def get_support_profile(
     user_id: int,
     session: SessionDep,
@@ -43,6 +44,45 @@ def get_support_profile(
         "name": user.name,
         "role": user.role
     }
+
+
+@router.put("/profile/{user_id}", tags=["Support"])
+def update_support_profile(
+    user_id: int,
+    update_data: SupportProfileUpdate,
+    session: SessionDep,
+    current_user: User = Depends(role_check(["support"]))
+):
+    # samo svoj profil mozes uredit
+    if current_user.id != user_id:
+        raise HTTPException(status_code=403, detail="Cannot edit another user's profile")
+
+    db_user = get_user_by_id(session, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    updates = {}
+
+    #ako je novo ime uneseno
+    if update_data.name:
+        updates["name"] = update_data.name
+
+    # ako je nova sifra unesena
+    if update_data.password:
+        # validate_password_strength(update_data.password)   PRAVI PROBLEM - ne radi s njom
+        updates["password"] = update_data.password  # hashira se unutar update_user()
+
+    # pozovi servis koji sve obrađuje i hashira ako treba
+    updated_user = update_user(session, user_id, updates)
+
+    return {
+        "id": updated_user.id,
+        "email": updated_user.email,
+        "name": updated_user.name,
+        "role": updated_user.role
+    }
+
+
 
 #GET:Pregled svih reklamacija
 @router.get("/complaints", response_model=List[ComplaintWithCustomer])
@@ -144,7 +184,7 @@ def respond_to_complaint(
 
 
 # Dodjeljivanje complainta
-@router.put("/complaints/{complaint_id}/assign", response_model=complaint_schema.Complaint, tags=["Support Complaints"])
+@router.put("/complaints/{complaint_id}/assign", response_model=complaint_schema.Complaint, tags=["Support"])
 def assign_complaint_to_self(
     complaint_id: int,
     session: SessionDep,

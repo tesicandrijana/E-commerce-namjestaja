@@ -33,12 +33,11 @@ function InquiryDetails() {
         { withCredentials: true }
       )
       .then(() => {
-        alert("Odgovor je poslan!");
+        alert("Response sent to Mail!");
         navigate("/support/inquiries");
       })
       .catch((err) => {
-        console.error("Greška pri slanju odgovora", err);
-        alert("Nešto nije u redu.");
+        console.error("Error", err);
       });
   };
 
@@ -46,7 +45,7 @@ function InquiryDetails() {
 
   return (
     <div className="inquiry-details-wrapper">
-      <button onClick={() => navigate(-1)} className="back-btn">← Nazad</button>
+      <button onClick={() => navigate(-1)} className="back-btn">← Back</button>
       <h2>Inquiry Details #{inquiry.id}</h2>
       <p><strong>Name:</strong> {inquiry.name}</p>
       <p><strong>Email:</strong> {inquiry.email}</p>
