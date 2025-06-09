@@ -63,6 +63,7 @@ def product_count(session: SessionDep):
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return product.get_products(db, skip=skip, limit=limit)
 
+"""
 @router.get("/new-arrivals", response_model=List[ProductRead])
 def get_new_arrivals(
     limit: int = 10,
@@ -78,7 +79,7 @@ def get_new_arrivals(
     results = session.exec(statement).all()
     return results
 
-
+"""
 
 # Multipart PATCH for image updates and metadata
 @router.patch("/{product_id}")

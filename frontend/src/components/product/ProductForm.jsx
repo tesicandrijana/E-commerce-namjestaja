@@ -46,7 +46,6 @@ function ProductForm({ mode, open, onClose, id }) {
                         "Content-type": "multipart/form-data",
                     }
                 })
-            navigate(`/products/${id}`)
 
         }
         catch (e) {
