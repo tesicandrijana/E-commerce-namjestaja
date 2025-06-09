@@ -56,6 +56,7 @@ class DiscountRead(SQLModel):
     id: int
     amount: float  
     product_id: int
+    
 class ProductRead(ProductBase):
     id: int
     category: Optional[CategoryRead] = None

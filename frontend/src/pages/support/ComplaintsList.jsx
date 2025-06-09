@@ -99,7 +99,7 @@ export default function ComplaintsList() {
         )}
       </div>
 
-      <div className="complaints-list">
+      <div className="complaints-list-view">
         {filteredComplaints.map((c) => (
           <div className="complaint-card" key={c.id}>
             <div className="card-header">
