@@ -1,5 +1,5 @@
 from typing import Annotated,Literal, List
-from fastapi import Depends, Cookie,Response
+from fastapi import Depends, Cookie,Response,HTTPException, status
 from sqlmodel import Session
 from app.models.models import User
 from app.repositories import user_repository
@@ -37,7 +37,6 @@ def validate_password_strength(password: str):
     if not re.search(r"[\W_]", password):  # \W matches any non-alphanumeric character
         raise HTTPException(status_code=400, detail="Password must contain at least one special character")
 
-
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
@@ -74,7 +73,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
         expire = datetime.utcnow() + timedelta(minutes=15)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
 
 def login_for_access_token(session: SessionDep, login_data: LoginWithRole, response: Response)-> Token:
     db_user = get_user(session, login_data["email"])
@@ -128,16 +126,6 @@ def role_check(allowed_roles: List[Literal["admin", "manager", "customer", "supp
         return current_user
     return dependency
 
-
-
-
-
-
-
-
-
-from fastapi import HTTPException, status
-
 def login_for_access_token_customer(session: SessionDep, login_data: LoginWithRole, response: Response) -> Token:
     db_user = get_user(session, login_data["email"])
     if not db_user:
@@ -166,3 +154,6 @@ def login_for_access_token_customer(session: SessionDep, login_data: LoginWithRo
         secure=False  
     )
     return Token(access_token=access_token, token_type="bearer")
+
+def get_all_delivery(session: Session):
+    return user_repository.get_all_delivery(session)

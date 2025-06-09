@@ -3,11 +3,14 @@ from typing import List, Annotated
 from sqlmodel import Session, select
 from datetime import date
 from decimal import Decimal
+from sqlalchemy.orm import selectinload
+from app.crud.product import get_product_with_category
 from app.crud import product
 from app.schemas import product as product_schema
-from app.services import product_service
-from app.database import get_db
+from app.services import product_service, user_service
+from app.database import get_db, get_session
 from app.models.models import Product, Discounts
+from app.schemas.product import ProductRead
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
@@ -60,6 +63,23 @@ def product_count(session: SessionDep):
 def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return product.get_products(db, skip=skip, limit=limit)
 
+"""
+@router.get("/new-arrivals", response_model=List[ProductRead])
+def get_new_arrivals(
+    limit: int = 10,
+    category_id: int = Query(None),
+    session: Session = Depends(get_session),
+):
+    statement = select(Product).options(selectinload(Product.images))
+
+    if category_id:
+        statement = statement.where(Product.category_id == category_id)
+
+    statement = statement.order_by(Product.created_at.desc()).limit(limit)
+    results = session.exec(statement).all()
+    return results
+
+"""
 
 # Multipart PATCH for image updates and metadata
 @router.patch("/{product_id}")
@@ -96,9 +116,9 @@ def update_product(
     return updated_product
 
 # Read product (with optional category)
-@router.get("/{id}", response_model = product_schema.ProductRead)
+@router.get("/{id}", response_model=product_schema.ProductRead)
 def read_product(session: SessionDep, id: int):
-    return product_service.get_product(session,id)
+    return product_service.get_product(session, id)
 
 #bulk delete products
 @router.delete("/bulk-delete")

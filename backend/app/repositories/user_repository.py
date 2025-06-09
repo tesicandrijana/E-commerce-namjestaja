@@ -28,3 +28,6 @@ def update_user(session: Session, user_id: int, user_update: UserUpdate):
     session.commit()
     session.refresh(db_user)
     return db_user
+
+def get_all_delivery(session: Session):
+    return session.exec(select(User).where(User.role == 'delivery', User.is_active == True)).all()

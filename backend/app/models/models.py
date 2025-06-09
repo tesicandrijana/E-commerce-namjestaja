@@ -4,6 +4,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy import UniqueConstraint
 from passlib.context import CryptContext
+from datetime import datetime
+
 
 
 # Kreiraj instancu CryptContext za hashiranje i verifikaciju lozinke
@@ -61,14 +63,15 @@ class Product(SQLModel, table=True):
     quantity: int = 0
     category_id: Optional[int] = Field(default=None, foreign_key="categories.id")
     image: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
-    discounts: List["Discounts"] = Relationship(back_populates="product")
-    reviews: List["Review"] = Relationship(back_populates="product")
-    cart_items: List["CartItem"] = Relationship(back_populates="product")
+    discounts: List["Discounts"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    reviews: List["Review"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    cart_items: List["CartItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
-    order_items:List["OrderItem"] = Relationship(back_populates="product")
+    order_items:List["OrderItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -121,6 +124,7 @@ class Order(SQLModel, table=True):
 
     customer: Optional[User] = Relationship(back_populates="orders")
     items: List["OrderItem"] = Relationship(back_populates="order")
+    delivery: Optional["Delivery"] = Relationship(back_populates="order")
 
 
 class OrderItem(SQLModel, table=True):
@@ -155,11 +159,11 @@ class Delivery(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
-    delivery_person_id: int = Field(foreign_key="users.id")
-    status: str = Field(default="in_progress")
+    delivery_person_id: Optional[int] = Field(foreign_key="users.id")
+    status: str = Field(default="unassigned")
     date: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
-    order: Optional[Order] = Relationship()
+    order: Optional[Order] = Relationship(back_populates="delivery")
     delivery_person: Optional[User] = Relationship(back_populates="deliveries")
 
 
@@ -205,9 +209,6 @@ class WorkerRequest(SQLModel, table=True):
     status: str = Field(default="pending")  # pending, approved, rejected
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-
-
-
 class PostalCode(SQLModel, table=True):
     __tablename__ = "postal_codes"
 
@@ -241,3 +242,18 @@ class UserInquiry(SQLModel, table=True):
 #dodatna polja za odgovor 
     response: Optional[str]=None
     responded_at: Optional[datetime]=None
+    
+class JobApplication(SQLModel, table=True):
+    __tablename__ = "job_applications"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(index=True)
+    email: str
+    phone: str
+    address: Optional[str] = None
+    role: str
+
+    status: str = Field(default="waiting", nullable=False, index=True)  
+    interview_time: Optional[datetime] = None  
+
+    cv_file: Optional[str] = None

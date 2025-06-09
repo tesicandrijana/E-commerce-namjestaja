@@ -61,7 +61,7 @@ def get_discounts(
     today = date.today()
     filters = []
     if active is True:
-        filters.append(and_(Discounts.start_date <= today, Discounts.end_date >= today))
+        filters.append(and_(Discounts.start_date <= today,Discounts.amount > 0, Discounts.end_date >= today))
     if search:
         filters.append(Product.name.ilike(f"%{search}%"))
 

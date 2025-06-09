@@ -1,0 +1,131 @@
+.upcoming-interviews-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 30px 20px;
+  background-color: #f9fafb;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upcoming-interviews-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.upcoming-interviews-subtitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.upcoming-interviews-description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  max-width: 700px;
+  text-align: center;
+  line-height: 1.5;
+  padding: 0 10px;
+}
+
+.upcoming-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+}
+
+.upcoming-table thead {
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  color: white;
+  font-weight: 600;
+}
+
+.upcoming-table th, 
+.upcoming-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+/* Poslednji red bez donjeg bordera */
+.upcoming-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Redovi pri hover efektu */
+.upcoming-table tbody tr:hover {
+  background-color: #f1f8ff;
+  cursor: pointer;
+}
+
+/* Select polje u tabeli */
+.upcoming-table select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.upcoming-table select:hover,
+.upcoming-table select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0,123,255,0.4);
+}
+
+/* Stilovi za ikonice i dugmad */
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s ease;
+}
+
+.icon-button:hover:not(:disabled) {
+  transform: scale(1.2);
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.icon-button.accepted {
+  color: #28a745; /* zelena */
+}
+
+.icon-button.rejected {
+  color: #dc3545; /* crvena */
+}
+
+/* Responsive stilovi */
+@media (max-width: 768px) {
+  .upcoming-interviews-description {
+    max-width: 100%;
+    font-size: 1rem;
+  }
+
+  .upcoming-table {
+    font-size: 0.9rem;
+  }
+
+  .upcoming-table th, .upcoming-table td {
+    padding: 10px 8px;
+  }
+}

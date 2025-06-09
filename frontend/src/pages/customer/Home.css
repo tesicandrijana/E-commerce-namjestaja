@@ -1,6 +1,4 @@
 
-
-/* Container */
 .home-container,
 .content-container {
   font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -17,7 +15,6 @@
   margin: auto;
 }
 
-/* === Hero Section === */
 .hero-section {
   background: linear-gradient(
       rgba(255, 255, 255, 0),rgba(244, 246, 248, 0),

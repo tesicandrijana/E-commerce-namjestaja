@@ -29,6 +29,9 @@ class OrderRead(OrderBase):
     id: int
     date: datetime
     items: List[OrderItemRead] = []
+    customer_name: str | None = None
+    delivery_person_name: str | None = None
+
 
     class Config:
         orm_mode = True
@@ -36,6 +39,9 @@ class OrderRead(OrderBase):
             Decimal: lambda v: float(v),
         }
 
+class OrdersWithCount(SQLModel):
+    orders: list[OrderRead]
+    total: int
 
 class OrderUpdate(SQLModel):
     address: Optional[str] = None
@@ -65,4 +71,5 @@ class OrderCalculationResponse(SQLModel):
     tax: float
     shipping: float
     total: float
+
 

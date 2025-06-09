@@ -1,0 +1,48 @@
+.order-card-container {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  cursor: grab;
+  transition: box-shadow 0.2s ease;
+}
+
+.order-card-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.order-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.order-card-header p {
+  margin: 0;
+  color: #666;
+  font-size: 0.5rem;
+}
+
+.order-card-details {
+  margin-top: 8px;
+  color: #444;
+  font-size: 0.7rem;
+}
+
+.order-card-date {
+  font-size: 0.6rem;
+  color: gray;
+}
