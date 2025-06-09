@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
-import { FaShoppingCart, FaLock, FaBell, FaSignOutAlt } from "react-icons/fa";
-
+import { FaShoppingCart, FaLock, FaSignOutAlt } from "react-icons/fa";
+import { BsChatSquareText } from "react-icons/bs";
 import "./Header.css";
 import LoginModal from "./auth/LoginModal";
 import CustomerLogin from "./auth/CustomerLogin";
@@ -12,12 +12,12 @@ export default function Header() {
   const { handleLogout, currentUser } = useAuth();
   const { cartQuantity, fetchCart } = useCart();
   const navigate = useNavigate();
+
   const [role, setRole] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCustomerLoginOpen, setIsCustomerLoginOpen] = useState(false);
-
-  // New state to hold assigned complaints for notifications
   const [assignedComplaints, setAssignedComplaints] = useState([]);
+  const [complaintModalOpen, setComplaintModalOpen] = useState(false);
 
   const openLoginModal = (userRole) => {
     setRole(userRole);
@@ -32,21 +32,18 @@ export default function Header() {
     fetchCart();
   }, []);
 
-  // Fetch assigned complaints for customer notification
   useEffect(() => {
     if (currentUser && currentUser.role === "customer") {
       fetch("http://localhost:8000/complaints/assigned", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // important to send cookies for auth
+        credentials: "include",
       })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to fetch complaints");
           return res.json();
         })
-        .then((data) => {
-          setAssignedComplaints(data || []);
-        })
+        .then((data) => setAssignedComplaints(data || []))
         .catch(() => setAssignedComplaints([]));
     } else {
       setAssignedComplaints([]);
@@ -54,10 +51,8 @@ export default function Header() {
   }, [currentUser]);
 
   const isEmployee = currentUser && currentUser.role && currentUser.role !== "customer";
-  const isCustomer = currentUser && currentUser.role && currentUser.role === "customer";
-
+  const isCustomer = currentUser && currentUser.role === "customer";
   const hasAssignedComplaints = assignedComplaints.length > 0;
-  const firstComplaintId = hasAssignedComplaints ? assignedComplaints[0].id : null;
 
   return (
     <>
@@ -69,61 +64,41 @@ export default function Header() {
 
           <nav className="nav-links">
             {isEmployee ? (
-              <NavLink to={`${currentUser.role}-dashboard`}>Dashboard</NavLink>
+              <NavLink to={`/${currentUser.role}-dashboard`}>Dashboard</NavLink>
             ) : (
               <NavLink to="/shop-products">Shop</NavLink>
             )}
             <NavLink to="/about">About</NavLink>
             <NavLink to="/contact">Contact</NavLink>
-
             {isCustomer && <NavLink to="/orders">Orders</NavLink>}
           </nav>
 
           <div className="header-icons">
-            {/* Notification bell for assigned complaints */}
             {isCustomer && hasAssignedComplaints && (
               <div
-                title="You have a new complaint message"
-                onClick={() => navigate(`/customer/chat/${firstComplaintId}`)}
-                style={{ cursor: "pointer", position: "relative", marginRight: "20px" }}
+                className="complaint-bell"
+                onClick={() => setComplaintModalOpen(true)}
+                title="You have assigned complaints"
               >
-                <FaBell size={24} color="red" />
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "-5px",
-                    right: "-10px",
-                    backgroundColor: "red",
-                    borderRadius: "50%",
-                    color: "white",
-                    padding: "2px 7px",
-                    fontSize: "12px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {assignedComplaints.length}
-                </span>
+                <BsChatSquareText size={24} className="complaint-icon" />
+                <span className="complaint-badge">{assignedComplaints.length}</span>
               </div>
             )}
 
-            {/* Cart icon and badge */}
             {(!currentUser || currentUser.role === "customer") && (
               <div
-                className={`cart-icon-wrapper ${
-                  currentUser && currentUser.role === "customer" ? "logged-in" : ""
-                }`}
-                title={
-                  !currentUser
-                    ? "Please log in to access your cart"
-                    : `View Cart (${cartQuantity} items)`
-                }
-                style={{ cursor: "pointer", position: "relative" }}
+                className={`cart-icon-wrapper ${currentUser ? "logged-in" : ""}`}
                 onClick={(e) => {
                   if (!currentUser) {
                     e.preventDefault();
                     setIsCustomerLoginOpen(true);
                   }
                 }}
+                title={
+                  !currentUser
+                    ? "Please log in to access your cart"
+                    : `View Cart (${cartQuantity} items)`
+                }
               >
                 <Link
                   to={currentUser && currentUser.role === "customer" ? "/cart" : "#"}
@@ -174,12 +149,38 @@ export default function Header() {
         </div>
       </header>
 
-      {/* General login modal (for header login button) */}
       {isModalOpen && <LoginModal role={role} onClose={closeLoginModal} />}
+      {isCustomerLoginOpen && <CustomerLogin onClose={() => setIsCustomerLoginOpen(false)} />}
 
-      {/* Customer-only login modal (for cart icon login) */}
-      {isCustomerLoginOpen && (
-        <CustomerLogin onClose={() => setIsCustomerLoginOpen(false)} />
+      {complaintModalOpen && (
+        <div className="complaint-modal-backdrop" onClick={() => setComplaintModalOpen(false)}>
+  <div className="complaint-modal-box" onClick={(e) => e.stopPropagation()}>
+    <h3>Customer Support</h3>
+    <p className="complaint-modal-message">
+      You have active complaints that are being handled by our support team.
+      Would you like to view them and continue chatting with us?
+    </p>
+
+    <div className="complaint-modal-buttons">
+      <button
+        className="btn complaint-view-btn"
+        onClick={() => {
+          navigate("/customer/complaints");
+          setComplaintModalOpen(false);
+        }}
+      >
+        View Complaints & Chat
+      </button>
+      <button
+        className="btn complaint-close-btn"
+        onClick={() => setComplaintModalOpen(false)}
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
       )}
     </>
   );

@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; 
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../components/auth/AuthProvider";
+import jsPDF from "jspdf";
 import "./CheckOut.css";
 
 export default function Checkout() {
   const { cartItems, clearCart } = useCart();
   const { currentUser } = useAuth();
 
-  const [productsMap, setProductsMap] = useState({});
   const [callingCodes, setCallingCodes] = useState([]);
-  const [discountsMap, setDiscountsMap] = useState({});
   const [taxRate, setTaxRate] = useState(0);
-  const [shippingCost, setShippingRate] = useState(0); // Shipping cost state
+  const [shippingCost, setShippingCost] = useState(0);
+  const [discountedPrices, setDiscountedPrices] = useState({});
+  const [productNames, setProductNames] = useState({});
   const [formSubmitting, setFormSubmitting] = useState(false);
   const [formSuccess, setFormSuccess] = useState(null);
   const [formError, setFormError] = useState(null);
@@ -28,154 +29,146 @@ export default function Checkout() {
     paymentMethod: "credit_card",
   });
 
-  // Fetch all products and create a map for quick lookup
   useEffect(() => {
-    async function fetchProducts() {
+    async function loadCodes() {
       try {
-        const res = await fetch("http://localhost:8000/products/");
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const products = await res.json();
-        const map = {};
-        products.forEach((p) => (map[p.id] = p));
-        setProductsMap(map);
-      } catch (err) {
-        console.error(err);
+        const res = await fetch("http://localhost:8000/taxes-shipping/calling-codes/");
+        if (!res.ok) throw new Error("Failed to load calling codes");
+        setCallingCodes(await res.json());
+      } catch (e) {
+        console.error(e);
       }
     }
-    fetchProducts();
+    loadCodes();
   }, []);
 
-  // Fetch calling codes for phone input
   useEffect(() => {
-    async function fetchCallingCodes() {
-      try {
-        const res = await fetch(
-          "http://localhost:8000/taxes-shipping/calling-codes/"
-        );
-        if (!res.ok) throw new Error("Failed to fetch calling codes");
-        const data = await res.json();
-        setCallingCodes(data);
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    fetchCallingCodes();
-  }, []);
+    async function fetchData() {
+      const prices = {};
+      const names = {};
 
-  // Fetch discounts if cart has items
- useEffect(() => {
-    async function fetchDiscounts() {
-      try {
-        const res = await fetch("http://localhost:8000/discounts/all");
-        if (!res.ok) throw new Error("Failed to fetch discounts");
-        const data = await res.json();
-        const map = {};
-        data.forEach(discount => {
-          map[discount.product_id] = discount;
-        });
-        setDiscountsMap(map);
-      } catch (err) {
-        console.error(err);
-      }
+      await Promise.all(
+        cartItems.map(async (item) => {
+          try {
+            const priceRes = await fetch(`http://localhost:8000/products/${item.product_id}/discounted-price`);
+            if (!priceRes.ok) throw new Error("Bad response for price");
+            const { discounted_price } = await priceRes.json();
+            prices[item.product_id] = Number(discounted_price) || 0;
+
+            const nameRes = await fetch(`http://localhost:8000/products/${item.product_id}`);
+            if (!nameRes.ok) throw new Error("Bad response for product info");
+            const product = await nameRes.json();
+            names[item.product_id] = product.name || `Product #${item.product_id}`;
+          } catch (e) {
+            console.error(e);
+            prices[item.product_id] = 0;
+            names[item.product_id] = `Product #${item.product_id}`;
+          }
+        })
+      );
+
+      setDiscountedPrices(prices);
+      setProductNames(names);
     }
-    if (cartItems.length > 0) fetchDiscounts();
+
+    if (cartItems.length > 0) fetchData();
   }, [cartItems]);
 
-  // Fetch tax and shipping rates based on selected calling code
   useEffect(() => {
-    async function fetchTaxAndShippingByCallingCode() {
+    async function loadRates() {
       if (!orderData.calling_code) {
         setTaxRate(0);
-        setShippingRate(0);
+        setShippingCost(0);
         return;
       }
 
       try {
-        const selectedCountry = callingCodes.find(
-          (code) => code.calling_code === orderData.calling_code
-        );
+        const codeInfo = callingCodes.find(c => c.calling_code === orderData.calling_code);
+        if (!codeInfo) return;
 
-        if (!selectedCountry) {
-          setTaxRate(0);
-          setShippingRate(0);
-          return;
-        }
+        const [taxRes, shipRes] = await Promise.all([
+          fetch("http://localhost:8000/taxes-shipping/taxes"),
+          fetch("http://localhost:8000/taxes-shipping/shipping")
+        ]);
 
-        // Fetch tax rates
-        const taxRes = await fetch(`http://localhost:8000/taxes-shipping/taxes`);
-        if (!taxRes.ok) throw new Error("Failed to fetch tax rates");
-        const taxData = await taxRes.json();
+        if (!taxRes.ok || !shipRes.ok) throw new Error("Failed to load tax/shipping data");
 
-        const countryTaxRate = taxData.find(
-          (rate) => rate.country_code === selectedCountry.country_code
-        );
-        setTaxRate(
-          countryTaxRate ? parseFloat(countryTaxRate.vat_rate) : 0
-        ); // Convert percentage to decimal
+        const taxArr = await taxRes.json();
+        const shipArr = await shipRes.json();
 
-        // Fetch shipping rates
-        const shippingRes = await fetch(
-          `http://localhost:8000/taxes-shipping/shipping`
-        );
-        if (!shippingRes.ok) throw new Error("Failed to fetch shipping rates");
-        const shippingData = await shippingRes.json();
+        const countryTax = taxArr.find(r => r.country_code === codeInfo.country_code);
+        const countryShip = shipArr.find(r => r.country_code === codeInfo.country_code);
 
-        const countryShipping = shippingData.find(
-          (rate) => rate.country_code === selectedCountry.country_code
-        );
-        setShippingRate(
-          countryShipping ? parseFloat(countryShipping.shipping_rate) : 0
-        ); // Convert percentage to decimal
-      } catch (error) {
-        console.error("Error fetching tax or shipping rates:", error);
+        setTaxRate(countryTax ? parseFloat(countryTax.vat_rate) : 0);
+        setShippingCost(countryShip ? parseFloat(countryShip.shipping_rate) : 0);
+      } catch (e) {
+        console.error(e);
         setTaxRate(0);
-        setShippingRate(0);
+        setShippingCost(0);
       }
     }
 
-    fetchTaxAndShippingByCallingCode();
+    loadRates();
   }, [orderData.calling_code, callingCodes]);
 
-  // Calculate totals with discounts, tax, and shipping
   const calculateTotals = () => {
     let subtotal = 0;
-    let discountTotal = 0;
-
-    cartItems.forEach((item) => {
-      const product = productsMap[item.product_id];
-      if (!product) return;
-
-      const productPriceTotal = product.price * item.quantity;
-      subtotal += productPriceTotal;
-
-      const discountPercentRaw = discountsMap[item.product_id]?.amount ?? 0;
-      const discountPercent = parseFloat(discountPercentRaw);
-
-      const totalDiscountForItem = (discountPercent / 100) * productPriceTotal;
-      discountTotal += totalDiscountForItem;
+    cartItems.forEach(item => {
+      const unit = discountedPrices[item.product_id] || 0;
+      subtotal += unit * item.quantity;
     });
-
-    const afterDiscount = subtotal - discountTotal;
-    const tax = afterDiscount * taxRate;
-    const total = afterDiscount + tax + shippingCost;
-
-    return {
-      subtotal,
-      discountTotal,
-      tax,
-      shipping: shippingCost,
-      total,
-    };
+    const tax = subtotal * taxRate;
+    const total = subtotal + tax + shippingCost;
+    return { subtotal, tax, shipping: shippingCost, total };
   };
 
-  const { subtotal, discountTotal, tax, shipping, total } = calculateTotals();
+  const { subtotal, tax, shipping, total } = calculateTotals();
 
-  const handleInputChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setOrderData((prev) => ({ ...prev, [name]: value }));
+    setOrderData(prev => ({
+      ...prev,
+      [name]: value,
+      ...(name === "calling_code" && {
+        country_code: (callingCodes.find(c => c.calling_code === value)?.country_code) || ""
+      })
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const generateReceipt = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("Order Receipt", 20, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Name: ${orderData.name}`, 20, 30);
+  doc.text(`Email: ${orderData.email}`, 20, 38);
+  doc.text(`Phone: ${orderData.calling_code}${orderData.phone}`, 20, 46);
+  doc.text(`Address: ${orderData.address}, ${orderData.city}, ${orderData.postal_code}`, 20, 54);
+  doc.text(`Payment Method: ${orderData.paymentMethod}`, 20, 62);
+
+  doc.text("Items:", 20, 74);
+  let y = 82;
+
+  cartItems.forEach((item) => {
+    const name = productNames[item.product_id] || `Product #${item.product_id}`;
+    const price = discountedPrices[item.product_id]?.toFixed(2) || "0.00";
+    doc.text(`${name} - : ${item.quantity} × $${price}`, 20, y);
+    y += 8;
+  });
+
+  y += 4;
+  doc.text(`Subtotal: $${subtotal.toFixed(2)}`, 20, y); y += 8;
+  doc.text(`Tax: $${tax.toFixed(2)}`, 20, y); y += 8;
+  doc.text(`Shipping: $${shipping.toFixed(2)}`, 20, y); y += 8;
+  doc.text(`Total: $${total.toFixed(2)}`, 20, y);
+
+  doc.save("order_receipt.pdf");
+};
+
+
+  const handleSubmit = async e => {
     e.preventDefault();
     setFormSubmitting(true);
     setFormError(null);
@@ -186,7 +179,6 @@ export default function Checkout() {
       setFormSubmitting(false);
       return;
     }
-
     if (!orderData.calling_code) {
       setFormError("Please select your country calling code.");
       setFormSubmitting(false);
@@ -194,14 +186,11 @@ export default function Checkout() {
     }
 
     try {
-      const orderItems = cartItems.map((item) => {
-        const product = productsMap[item.product_id];
-        return {
-          product_id: item.product_id,
-          quantity: item.quantity,
-          price_per_unit: Number(product?.price || 0),
-        };
-      });
+      const orderItems = cartItems.map(item => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        price_per_unit: Number(discountedPrices[item.product_id] || 0),
+      }));
 
       const payload = {
         customer_id: currentUser?.id || 1,
@@ -216,10 +205,10 @@ export default function Checkout() {
         items: orderItems,
         transaction_id: null,
         subtotal,
-        discount: discountTotal,
+        discount: 0,
         tax,
-        shipping_cost: shipping, // Include shipping cost in order payload
-        total_price: total,
+        shipping_cost: shipping,
+        total_price: total
       };
 
       const res = await fetch("http://localhost:8000/orders/", {
@@ -230,11 +219,13 @@ export default function Checkout() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || "Failed to place order");
+        const err = await res.json();
+        throw new Error(err.detail || "Failed to place order");
       }
 
       setFormSuccess("Order placed successfully!");
+      generateReceipt();
+      clearCart();
       setOrderData({
         name: currentUser?.name || "",
         email: currentUser?.email || "",
@@ -246,109 +237,59 @@ export default function Checkout() {
         postal_code: "",
         paymentMethod: "credit_card",
       });
-      clearCart();
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
       setFormError("Failed to place order. Please try again.");
     } finally {
       setFormSubmitting(false);
     }
   };
 
-  if (cartItems.length === 0)
+  if (cartItems.length === 0) {
     return <p className="empty-cart-msg">Your cart is empty.</p>;
+  }
 
   return (
     <div className="checkout-overlay">
       <div className="checkout-wrapper">
         <h2 className="checkout-title">Finalize your order</h2>
         <div className="checkout-grid">
-          {/* Summary */}
           <div className="checkout-summary">
             <h3>Cart Summary</h3>
-
-            {/* Scrollable container: items + subtotal, discount, tax */}
             <div className="checkout-summary-scrollable">
-              {cartItems.map((item) => {
-                const product = productsMap[item.product_id];
-                return (
-                  <div key={item.id} className="checkout-summary-item">
-                    <span>{product?.name || `Product #${item.product_id}`}</span>
-                    <span>
-                      {item.quantity} × ${Number(product?.price || 0).toFixed(2)}
-                    </span>
-                  </div>
-                );
-              })}
-
+              {cartItems.map(item => (
+                <div key={item.id} className="checkout-summary-item">
+                  <span>{productNames[item.product_id] || `Product #${item.product_id}`}</span>
+                  <span>{`${item.quantity} × $${(discountedPrices[item.product_id] || 0).toFixed(2)}`}</span>
+                </div>
+              ))}
               <div className="checkout-summary-totals">
-                <div>
-                  <span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span>
-                </div>
-                <div>
-                  <span>Discount:</span> <span>- ${discountTotal.toFixed(2)}</span>
-                </div>
-                <div>
-                  <span>Tax:</span> <span>+ ${tax.toFixed(2)}</span>
-                </div>
-                <div>
-                  <span>Shipping:</span> <span>+ ${shipping.toFixed(2)}</span>
-                </div>
+                <div><span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span></div>
+                <div><span>Tax:</span> <span>+ ${tax.toFixed(2)}</span></div>
+                <div><span>Shipping:</span> <span>+ ${shipping.toFixed(2)}</span></div>
               </div>
             </div>
-
-            {/* Total outside scroll container */}
             <div className="checkout-summary-total">
               <strong>Total: ${total.toFixed(2)}</strong>
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="checkout-form">
-            <label>
-              Name
-              <input
-                name="name"
-                value={orderData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-
-            <label>
-              Email
-              <input
-                name="email"
-                type="email"
-                value={orderData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-
-            <label>
-              Phone
+            <label>Name<input name="name" value={orderData.name} onChange={handleChange} required /></label>
+            <label>Email<input name="email" type="email" value={orderData.email} onChange={handleChange} required /></label>
+            <label>Phone
               <div className="phone-input-group">
                 <select
                   name="calling_code"
                   value={orderData.calling_code}
-                  onChange={(e) => {
-                    const selected = callingCodes.find(
-                      (c) => c.calling_code === e.target.value
-                    );
-                    setOrderData((prev) => ({
-                      ...prev,
-                      calling_code: e.target.value,
-                      country_code: selected?.country_code || "",
-                    }));
-                  }}
+                  onChange={handleChange}
                   required
                   className="calling-code-select"
                 >
                   <option value="">Calling Code</option>
-                  {callingCodes.map((code) => (
-                    <option key={code.id} value={code.calling_code}>
-                      {code.calling_code} ({code.country_code})
+                  {callingCodes.map(c => (
+                    <option key={c.id} value={c.calling_code}>
+                      {`${c.calling_code} (${c.country_code})`}
                     </option>
                   ))}
                 </select>
@@ -356,66 +297,26 @@ export default function Checkout() {
                   name="phone"
                   type="tel"
                   value={orderData.phone}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   className="phone-input"
                   placeholder="Phone number"
                 />
               </div>
             </label>
-
-            <label>
-              Address
-              <input
-                name="address"
-                value={orderData.address}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-
-            <label>
-              City
-              <input
-                name="city"
-                value={orderData.city}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-
-            <label>
-              Postal Code
-              <input
-                name="postal_code"
-                value={orderData.postal_code}
-                onChange={handleInputChange}
-                required
-              />
-            </label>
-
-            <label>
-              Payment Method
-              <select
-                name="paymentMethod"
-                value={orderData.paymentMethod}
-                onChange={handleInputChange}
-                required
-              >
+            <label>Address<input name="address" value={orderData.address} onChange={handleChange} required /></label>
+            <label>City<input name="city" value={orderData.city} onChange={handleChange} required /></label>
+            <label>Postal Code<input name="postal_code" value={orderData.postal_code} onChange={handleChange} required /></label>
+            <label>Payment Method
+              <select name="paymentMethod" value={orderData.paymentMethod} onChange={handleChange} required>
                 <option value="credit_card">Credit Card</option>
                 <option value="paypal">PayPal</option>
                 <option value="cash_on_delivery">Cash on Delivery</option>
               </select>
             </label>
-
-            <button
-              className="checkout-btn"
-              type="submit"
-              disabled={formSubmitting}
-            >
+            <button className="checkout-btn" type="submit" disabled={formSubmitting}>
               {formSubmitting ? "Placing Order..." : "Place Order"}
             </button>
-
             {formError && <p className="form-error">{formError}</p>}
             {formSuccess && <p className="form-success">{formSuccess}</p>}
           </form>
@@ -424,3 +325,8 @@ export default function Checkout() {
     </div>
   );
 }
+
+
+
+
+

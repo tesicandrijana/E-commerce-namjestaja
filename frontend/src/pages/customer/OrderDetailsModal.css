@@ -1,4 +1,4 @@
-/* Overlay wrapper */
+
 .order-details-modal-wrapper {
   position: fixed;
   top: 0;
@@ -7,7 +7,7 @@
   height: 100vh;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
-  justify-content: flex-start; /* Align modal left */
+  justify-content: flex-start;
   align-items: center;
   z-index: 9999;
   padding: 20px;
@@ -15,7 +15,6 @@
   animation: fadeInOverlay 0.3s forwards;
 }
 
-/* Modal container */
 .order-details-modal-content {
   background: #fff;
   border-radius: 16px;
@@ -29,12 +28,10 @@
   font-family: 'Poppins', "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #2c2c2c;
 
-  /* Slide-in animation initial state */
   transform: translateX(-100%);
   animation-fill-mode: forwards;
 }
 
-/* Animation classes */
 .order-details-modal-content.slide-in-left {
   animation: slideInLeft 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -43,7 +40,6 @@
   animation: slideOutLeft 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Close button */
 .order-details-modal-close-btn {
   position: absolute;
   top: 14px;
@@ -62,7 +58,6 @@
   transform: scale(1.1);
 }
 
-/* Title */
 .order-details-modal-title {
   font-weight: 800;
   font-size: 2rem;
@@ -71,7 +66,6 @@
   letter-spacing: 0.03em;
 }
 
-/* Info rows */
 .order-details-modal-info {
   font-size: 1.05rem;
   line-height: 1.5;
@@ -79,7 +73,6 @@
   margin-bottom: 14px;
 }
 
-/* Status badges */
 .order-details-modal-status {
   display: inline-block;
   font-weight: 700;
@@ -109,14 +102,12 @@
   background-color: #d9534f;
 }
 
-/* Products section */
 .order-details-modal-products-section {
   margin-top: 28px;
   border-top: 1px solid #eee;
   padding-top: 20px;
 }
 
-/* Products list with scrollbar */
 .order-details-modal-products-list {
   list-style: none;
   padding: 0;
@@ -125,10 +116,9 @@
   overflow-y: auto;
   scroll-behavior: smooth;
   margin-top: 12px;
-  padding-right: 8px; /* To avoid scrollbar overlap */
+  padding-right: 8px; 
 }
 
-/* Scrollbar styling for WebKit */
 .order-details-modal-products-list::-webkit-scrollbar {
   width: 6px;
 }
@@ -142,7 +132,6 @@
   background-color: #a0a0a0;
 }
 
-/* Individual product item */
 .order-details-modal-product-item {
   background-color: #fafafa;
   padding: 14px 20px;
@@ -169,7 +158,6 @@
   line-height: 1.4;
 }
 
-/* Responsive adjustments */
 @media (max-width: 600px) {
   .order-details-modal-content {
     width: 100%;
@@ -192,7 +180,6 @@
   }
 }
 
-/* Animations */
 @keyframes slideInLeft {
   from {
     transform: translateX(-100%);
@@ -223,3 +210,4 @@
     background-color: rgba(0, 0, 0, 0.4);
   }
 }
+

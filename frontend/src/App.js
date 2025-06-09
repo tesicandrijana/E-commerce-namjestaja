@@ -21,6 +21,7 @@ import ProductDetails from "./pages/customer/ProductDetails";
 import Cart from "./pages/customer/Cart";  
 import CheckOut from "./pages/customer/CheckOut";
 import Orders from "./pages/customer/Orders";
+import CustomerComplaints from "./pages/customer/CustomerComplaints";
 import CustomerComplaintChat from "./pages/customer/CustomerComplaintChat";
 
 // Pages (Admin)
@@ -89,7 +90,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/product-details/:id" element={<ProductDetails />} />
-                <Route path="/cart" element={<Cart />} />
+                <Route path="/cart" element={<Cart />} />/customer/complaints
                 <Route path="/checkout" element={<CheckOut />} />
                 <Route path="/orders" element={<Orders />} />
               </Route>
@@ -97,6 +98,7 @@ function App() {
               {/* Customer Protected routes */}
               <Route element={<ProtectedRoute allowedRoles={"customer"} />}>
                 <Route element={<MainLayout />}>
+                  <Route path="/customer/complaints" element={<CustomerComplaints />} />
                   <Route path="/customer/chat/:complaintId" element={<CustomerComplaintChat />} />
                 </Route>
               </Route>

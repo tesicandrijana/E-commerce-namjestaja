@@ -1,28 +1,51 @@
-
-
 import React, { useState, useEffect } from "react";
 import "./OrderDetailsModal.css";
 
 const OrderDetailsModal = ({ order, onClose }) => {
-  const [show, setShow] = useState(!!order);        // modal mount control
+  const [show, setShow] = useState(!!order); // modal mount control
   const [animateOut, setAnimateOut] = useState(false); // slide out state
+  const [discountedPrices, setDiscountedPrices] = useState({}); // Store discounted prices for each product
 
   useEffect(() => {
     if (order) {
       setShow(true);
       setAnimateOut(false);
+
+      order.items.forEach(async (item) => {
+        try {
+          const response = await fetch(`http://localhost:8000/products/${item.product.id}/discounted-price`);
+          const data = await response.json();
+          setDiscountedPrices((prevPrices) => ({
+            ...prevPrices,
+            [item.product.id]: data.discounted_price,
+          }));
+        } catch (error) {
+          console.error("Error fetching discounted price:", error);
+        }
+      });
     } else if (show) {
       const timer = setTimeout(() => setShow(false), 350);
       setAnimateOut(true);
       return () => clearTimeout(timer);
     }
-  }, [order]);
+
+    const handleEscape = (e) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [order, show]);
 
   if (!show) return null;
 
   const handleClose = () => {
     setAnimateOut(true);
-    setTimeout(onClose, 350);
+    setTimeout(onClose, 350); // Wait for animation before closing
   };
 
   return (
@@ -60,9 +83,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
             <ul className="order-details-modal-products-list">
               {order.items.map((item) => {
                 const originalPrice = Number(item.price_per_unit);
-                const discountObj = item.product?.discount;
-                const discountAmount = Number(discountObj?.amount || 0);
-                const hasDiscount = discountAmount > 0;
+                const discountAmount = discountedPrices[item.product.id] || 0;
                 const discountedUnitPrice = Math.max(0, originalPrice - discountAmount);
                 const totalPrice = discountedUnitPrice * item.quantity;
 
@@ -77,7 +98,7 @@ const OrderDetailsModal = ({ order, onClose }) => {
                     <div className="order-details-modal-product-detail">
                       Unit Price: ${originalPrice.toFixed(2)}
                     </div>
-                    {hasDiscount && (
+                    {discountAmount > 0 && (
                       <>
                         <div className="order-details-modal-product-detail">
                           Discount: ${discountAmount.toFixed(2)} per unit
@@ -102,4 +123,3 @@ const OrderDetailsModal = ({ order, onClose }) => {
 };
 
 export default OrderDetailsModal;
-

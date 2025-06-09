@@ -72,7 +72,6 @@ def read_orders(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    # Only allow admins to get all orders
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to view all orders")
     return get_orders(session)

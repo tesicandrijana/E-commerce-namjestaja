@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File, Query
 from typing import List, Annotated
-from sqlmodel import Session
-from app.crud.product import get_product_with_category
+from sqlmodel import Session, select
+from datetime import date
+from decimal import Decimal
 from app.crud import product
 from app.schemas import product as product_schema
-from app.services import product_service, user_service
+from app.services import product_service
 from app.database import get_db
-from app.schemas.product import ProductRead
-from app.models.models import Product
+from app.models.models import Product, Discounts
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
@@ -119,3 +119,32 @@ def restock_product(
 ):
     return product_service.restock(session, product_id, restock_request.added)
 
+
+
+@router.get("/{product_id}/discounted-price")
+def get_discounted_price(product_id: int, session: Session = Depends(get_db)):
+    product = session.get(Product, product_id)
+
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    today = date.today()
+
+    discount = session.exec(
+        select(Discounts)
+        .where(Discounts.product_id == product_id)
+        .where(Discounts.start_date <= today)
+        .where(Discounts.end_date >= today)
+    ).first()
+
+    original_price: Decimal = product.price
+    discount_amount: Decimal = discount.amount if discount else Decimal(0)
+    discounted_price: Decimal = original_price * (1 - discount_amount / 100)
+    discounted_price = round(discounted_price, 2)
+
+    return {
+        "product_id": product_id,
+        "original_price": round(float(original_price), 2),
+        "discount_amount": round(float(discount_amount), 2),
+        "discounted_price": round(float(discounted_price), 2),
+    }

@@ -1,0 +1,114 @@
+.complaints-container-background {
+  max-width: 1600px;
+  margin: 0 auto;
+  background-color: #fdfdfd;
+  font-family: 'Inter', sans-serif;
+  color: #1f2d3d;
+}
+
+.complaints-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  background-color: #fdfdfd;
+  font-family: 'Poppins', 'Courier New', Courier, monospace;
+  color: #1f2d3d;
+}
+
+.complaints-title {
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.support-message {
+  background-color: #f0f4f8;
+  border: 1px solid #d0dae3;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #374151;
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.loading-text,
+.error-text,
+.no-complaints {
+  font-size: 1.1rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 2rem;
+  font-family: 'Poppins', 'Courier New', Courier, monospace;
+}
+
+.complaint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.complaint-box {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 1.75rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.complaint-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.complaint-header {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #111827;
+  font-family: 'Poppins', 'Courier New', Courier, monospace;
+}
+
+.complaint-box p {
+  margin: 0.4rem 0;
+  font-size: 1rem;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.complaint-box p strong {
+  color: #1f2937;
+}
+
+.chat-btn {
+  margin-top: 1.2rem;
+  padding: 0.65rem 1.4rem;
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.chat-btn:hover {
+  background: linear-gradient(90deg, #1d4ed8, #2563eb);
+}
+
+.complaint-message {
+  font-style: italic;
+  background-color: #f9fafb;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-top: 0.3rem;
+  color: #374151;
+  max-width: fit-content;
+  white-space: pre-wrap;
+}
+

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import ComplaintModal from "./ComplaintModal"; 
-import OrderDetailsModal from "./OrderDetailsModal"; 
-import "./Orders.css";
+import ComplaintModal from "./ComplaintModal";
+import OrderDetailsModal from "./OrderDetailsModal";
+import "./OrdersTrack.css";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState(null);
   const [showComplaint, setShowComplaint] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [preferred_resolution, setPreferredResolution] = useState("");
   const [message, setMessage] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showCancelled, setShowCancelled] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:8000/orders/myorders", {
@@ -56,10 +56,18 @@ export default function Orders() {
       })
       .then(() => {
         setOrders((prev) =>
-          prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o))
+          prev.map((o) =>
+            o.id === orderId ? { ...o, status: "cancelled" } : o
+          )
         );
       })
       .catch((err) => alert(`Error: ${err.message}`));
+  };
+
+  const removeOrder = (orderId) => {
+    if (!window.confirm("Remove this cancelled order permanently?")) return;
+
+    setOrders((prev) => prev.filter((o) => o.id !== orderId));
   };
 
   const openComplaint = (orderId) => {
@@ -105,91 +113,144 @@ export default function Orders() {
     setShowOrderDetails(true);
   };
 
-  if (error) return <div className="orders-v1-error">Unable to load orders: {error}</div>;
-  if (!orders.length) return <div className="orders-v1-empty">No orders found.</div>;
+  if (error)
+    return <div className="ot-error">Unable to load orders: {error}</div>;
 
-  const reversedOrders = [...orders].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const filteredOrders = showCancelled
+    ? orders
+    : orders.filter((o) => o.status !== "cancelled");
+
+  if (!filteredOrders.length)
+    return (
+      <div className="ot-empty">
+        {showCancelled ? "No orders found." : "No active orders."}
+      </div>
+    );
+
+  const reversedOrders = [...filteredOrders].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
   return (
-    <section className="orders-main">
-      <div className="orders-v1-wrapper">
-        <div className="orders-v1-stack">
-          {reversedOrders.map((order, index) => {
-            const isExpanded = expandedOrderId === order.id;
-            return (
-              <div
-                key={order.id}
-                className={`order-square ${isExpanded ? "expanded" : ""}`}
-                style={{
-                  zIndex: orders.length - index,
-                  left: index * 10,
-                  top: index * 20,
-                  cursor: "pointer",
-                }}
-                onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
-                title={`Order #${order.id}`}
-                aria-expanded={isExpanded}
-                aria-controls={`order-details-${order.id}`}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    setExpandedOrderId(isExpanded ? null : order.id);
-                  }
-                }}
-              >
-                {!isExpanded && <span className="order-number">#{index + 1}</span>}
+    <div className="ot-track-background">
+    <section className="ot-track-container">
+      <div className="ot-toggle">
+        <label>
+          <input
+            type="checkbox"
+            checked={showCancelled}
+            onChange={() => setShowCancelled((prev) => !prev)}
+          />{" "}
+          Show Cancelled Orders
+        </label>
+      </div>
 
-                {isExpanded && (
-                  <div id={`order-details-${order.id}`} className="order-details">
-                    <div className="order-header">
-                      <span>Order ID: {order.id}</span>
-                      <span>{formatDateTime(order.date)}</span>
-                    </div>
-                    <div>
-                      Status:{" "}
-                      <span className={`status status-${order.status}`}>{order.status}</span>
-                    </div>
-                    <div>
-                      Total: ${order.total_price ? order.total_price.toFixed(2) : "N/A"}
-                    </div>
+      <div className="ot-track-wrapper">
+        <button
+          className="ot-scroll-btn"
+          onClick={() => {
+            document
+              .querySelector(".ot-track")
+              ?.scrollBy({ left: -300, behavior: "smooth" });
+          }}
+          aria-label="Scroll Left"
+        >
+          ‹
+        </button>
 
-                    <div className="order-actions">
-                      {order.status === "pending" && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            cancelOrder(order.id);
-                          }}
-                        >
-                          Cancel Order
-                        </button>
-                      )}
-                      <button
-                        className="view-details-btn"
-                        onClick={() => openOrderDetails(order.id)}
-                      >
-                        View Details
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openComplaint(order.id);
-                        }}
-                      >
-                        Write Complaint
-                      </button>
-                    </div>
-                  </div>
+        <div className="ot-track" role="list">
+          {reversedOrders.map((order) => (
+            <div
+              key={order.id}
+              className={`ot-order-card`}
+              role="listitem"
+              tabIndex={0}
+              title={`Order #${order.id}`}
+              onClick={() => openOrderDetails(order.id)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") openOrderDetails(order.id);
+              }}
+            >
+              <div className="ot-order-card-header">
+                <h3 className="ot-order-id">Order #{order.id}</h3>
+                <time className="ot-order-date">{formatDateTime(order.date)}</time>
+              </div>
+              <div>
+                Status:{" "}
+                <span className={`ot-order-status ot-status-${order.status}`}>
+                  {order.status}
+                </span>
+              </div>
+              <div>
+                Total: ${order.total_price ? order.total_price.toFixed(2) : "N/A"}
+              </div>
+
+              <div className="ot-order-actions">
+                {order.status === "pending" && (
+                  <button
+                    className="ot-btn ot-btn-cancel"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cancelOrder(order.id);
+                    }}
+                  >
+                    Cancel Order
+                  </button>
+                )}
+                <button
+                  className="ot-btn ot-btn-details"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openOrderDetails(order.id);
+                  }}
+                >
+                  View Details
+                </button>
+                <button
+                  className="ot-btn ot-btn-complaint"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openComplaint(order.id);
+                  }}
+                >
+                  Write Complaint
+                </button>
+
+                {showCancelled && order.status === "cancelled" && (
+                  <button
+                    className="ot-btn ot-btn-remove"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeOrder(order.id);
+                    }}
+                    aria-label={`Remove cancelled order #${order.id}`}
+                  >
+                    Remove
+                  </button>
                 )}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
+
+        <button
+          className="ot-scroll-btn"
+          onClick={() => {
+            document
+              .querySelector(".ot-track")
+              ?.scrollBy({ left: 300, behavior: "smooth" });
+          }}
+          aria-label="Scroll Right"
+        >
+          ›
+        </button>
       </div>
 
       {showOrderDetails && selectedOrder && (
-        <OrderDetailsModal order={selectedOrder} onClose={() => setShowOrderDetails(false)} />
+        <OrderDetailsModal
+          order={selectedOrder}
+          onClose={() => setShowOrderDetails(false)}
+        />
       )}
 
       {showComplaint && (
@@ -203,6 +264,6 @@ export default function Orders() {
           onSubmit={submitComplaint}
         />
       )}
-    </section>
+    </section></div>
   );
 }

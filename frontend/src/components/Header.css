@@ -79,19 +79,18 @@ body {
   width: 100%;
 }
 
-/* Auth Buttons */
 .auth-buttons {
   display: flex;
-  gap: 0.7rem; /* smaller gap */
+  gap: 0.7rem; 
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .btn {
-  padding: 0.4rem 1rem; /* reduced padding */
-  border-radius: 20px; /* slightly smaller radius */
+  padding: 0.4rem 1rem; 
+  border-radius: 20px; 
   font-weight: 600;
-  font-size: 0.8rem; /* smaller font size */
+  font-size: 0.8rem; 
   text-decoration: none;
   transition: all 0.3s ease;
   user-select: none;
@@ -99,7 +98,6 @@ body {
   cursor: pointer;
 }
 
-/* Login Button */
 .login-btn {
   background-color: transparent;
   color: #f4a300;
@@ -113,7 +111,6 @@ body {
   box-shadow: 0 0 6px rgba(244, 163, 0, 0.3); /* lighter shadow */
 }
 
-/* Register Button */
 .register-btn {
   background-color: #ff8c66;
   color: #fff;
@@ -155,8 +152,8 @@ body {
     inset 0 2px 4px rgba(254, 255, 255, 0.612);
 }
 
-/* Hover effect */
-.cart-icon-wrapper:hover {
+.cart-icon-wrapper, 
+.complaint-bell:hover {
   border-color: #f39c12;
   color: #f39c12;
   box-shadow:
@@ -167,7 +164,7 @@ body {
 .cart-link {
   display: flex;
   align-items: center;
-  gap: 6px; /* space between icon and badge */
+  gap: 6px; 
   color: inherit;
   text-decoration: none;
   font-size: 1.4rem;
@@ -251,7 +248,6 @@ body {
   z-index: 1;
 }
 
-/* On hover: slide to right */
 .cart-icon-wrapper:hover .cart-label {
   transform: translateX(10%) translateY(-70%);
   opacity: 1;
@@ -260,22 +256,96 @@ body {
 .header-icons {
   display: flex;
   align-items: center;
-  gap: 0.8rem; /* some space between cart and auth buttons */
+  gap: 20px;
+  position: relative;
 }
 
-.complaint-notification {
-  background-color: #fff3cd;
-  color: #856404;
-  padding: 10px 20px;
-  text-align: center;
-  font-weight: 500;
-  border-bottom: 1px solid #ffc107;
-  font-size: 15px;
+.complaint-bell {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444343;
+  border: 2px solid #555555d0;
+  border-radius: 50%;
+  padding: 10px 11px;
+  background: #f8f8f8d3;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.12),
+    inset 0 2px 4px rgba(8, 102, 156, 0.612);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  cursor: pointer;
 }
 
-.complaint-notification a {
-  color: #0c5460;
-  margin-left: 8px;
+.complaint-icon {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.complaint-bell:hover .complaint-icon {
+  color: #f4a300; /* Accent color on hover */
+}
+.complaint-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: rgb(14, 128, 194); 
+  color: white;
+  border-radius: 50%;
+  font-size: 11px;
   font-weight: bold;
-  text-decoration: underline;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
+
+.complaint-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.complaint-modal-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.complaint-modal-message {
+  margin: 1rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.complaint-modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.complaint-view-btn {
+  background-color: #3e93b4;
+  color: white;
+}
+
+.complaint-close-btn {
+  background-color: #dee2e6;
+  color: #212529;
+}
+

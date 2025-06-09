@@ -1,0 +1,578 @@
+.ot-track-background {
+  font-family: 'Poppins', Arial, sans-serif;
+  margin: 0 auto;
+  position: relative;
+  height: 2000px;
+  padding: 40px;
+  width: 100%;
+  max-width: 1600px;
+  background-image: url('https://image.architonic.com/img_pro2-4/137/7836/black-bowie-0650.jpg');
+  background-attachment: fixed;
+  background-position: 0px -100px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  background-color: #f4f4f9;
+}
+
+
+.ot-track-container {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 0 1rem;
+  color: #222;
+  user-select: none;
+}
+
+.ot-toggle {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Track Wrapper */
+.ot-track-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Scroll Buttons */
+.ot-scroll-btn {
+  background: #0066ff;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  box-shadow: 0 3px 8px rgba(0, 102, 255, 0.4);
+}
+
+.ot-scroll-btn:hover,
+.ot-scroll-btn:focus {
+  background: #004bb5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 75, 181, 0.5);
+}
+
+/* Track */
+.ot-track {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: #0066ff #e0e0e0;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+}
+
+.ot-track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ot-track::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 4px;
+}
+
+.ot-track::-webkit-scrollbar-thumb {
+  background-color: #0066ff;
+  border-radius: 4px;
+  border: 2px solid #e0e0e0;
+}
+
+/* Order Card */
+.ot-order-card {
+  background: #fff;
+  min-width: 280px;
+  max-width: 320px;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  outline-offset: 3px;
+}
+
+.ot-order-card:focus-visible {
+  outline: 3px solid #0066ff;
+  outline-offset: 3px;
+}
+
+.ot-order-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0, 102, 255, 0.3);
+}
+
+/* Card Header */
+.ot-order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ot-order-id {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #003d99;
+}
+
+.ot-order-date {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Status */
+.ot-order-status {
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  text-transform: capitalize;
+  display: inline-block;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0.75rem 0;
+}
+
+.ot-status-pending {
+  background-color: #ffeeba;
+  color: #856404;
+}
+
+.ot-status-completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.ot-status-cancelled {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Total Price */
+.ot-order-card > div:nth-child(3) {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+/* Buttons container */
+.ot-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.ot-btn {
+  flex: 1 1 auto;
+  background: #0066ff;
+  border: none;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  text-align: center;
+  user-select: none;
+}
+
+.ot-btn:hover,
+.ot-btn:focus {
+  background-color: #004bb5;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 75, 181, 0.4);
+}
+
+.ot-btn-cancel {
+  background-color: #d9534f;
+}
+
+.ot-btn-cancel:hover,
+.ot-btn-cancel:focus {
+  background-color: #b52b27;
+}
+
+.ot-btn-remove {
+  background-color: #6c757d;
+}
+
+.ot-btn-remove:hover,
+.ot-btn-remove:focus {
+  background-color: #545b62;
+}
+
+.ot-btn-complaint {
+  background-color: #f0ad4e;
+  color: #3c2f00;
+}
+
+.ot-btn-complaint:hover,
+.ot-btn-complaint:focus {
+  background-color: #c69527;
+}
+
+.ot-btn-details {
+  background-color: #5bc0de;
+  color: #0c3e51;
+}
+
+.ot-btn-details:hover,
+.ot-btn-details:focus {
+  background-color: #2a9fd6;
+}
+
+/* Responsive: smaller devices */
+@media (max-width: 768px) {
+  .ot-track-wrapper {
+    gap: 0.25rem;
+  }
+
+  .ot-scroll-btn {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.75rem;
+  }
+
+  .ot-order-card {
+    min-width: 240px;
+    max-width: 260px;
+    padding: 0.75rem 1rem;
+  }
+
+  .ot-order-id {
+    font-size: 1.1rem;
+  }
+
+  .ot-order-date {
+    font-size: 0.85rem;
+  }
+
+  .ot-btn {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ot-track-container {
+    padding: 0 0.5rem;
+  }
+
+  .ot-scroll-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.5rem;
+  }
+
+  .ot-order-card {
+    min-width: 200px;
+    max-width: 220px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .ot-order-id {
+    font-size: 1rem;
+  }
+
+  .ot-order-date {
+    font-size: 0.8rem;
+  }
+
+  .ot-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .ot-order-actions {
+    flex-direction: column;
+  }
+}
+
+/* OrdersTrack.css */
+.ot-track-background {
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.ot-track-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ot-toggle {
+  margin-bottom: 20px;
+}
+
+.ot-toggle input {
+  margin-right: 8px;
+}
+
+.ot-track-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ot-scroll-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.ot-scroll-btn:hover {
+  background-color: #0056b3;
+}
+
+.ot-track {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px 0;
+  width: 100%;
+}
+
+.ot-order-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  width: 280px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.ot-order-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ot-order-card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ot-order-id {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.ot-order-date {
+  color: #666;
+}
+
+.ot-order-status {
+  font-weight: bold;
+}
+
+.ot-status-pending {
+  color: orange;
+}
+
+.ot-status-completed {
+  color: rgb(23, 105, 55);
+}
+
+.ot-status-cancelled {
+  color: rgb(144, 67, 67);
+}
+
+.ot-order-actions {
+  margin-top: 10px;
+}
+
+.ot-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin: 5px 0;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.ot-btn:hover {
+  background-color: #0056b3;
+}
+
+.ot-btn-complaint {
+  background-color: #ffc107;
+}
+
+
+.ot-empty {
+  text-align: center;
+  font-size: 1.2em;
+  color: #888;
+}
+
+.ot-error {
+  color: #dc3545;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+  .ot-track-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ot-scroll-btn {
+    margin-bottom: 10px;
+  }
+
+  .ot-track {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .ot-order-card {
+    width: 90%;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ot-order-card {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .ot-btn {
+    padding: 8px 12px;
+  }
+
+  .ot-order-id {
+    font-size: 1em;
+  }
+
+  .ot-order-date {
+    font-size: 0.9em;
+  }
+
+  .ot-order-actions {
+    margin-top: 15px;
+  }
+}
+/* Scroll Buttons */
+.ot-scroll-btn {
+  background: #b0c4de; /* Light steel blue */
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  box-shadow: 0 3px 8px rgba(176, 196, 222, 0.4);
+}
+
+.ot-scroll-btn:hover,
+.ot-scroll-btn:focus {
+  background: #a0b7d0; /* Slightly darker tone */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(160, 183, 208, 0.5);
+}
+
+/* Buttons */
+.ot-btn {
+  flex: 1 1 auto;
+  background: #d3d3d3; /* Light gray */
+  border: none;
+  color: #e6e3e3; /* Dark gray */
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  text-align: center;
+  user-select: none;
+}
+
+.ot-btn:hover,
+.ot-btn:focus {
+  background-color: #b0b0b0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(176, 176, 176, 0.4);
+}
+
+/* Cancel Button */
+.ot-btn-cancel {
+  background-color: #5f2a2a; 
+}
+
+.ot-btn-cancel:hover,
+.ot-btn-cancel:focus {
+  background-color: #802323; 
+}
+
+/* Remove Button */
+.ot-btn-remove {
+  background-color: #dcdcdc; /* Light gray */
+}
+
+.ot-btn-remove:hover,
+.ot-btn-remove:focus {
+  background-color: #c4c4c4; /* Darker gray */
+}
+
+/* Complaint Button */
+.ot-btn-complaint {
+  background-color: #354854; /* Light yellow */
+  color: #f2f1ee; /* Darker brown */
+}
+
+.ot-btn-complaint:hover,
+.ot-btn-complaint:focus {
+  background-color: #405e7e; /* Darker yellow */
+}
+
+/* Details Button */
+.ot-btn-details {
+  background-color: #182b3d; /* Light blue-gray */
+  color: #848484; /* Darker blue-gray */
+}
+
+.ot-btn-details:hover,
+.ot-btn-details:focus {
+  background-color: #8aa3b7;
+}

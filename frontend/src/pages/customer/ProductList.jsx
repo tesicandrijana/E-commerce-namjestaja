@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import StarRatingOverall from "../../components/modals/StarRatingOverall";
@@ -10,17 +10,18 @@ const DEFAULT_CATEGORY = { id: 0, name: "All" };
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
-  const [discounts, setDiscounts] = useState([]);
   const [categories, setCategories] = useState([DEFAULT_CATEGORY]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
   const [visibleCount, setVisibleCount] = useState(8);
   const [verticalImages, setVerticalImages] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [discountedPricesMap, setDiscountedPricesMap] = useState({}); // key: product_id, value: discounted price
   const [discountsVisible, setDiscountsVisible] = useState({});
 
   const navigate = useNavigate();
   const { categoryName } = useParams();
 
+  // Fetch categories
   useEffect(() => {
     fetch("http://localhost:8000/categories/")
       .then((res) => res.json())
@@ -28,6 +29,7 @@ export default function ProductList() {
       .catch((err) => console.error("Error fetching categories:", err));
   }, []);
 
+  // Set category based on URL param
   useEffect(() => {
     if (categories.length === 0) return;
 
@@ -47,6 +49,7 @@ export default function ProductList() {
     setVisibleCount(15);
   }, [categoryName, categories, navigate]);
 
+  // Fetch all products
   useEffect(() => {
     fetch("http://localhost:8000/products/")
       .then((res) => res.json())
@@ -54,30 +57,38 @@ export default function ProductList() {
       .catch((err) => console.error("Error fetching products:", err));
   }, []);
 
+  // Fetch discounted price for each product individually
   useEffect(() => {
-    fetch("http://localhost:8000/discounts/all")
-      .then((res) => res.json())
-      .then((data) => setDiscounts(data))
-      .catch((err) => console.error("Error fetching discounts:", err));
-  }, []);
+    async function fetchDiscountedPrices() {
+      if (products.length === 0) {
+        setDiscountedPricesMap({});
+        return;
+      }
 
-  const discountMap = useMemo(() => {
-    const map = new Map();
-    discounts.forEach((discount) => {
-      map.set(discount.product_id, discount);
-    });
-    return map;
-  }, [discounts]);
-
-
+      try {
+        const prices = {};
+        await Promise.all(
+          products.map(async (product) => {
+            const res = await fetch(
+              `http://localhost:8000/products/${product.id}/discounted-price`
+            );
+            if (!res.ok) throw new Error(`Failed to fetch discounted price for product ${product.id}`);
+            const data = await res.json();
+            prices[product.id] = parseFloat(data.discounted_price);
+          })
+        );
+        setDiscountedPricesMap(prices);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    fetchDiscountedPrices();
+  }, [products]);
 
   const handleCategoryClick = (categoryId) => {
-    const category = categories.find((cat) => cat.id === categoryId);
-    if (category) {
-      setSelectedCategoryId(categoryId);
-      setVisibleCount(15);
-      setSearchQuery("");
-    }
+    setSelectedCategoryId(categoryId);
+    setVisibleCount(15);
+    setSearchQuery("");
   };
 
   const handleShowMore = () => {
@@ -161,17 +172,20 @@ export default function ProductList() {
         <div className="products-blurred-background">
           <div className="products-grid">
             {visibleProducts.map((product) => {
-              const discount = discountMap.get(product.id);
+              const discountedPrice = discountedPricesMap[product.id];
               const showDiscountDetails = discountsVisible[product.id];
+              const hasDiscount =
+                discountedPrice !== undefined &&
+                discountedPrice < product.price;
 
               return (
                 <div
                   key={product.id}
                   className={`product-card ${verticalImages.has(product.id) ? "vertical" : ""}`}
                 >
-                  {discount && discount.amount > 0 && (
-                   <div
-                    className="discount-badge"
+                  {hasDiscount && (
+                    <div
+                      className="discount-badge"
                       onClick={(e) => {
                         e.preventDefault();
                         toggleDiscountVisibility(product.id);
@@ -192,7 +206,11 @@ export default function ProductList() {
                         zIndex: 10,
                       }}
                     >
-                      -{discount.amount}%
+                      {/* Show discount percentage calculated */}
+                      {Math.round(
+                        100 * (1 - discountedPrice / product.price)
+                      )}
+                      % OFF
                       {showDiscountDetails && (
                         <div
                           className="discount-details"
@@ -208,7 +226,11 @@ export default function ProductList() {
                             whiteSpace: "nowrap",
                           }}
                         >
-                          Save {discount.amount}% on this product!
+                          Save{" "}
+                          {Math.round(
+                            100 * (1 - discountedPrice / product.price)
+                          )}
+                          % on this product!
                         </div>
                       )}
                     </div>
@@ -220,19 +242,19 @@ export default function ProductList() {
                     style={{ textDecoration: "none", color: "inherit", display: "block" }}
                   >
                     <div className="image-wrap">
-    <img
-      src={getImageUrl(product?.images[0]?.image_url)}
-      alt={product.name || "Product image"}
-      className="product-image"
-      onLoad={(e) => handleImageLoad(e, product.id)}
-    />
+                      <img
+                        src={getImageUrl(product?.images[0]?.image_url)}
+                        alt={product.name || "Product image"}
+                        className="product-image"
+                        onLoad={(e) => handleImageLoad(e, product.id)}
+                      />
 
-    {product.quantity === 0 && (
-    <>
-      <div className="gradient-overlay"></div>
-      <div className="sold-out-banner"><small>OUT OF STOCK</small></div>
-    </>
-  )}
+                      {product.quantity === 0 && (
+                        <>
+                          <div className="gradient-overlay"></div>
+                          <div className="sold-out-banner"><small>OUT OF STOCK</small></div>
+                        </>
+                      )}
                     </div>
                     <div className="product-info">
                       <div className="product-title-wrapper">
@@ -240,30 +262,31 @@ export default function ProductList() {
                         <div className="product-title-tooltip">{product.name}</div>
                       </div>
                       <div className="rating-price">
-  {discount && discount.amount > 0 ? (
-    <>
-      <p
-        className="product-price original-price"
-        style={{ textDecoration: "line-through", marginRight: "8px" }}
-      >
-        {Number(product.price).toFixed(2)} KM
-      </p>
-      <p className="product-price discounted-price" style={{ fontWeight: "bold" }}>
-        {(Number(product.price) * (1 - discount.amount / 100)).toFixed(2)} KM
-      </p>
-    </>
-  ) : (
-    <p className="product-price">
-      {Number(product.price).toFixed(2)} KM
-    </p>
-  )}
-</div>
-
+                        {hasDiscount ? (
+                          <>
+                            <p
+                              className="product-price original-price"
+                              style={{ textDecoration: "line-through", marginRight: "8px" }}
+                            >
+                              {Number(product.price).toFixed(2)} KM
+                            </p>
+                            <p
+                              className="product-price discounted-price"
+                              style={{ fontWeight: "bold" }}
+                            >
+                              {discountedPrice.toFixed(2)} KM
+                            </p>
+                          </>
+                        ) : (
+                          <p className="product-price">{Number(product.price).toFixed(2)} KM</p>
+                        )}
+                      </div>
                     </div>
-                  </Link><p className="product-rating">
-    <StarRatingOverall productId={product.id} size={20} /><AddToCartButton productId={product.id} stock={product.quantity} iconOnly/>
-  </p>
-                  
+                  </Link>
+                  <p className="product-rating">
+                    <StarRatingOverall productId={product.id} size={20} />
+                    <AddToCartButton productId={product.id} stock={product.quantity} iconOnly />
+                  </p>
                 </div>
               );
             })}
@@ -278,7 +301,6 @@ export default function ProductList() {
           )}
         </div>
       </div>
-
     </>
   );
 }

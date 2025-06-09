@@ -12,6 +12,7 @@ export default function Cart() {
     clearCart,
   } = useCart();
 
+  const [discountedPricesMap, setDiscountedPricesMap] = useState({});
   const [productsMap, setProductsMap] = useState({});
   const [activeItem, setActiveItem] = useState(null);
   const [plusInput, setPlusInput] = useState(1);
@@ -36,40 +37,69 @@ export default function Cart() {
   }, []);
 
   useEffect(() => {
-    if (!activeItem) return;
-    const updated = cartItems.find((item) => item.id === activeItem.id);
-    if (updated) {
-      setActiveItem({ ...updated, product: activeItem.product });
+    async function fetchDiscountedPrices() {
+      if (cartItems.length === 0) {
+        setDiscountedPricesMap({});
+        return;
+      }
+
+      try {
+        const prices = {};
+        await Promise.all(
+          cartItems.map(async (item) => {
+            const res = await fetch(
+              `http://localhost:8000/products/${item.product_id}/discounted-price`
+            );
+            if (!res.ok) throw new Error("Failed to fetch discounted price");
+            const data = await res.json();
+            prices[item.product_id] = parseFloat(data.discounted_price);
+          })
+        );
+        setDiscountedPricesMap(prices);
+      } catch (err) {
+        console.error(err);
+      }
     }
+
+    fetchDiscountedPrices();
   }, [cartItems]);
 
-  if (cartItems.length === 0)
-    return (
-      <p
-        style={{
-          textAlign: "center",
-          paddingTop: "200px",
-          marginBottom: "20%",
-        }}
-      >
-        Your cart is empty.
-      </p>
-    );
-
   const handlePlus = () => {
-    const amount = Math.max(1, parseInt(plusInput) || 1);
-    const product = activeItem.product;
-    const maxAllowed = product.quantity;
+    if (!activeItem) return;
+    const product = productsMap[activeItem.product_id];
+    if (!product) return;
 
+    const amount = Math.max(1, parseInt(plusInput) || 1);
+    const maxAllowed = product.quantity;
     const newQty = Math.min(activeItem.quantity + amount, maxAllowed);
+
     updateCartItem(activeItem.id, newQty);
+    setActiveItem((prev) => ({
+      ...prev,
+      quantity: newQty,
+    }));
+    setPlusInput(1);
   };
 
   const handleMinus = () => {
+    if (!activeItem) return;
     const amount = Math.max(1, parseInt(minusInput) || 1);
     const newQty = Math.max(1, activeItem.quantity - amount);
+
     updateCartItem(activeItem.id, newQty);
+    setActiveItem((prev) => ({
+      ...prev,
+      quantity: newQty,
+    }));
+    setMinusInput(1);
   };
+
+  if (cartItems.length === 0)
+    return (
+      <p style={{ textAlign: "center", paddingTop: "200px", marginBottom: "20%" }}>
+        Your cart is empty.
+      </p>
+    );
 
   return (
     <div className="cart-layout">
@@ -79,6 +109,10 @@ export default function Cart() {
         <div className="cart-items">
           {cartItems.map((item, index) => {
             const product = productsMap[item.product_id];
+            const discountedPrice =
+              discountedPricesMap[item.product_id] ??
+              parseFloat(product?.price || 0);
+            const subtotal = (discountedPrice * item.quantity).toFixed(2);
             const imageUrl = product?.images?.[0]?.image_url
               ? `http://localhost:8000/static/product_images/${product.images[0].image_url}`
               : "/placeholder.png";
@@ -96,11 +130,8 @@ export default function Cart() {
                 </div>
                 <div className="cart-item-info">
                   <strong>{product?.name || item.product_id}</strong>
-                  <p>Price: ${Number(product?.price || 0).toFixed(2)}</p>
-                  <p>
-                    Subtotal: $
-                    {(Number(product?.price || 0) * item.quantity).toFixed(2)}
-                  </p>
+                  <p>Price: ${discountedPrice.toFixed(2)}</p>
+                  <p>Subtotal: ${subtotal}</p>
                 </div>
               </div>
             );
@@ -111,9 +142,10 @@ export default function Cart() {
           Total: $
           {cartItems
             .reduce((acc, item) => {
-              const product = productsMap[item.product_id];
-              const price = Number(product?.price || 0);
-              return acc + item.quantity * price;
+              const discountedPrice =
+                discountedPricesMap[item.product_id] ??
+                parseFloat(productsMap[item.product_id]?.price || 0);
+              return acc + item.quantity * discountedPrice;
             }, 0)
             .toFixed(2)}
         </div>
@@ -141,16 +173,18 @@ export default function Cart() {
             alt="Product"
           />
           <h3>{activeItem.product?.name}</h3>
-          <p>Price: ${Number(activeItem.product?.price || 0).toFixed(2)}</p>
+          <p>
+            Price: $
+            {(discountedPricesMap[activeItem.product_id] ??
+              parseFloat(activeItem.product?.price || 0)).toFixed(2)}
+          </p>
+
           <div className="slide-quantity-custom">
             <div className="qty-block">
-              <button className="qty-btn" onClick={handleMinus}>
-                −
-              </button>
+              <button className="qty-btn" onClick={handleMinus}>−</button>
               <input
                 type="number"
                 min="1"
-                max={activeItem.quantity - 1}
                 value={minusInput}
                 onChange={(e) =>
                   setMinusInput(Math.max(1, parseInt(e.target.value) || 1))
@@ -161,13 +195,10 @@ export default function Cart() {
             <span className="qty-current">{activeItem.quantity}</span>
 
             <div className="qty-block">
-              <button className="qty-btn" onClick={handlePlus}>
-                +
-              </button>
+              <button className="qty-btn" onClick={handlePlus}>+</button>
               <input
                 type="number"
                 min="1"
-                max={activeItem.product?.quantity - activeItem.quantity}
                 value={plusInput}
                 onChange={(e) => {
                   const maxQty = activeItem.product?.quantity || 1;
@@ -186,7 +217,7 @@ export default function Cart() {
                   removeFromCart(activeItem.id);
                   setActiveItem(null);
                   setIsFadingOut(false);
-                }, 300); // match CSS animation duration
+                }, 300);
               }}
             >
               Remove completely
