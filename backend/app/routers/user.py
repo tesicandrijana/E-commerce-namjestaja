@@ -259,3 +259,6 @@ def search_employees(
 async def read_users_me(session: SessionDep, current_user: Annotated[User, Depends(user_service.get_current_user)]):
     return current_user
 
+@router.get("/delivery")
+def get_all_delivery(session: SessionDep):
+    return user_service.get_all_delivery(session)
