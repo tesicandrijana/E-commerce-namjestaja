@@ -75,7 +75,7 @@
   margin-bottom: 0.75rem;
   color: #111827;
   font-family: 'Poppins', 'Courier New', Courier, monospace;
-  text-align: left; /* added for clarity */
+  text-align: left; 
 }
 
 .custcompl-item p {

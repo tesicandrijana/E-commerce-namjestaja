@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./SupportProfile.css";
 
@@ -7,6 +7,7 @@ const SupportProfile = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
+  const navigate = useNavigate();
   const [editData, setEditData] = useState({
     name: "",
     password: ""
@@ -57,6 +58,9 @@ const SupportProfile = () => {
   return (
     <main className="support-profile-container">
       <div className="profile-card-wrapper">
+        <button className="back-link" onClick={() => navigate(-1)}>
+        ←
+      </button>
         <div className="profile-card-header">
           <img
             src="/support/avatar.png"
