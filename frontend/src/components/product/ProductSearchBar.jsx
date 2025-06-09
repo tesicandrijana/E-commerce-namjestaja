@@ -1,11 +1,11 @@
 import { TextField, InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-function ProductSearchBar({ value, onChange }) {
+function ProductSearchBar({ value, onChange,placeholder }) {
   return (
     <TextField
       variant="outlined"
-      placeholder="Search products..."
+      placeholder={placeholder? placeholder : "Search products..."}
       size="small"
       value={value}
       onChange={onChange}

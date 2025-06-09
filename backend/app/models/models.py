@@ -64,11 +64,11 @@ class Product(SQLModel, table=True):
 
     material: Optional[Material] = Relationship(back_populates="products")
     category: Optional[Category] = Relationship(back_populates="products")
-    discounts: List["Discounts"] = Relationship(back_populates="product")
-    reviews: List["Review"] = Relationship(back_populates="product")
-    cart_items: List["CartItem"] = Relationship(back_populates="product")
+    discounts: List["Discounts"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    reviews: List["Review"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
+    cart_items: List["CartItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
     images: List["ProductImage"] = Relationship(back_populates="product", sa_relationship_kwargs={"cascade": "all, delete"})
-    order_items:List["OrderItem"] = Relationship(back_populates="product")
+    order_items:List["OrderItem"] = Relationship(back_populates="product",sa_relationship_kwargs={"cascade": "all, delete"})
 
 class ProductImage(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -121,6 +121,7 @@ class Order(SQLModel, table=True):
 
     customer: Optional[User] = Relationship(back_populates="orders")
     items: List["OrderItem"] = Relationship(back_populates="order")
+    delivery: Optional["Delivery"] = Relationship(back_populates="order")
 
 
 class OrderItem(SQLModel, table=True):
@@ -155,11 +156,11 @@ class Delivery(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     order_id: int = Field(foreign_key="orders.id")
-    delivery_person_id: int = Field(foreign_key="users.id")
-    status: str = Field(default="in_progress")
+    delivery_person_id: Optional[int] = Field(foreign_key="users.id")
+    status: str = Field(default="unassigned")
     date: Optional[datetime] = Field(default_factory=datetime.utcnow)
 
-    order: Optional[Order] = Relationship()
+    order: Optional[Order] = Relationship(back_populates="delivery")
     delivery_person: Optional[User] = Relationship(back_populates="deliveries")
 
 
