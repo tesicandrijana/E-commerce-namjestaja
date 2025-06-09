@@ -7,7 +7,7 @@
 }
 
 .dashboard-hero {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.45)),
     url('/public/support/support-dashboard.png');
   background-size: contain;
   background-position: center;

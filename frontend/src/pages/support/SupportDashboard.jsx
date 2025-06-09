@@ -57,8 +57,9 @@ const supportSections = [
     <main className="support-dashboard-container">
       <div className="dashboard-hero">
         <h1 className="support-dashboard-title">
-          <span>Welcome to the Support Dashboard</span>
+          <span>Welcome, {userData.name}</span>
         </h1>
+
         <p className="support-dashboard-subtext">
           Here you can manage customer interactions, resolve complaints and returns,
           review orders, and maintain excellent service quality.
