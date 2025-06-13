@@ -68,18 +68,27 @@ async def upload_cv_file(
 
 @router.get("/{job_app_id}/download-cv")
 def download_cv_file(job_app_id: int, db: Session = Depends(get_db)):
+     # Pronađi aplikaciju
     job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
-    if not job_app or not job_app.cv_file:
-        raise HTTPException(status_code=404, detail="CV file not found")
+    if not job_app:
+        raise HTTPException(status_code=404, detail="Job application not found")
 
+    # Provjeri da li postoji CV fajl u bazi
+    if not job_app.cv_file:
+        raise HTTPException(status_code=404, detail="No CV file associated with this application")
+
+    # Pravi path do fajla
     file_path = os.path.join(UPLOAD_DIR, job_app.cv_file)
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="File not found on server")
 
+    # Provjeri da li fajl postoji na disku
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="CV file not found on server")
+
+    # Vrati fajl kao download
     return FileResponse(
         path=file_path,
         filename=job_app.cv_file,
-        media_type="application/pdf"  
+        media_type="application/pdf",  # možeš staviti i application/octet-stream za univerzalni download
     )
 
 @router.post("/{job_app_id}/schedule")
@@ -158,16 +167,9 @@ def reject_application(app_id: int, db: Session = Depends(get_db)):
 
 @router.get("/interviews/upcoming", response_model=List[JobApplicationSchema])
 def get_upcoming_interviews(db: Session = Depends(get_db)):
-    today = datetime.now()
-    next_week = today + timedelta(days=7)
-
     interviews = (
         db.query(JobApplication)
-        .filter(
-            JobApplication.interview_time != None,
-            JobApplication.interview_time >= today,
-            JobApplication.interview_time <= next_week
-        )
+        .filter(JobApplication.status == "scheduled")
         .order_by(JobApplication.interview_time)
         .all()
     )

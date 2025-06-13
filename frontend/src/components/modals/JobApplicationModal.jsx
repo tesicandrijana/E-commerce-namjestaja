@@ -55,6 +55,27 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
     }
   };
 
+  const handleDownloadCv = async () => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8000/job-application/${selectedApp.id}/download-cv`,
+      { responseType: "blob" } // bitno da dobiješ fajl kao blob
+    );
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", selectedApp.cv_file || "cv.pdf"); // ime fajla
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error downloading CV:", error);
+    alert("Failed to download CV.");
+  }
+};
+
+
   if (!selectedApp) return null;
 
   return (
@@ -81,15 +102,13 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
                 <p><strong>Role:</strong> {selectedApp.role}</p>
 
                 <div className="modal-actions">
-                  <a
-                    href={selectedApp.cvUrl}
+                  <button
+                    onClick={handleDownloadCv}
                     className="download-cv-btn"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
                   >
                     Download CV
-                  </a>
+                  </button>
+
                 </div>
               </>
             )}

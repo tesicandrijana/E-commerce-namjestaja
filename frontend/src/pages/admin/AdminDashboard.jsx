@@ -53,7 +53,7 @@ function AdminDashboard() {
         <div className="card-lista">
           <Card
             number="01"
-            bgColor="#0f82fc"
+            bgColor="#f5a811"
             imageSrc="/admin/newemployee.png"
             altText="New Employee"
             title="New Employee"
@@ -62,7 +62,7 @@ function AdminDashboard() {
           />
           <Card
             number="02"
-            bgColor="#66b2ff"
+            bgColor="#f5a811"
             imageSrc="/admin/allemployees.png"
             altText="All Employees"
             title="View Employees"
@@ -71,7 +71,7 @@ function AdminDashboard() {
           />
           <Card
             number="03"
-            bgColor="#0f82fc"
+            bgColor="#f5a811"
             imageSrc="/admin/statistic.png"
             altText="employee statistics"
             title="Employee statistics"
@@ -80,7 +80,7 @@ function AdminDashboard() {
           />
           <Card
             number="04"
-            bgColor="#66b2ff"
+            bgColor="#f5a811"
             imageSrc="/admin/archive.png"
             altText="Archived employees"
             title="View archived employees"
