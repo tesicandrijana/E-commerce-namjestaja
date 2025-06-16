@@ -135,7 +135,7 @@ function App() {
               {/* Delivery Protected routes */}
               <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>
                 <Route element={<MainLayout />}>
-                  <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
+                  <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
                 </Route>
               </Route>
             </Routes>

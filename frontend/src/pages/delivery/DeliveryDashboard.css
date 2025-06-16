@@ -1,0 +1,31 @@
+.delivery-dashboard-container {
+  padding: 2rem;
+}
+
+.dashboard-hero {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.support-dashboard-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.support-dashboard-subtext {
+  color: #555;
+}
+
+.support-grid-okvir {
+  margin-top: 2rem;
+}
+
+.support-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.support-info-section-okvir {
+  margin-top: 3rem;
+}

@@ -1,0 +1,30 @@
+.delivery-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease-in-out;
+}
+
+.delivery-card:hover {
+  transform: translateY(-3px);
+}
+
+.support-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.support-card-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.support-card-button:hover {
+  background-color: #388e3c;
+}

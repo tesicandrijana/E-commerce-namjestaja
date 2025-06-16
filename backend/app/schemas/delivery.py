@@ -16,3 +16,19 @@ class Delivery(DeliveryBase):
 
     class Config:
         from_attributes = True
+
+class DeliveryPersonProfile(BaseModel):
+    id: int
+    name: str
+    email: str
+    phone: Optional[str] = None
+    about: Optional[str] = None
+    role: str
+
+    class Config:
+        from_attributes = True
+
+class DeliveryPersonUpdate(BaseModel):
+    name: Optional[str]
+    phone: Optional[str]
+    about: Optional[str]
