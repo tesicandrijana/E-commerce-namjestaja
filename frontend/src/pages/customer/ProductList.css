@@ -1,6 +1,9 @@
 
 .product-page-background {
-  background-image: url('https://www.publicdomainpictures.net/pictures/570000/velka/japandi-living-room-interior-17061739737XD.jpg');
+
+  background-image: url('https://i5.walmartimages.com/seo/106-Multi-Module-Corduroy-Combination-Sofa-with-2-Comfort-Cushions-with-USB-C-Charging-Ports-for-Living-Room-Bedroom-Beige_469910f5-71e0-44e9-a306-5dc11b6d291c.acb02d9e85f165bc1376cce6e60cafda.jpeg');
+  
+ /* background-image: url('https://www.publicdomainpictures.net/pictures/570000/velka/japandi-living-room-interior-17061739737XD.jpg');*/
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -154,7 +157,6 @@
 
 
 
-/* Show More Button */
 .show-more-wrapper {
   margin-top: 20px;
   text-align: center;
@@ -164,17 +166,17 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 36px;
-  font-size: 18px;
+  gap: 8px;
+  padding: 8px 20px; 
+  font-size: 15px;   
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(120deg, #dfdfdf, #e4b96e, #d98841);
+  background: linear-gradient(120deg, #ffd6b7, #fda852, #ed7935);
   background-size: 200% 200%;
   border: none;
-  border-radius: 14px;
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(67, 96, 126, 0.273);
+  box-shadow: 0 4px 14px rgba(67, 96, 126, 0.2);
   backdrop-filter: blur(6px);
   transition: all 0.4s ease;
   overflow: hidden;
@@ -188,18 +190,18 @@
   left: -1px;
   width: calc(100% + 2px);
   height: calc(100% + 2px);
-  border-radius: 16px;
-  background: linear-gradient(45deg, #f2e5cc, #e4b96e, #d98841);
+  border-radius: 12px;
+  background: linear-gradient(45deg, #fae4ba, #e4b96e, #d98841);
   background-size: 300% 300%;
   z-index: -1;
   animation: pulseGlow 4s ease infinite;
-  opacity: 0.6;
-  filter: blur(8px);
+  opacity: 0.5;
+  filter: blur(6px);
 }
 
 .show-more-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 12px 30px rgba(175, 172, 118, 0.5);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(175, 172, 118, 0.4);
   background-position: right center;
 }
 
@@ -210,8 +212,34 @@
 }
 
 .show-more-btn:hover span {
-  transform: translateX(6px);
+  transform: translateX(4px);
 }
+
+.show-more-btn:disabled {
+  background: #dcdcdc !important;
+  color: #888 !important;
+  box-shadow: none;
+  transform: none;
+}
+
+.sold-count-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: linear-gradient(135deg, #3b3b44, #4c4a46);
+  color: #ffffff;
+  border: 1.5px solid rgb(192, 169, 36);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-family: 'Poppins','Arial Narrow Bold', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
 
 @keyframes pulseGlow {
   0% {
@@ -434,23 +462,37 @@
   margin-bottom: 10px;
 }
 
-.add-to-cart-btn {
-  padding: 7px 15px;
-  background-color: #11304de9; 
-  color: white;
+.icon-only-cart-btn {
+  padding: 7px 12px;
+  background-color: #ffffffa5; 
+  color: rgba(24, 24, 24, 0.736);
   font-size: 14px;
-  border: none;
-  border-radius: 12px;
+  border-radius: 35px;
+  border: 2px solid rgba(49, 49, 49, 0.193);
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
   margin-top: 0;
 }
 
-.add-to-cart-btn:not(:disabled):hover {
-  background-color: #416691; 
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.add-to-cart-btn {
+  padding: 9px 15px;
+  background-color: #ffffff; 
+  color: rgb(33, 33, 33);
+  font-size: 14px;
+  border: 2px solid #232323d1;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+  margin-top: 0;
+}
+
+.add-to-cart-btn:not(:disabled):hover, 
+.icon-only-cart-btn:not(:disabled):hover {
+  background-color: #ff9b5d; 
+  border: 2px solid #ff9b5d; 
+  color: rgb(255, 255, 255);
+  box-shadow: 2 2px 12px rgba(0, 0, 0, 0.15);
 }
 
 .add-to-cart-btn:not(:disabled):active {
@@ -526,3 +568,6 @@
   pointer-events: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
+
+

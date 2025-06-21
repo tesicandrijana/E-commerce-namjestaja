@@ -69,7 +69,7 @@ function ProductDetail({ id }) {
         </div>
 
         <div className="p-product-details">
-          <h1>{product.name}</h1>
+          <h2>{product.name}</h2>
           <p className="description">{product.description}</p>
 
           <div className="dimensions">
@@ -78,6 +78,7 @@ function ProductDetail({ id }) {
           </div>
 
           <div className="meta">
+
             <span>Material: {material || "N/A"}</span>
           </div>
 
@@ -102,7 +103,8 @@ function ProductDetail({ id }) {
             )}
           </div>
 
-          {userRole && userRole !== "customer" && (
+          
+          <div className="action-buttons">{userRole && userRole !== "customer" && (
             <ProductActions id={id} stock={product.quantity} />
           )}
 
@@ -110,7 +112,7 @@ function ProductDetail({ id }) {
             {(!userRole || userRole === "customer") && (
               <AddToCartButton productId={id} stock={product.quantity} />
             )}
-          </p>
+          </p></div>
         </div>
       </div>
     </div>

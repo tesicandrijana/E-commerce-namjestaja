@@ -18,10 +18,10 @@ const Footer = () => {
             <div>
               <h4>Products</h4>
               <ul>
-                <li><Link to="/newarrivals">New Arrivals</Link></li>
-                <li><Link to="#best-sellers">Best Sellers</Link></li>
-                <li><Link to="#discounts">Discounts</Link></li>
-                <li><Link to="#collections">Collections</Link></li>
+                <li><Link to="/new-arrivals">New Arrivals</Link></li>
+                <li><Link to="/best-sellers">Best Sellers</Link></li>
+                <li><Link to="/discounts">Discounts</Link></li>
+                {/*<li><Link to="#collections">Collections</Link></li>*/}
               </ul>
             </div>
             <div>

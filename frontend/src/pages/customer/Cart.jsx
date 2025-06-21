@@ -103,6 +103,7 @@ export default function Cart() {
 
   return (
     <div className="cart-layout">
+      <div className="cart-layout-in">
       <div className={`cart-container ${activeItem ? "slideout-active" : ""}`}>
         <h2 className="cart-title">Your Cart ({cartQuantity} items)</h2>
 
@@ -225,6 +226,7 @@ export default function Cart() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

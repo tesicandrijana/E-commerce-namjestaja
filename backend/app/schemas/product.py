@@ -1,7 +1,8 @@
 from typing import Optional, List
 from decimal import Decimal
+from datetime import datetime
 from sqlmodel import SQLModel, Field
-from app.schemas import product_image,order_item,review
+from app.schemas import product_image
 
 class ProductBulkDeleteReq(SQLModel):
     ids: list[int]
@@ -56,10 +57,12 @@ class DiscountRead(SQLModel):
     id: int
     amount: float  
     product_id: int
+
 class ProductRead(ProductBase):
     id: int
     category: Optional[CategoryRead] = None
     discount: Optional[DiscountRead] = None
+    created_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True

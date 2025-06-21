@@ -85,7 +85,7 @@ const ReviewModal = ({ productId, isOpen, onClose, onReviewSubmitted }) => {
         <button className="review-close-button" onClick={onClose}>
           <HiChevronUp />
         </button>
-        <h2>{reviewId ? "Update Your Review" : "Submit a Review"}</h2>
+        <h2>{reviewId ? "Update Your Review" : "Write a Review"}</h2>
 
         {submitError && <p className="review-error">{submitError}</p>}
         {submitSuccess && <p className="review-success">Review submitted successfully!</p>}
@@ -104,7 +104,7 @@ const ReviewModal = ({ productId, isOpen, onClose, onReviewSubmitted }) => {
             required
           />
 
-          <button type="submit" className="review-submit-button">
+          <button type="submit" className="review-sub">
             <FaPaperPlane /> Submit Review
           </button>
         </form>

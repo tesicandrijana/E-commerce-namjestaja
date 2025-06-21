@@ -1,6 +1,7 @@
 from decimal import Decimal
 from sqlmodel import SQLModel, Field
 from datetime import date
+from typing import Optional
 from app.models.models import Product
 
 class DiscountBase(SQLModel):
@@ -30,4 +31,5 @@ class ReadDiscountsResponse(SQLModel):
     discounts: list[Discount]
     count: int
     
+
 

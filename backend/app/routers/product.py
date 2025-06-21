@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, Form, File, Query
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from sqlmodel import Session, select
-from datetime import date
+from datetime import date, datetime, timedelta
 from decimal import Decimal
-from sqlalchemy.orm import selectinload
+from sqlalchemy import func
 from app.crud.product import get_product_with_category
 from app.crud import product
 from app.schemas import product as product_schema
 from app.services import product_service, user_service
 from app.database import get_db, get_session
-from app.models.models import Product, Discounts
+from app.models.models import Product, Discounts, OrderItem
 from app.schemas.product import ProductRead
 
 router = APIRouter()
@@ -33,7 +33,62 @@ def create_product(
     return product_service.create_product(
         session, name, description, material_id, category_id, length, width, height, price, quantity, images
     )
-# Read all products for manager products view
+
+
+@router.get("/recent", response_model=list[ProductRead])
+def get_recent_products(
+    db: Session = Depends(get_db),
+    skip: int = 0,
+    limit: int = 100,
+    category_id: Optional[int] = Query(None)
+) -> List[ProductRead]:
+    one_month_ago = datetime.utcnow() - timedelta(days=30)
+
+    statement = select(Product).where(Product.created_at >= one_month_ago)
+
+    if category_id is not None:
+        statement = statement.where(Product.category_id == category_id)
+
+    statement = statement.order_by(Product.created_at.desc()).offset(skip).limit(limit)
+
+    return db.exec(statement).all()
+
+
+
+@router.get("/best-sellers", response_model=list[ProductRead])
+def get_best_sellers(
+    limit: int = Query(12, ge=1),
+    offset: int = Query(0, ge=0),
+    session: Session = Depends(get_db)
+):
+    statement = (
+        select(Product)
+        .join(OrderItem)
+        .group_by(Product.id)
+        .order_by(func.sum(OrderItem.quantity).desc())  
+        .offset(offset)
+        .limit(limit)
+    )
+
+    results = session.exec(statement).all()
+    return results
+
+
+@router.get("/{product_id}/sold-count")
+def get_sold_count(product_id: int, db: Session = Depends(get_db)):
+    product = db.get(Product, product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    sold_count = db.exec(
+        select(func.sum(OrderItem.quantity))
+        .where(OrderItem.product_id == product_id)
+    ).first()
+
+    return {"product_id": product_id, "sold_count": sold_count or 0}
+
+
+
 @router.get("/manager")
 def read_products_search_filter_sort(
     session: SessionDep,
@@ -80,6 +135,10 @@ def get_new_arrivals(
     return results
 
 """
+
+
+
+
 
 # Multipart PATCH for image updates and metadata
 @router.patch("/{product_id}")

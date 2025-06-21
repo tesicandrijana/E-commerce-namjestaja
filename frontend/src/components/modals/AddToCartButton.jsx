@@ -33,22 +33,22 @@ function AddToCartButton({ productId, stock, iconOnly = false }) {
   return (
     <>
       <button
-        className="add-to-cart-btn"
-        disabled={stock === 0}
-        title={stock === 0 ? 'Out of stock' : 'Add to Cart'}
-        onClick={handleAddToCart}
-      >
-        {iconOnly ? (
-          <FaShoppingCart />
-        ) : stock === 0 ? (
-          'Out of Stock'
-        ) : (
-          <>
-            <FaShoppingCart style={{ marginRight: '5px' }} />
-            Add to Cart
-          </>
-        )}
-      </button>
+  className={iconOnly ? "icon-only-cart-btn" : "add-to-cart-btn"}
+  disabled={stock === 0}
+  title={stock === 0 ? 'Out of stock' : 'Add to Cart'}
+  onClick={handleAddToCart}
+>
+  {iconOnly ? (
+    <FaShoppingCart />
+  ) : stock === 0 ? (
+    'Out of Stock'
+  ) : (
+    <>
+      <FaShoppingCart style={{ marginRight: '5px' }} />
+      Add to Cart
+    </>
+  )}
+</button>
 
       {isLoginModalOpen && (
         <LoginModal

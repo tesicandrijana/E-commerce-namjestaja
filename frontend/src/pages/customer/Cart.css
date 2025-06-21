@@ -1,8 +1,8 @@
 
 .cart-layout {
   display: flex;
-  justify-content: center; /* Center container on smaller screens */
-  background-image: url("https://cdn.shopify.com/s/files/1/2613/8914/files/38901-MOOD-H_3440x2391_crop_center.jpg?v=1654193175");
+  justify-content: center; 
+  background: linear-gradient(rgba(21, 46, 55, 0), rgba(23, 26, 35, 0.377), rgb(255, 255, 255)), url("https://cdn.shopify.com/s/files/1/2613/8914/files/38901-MOOD-H_3440x2391_crop_center.jpg?v=1654193175");
   background-attachment: fixed;
   background-position: center;
   background-repeat: no-repeat;
@@ -12,8 +12,11 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  max-width: 1600px;
   margin: 0 auto;
+}
+
+.cart-layout-in {
+  width: 2000px;
 }
 
 .cart-container {
@@ -21,7 +24,7 @@
   max-width: 60%;
   margin: 0 auto;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.49); /* #ffffff7d → rgba(255,255,255,0.49) for clarity */
+  background: rgba(255, 255, 255, 0.234);
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   transition: transform 0.4s ease;
@@ -33,7 +36,6 @@
   transform: translateX(-27%);
 }
 
-/* Cart Items Grid */
 .cart-items {
   display: flex;
   flex-wrap: wrap;
@@ -41,13 +43,13 @@
   justify-content: flex-start;
 }
 
-/* Individual Cart Item */
+
 .cart-item {
-  flex: 0 1 calc(25% - 1.125rem); /* 4 items per row */
+  flex: 0 1 calc(25% - 1.125rem); 
   box-sizing: border-box;
   position: relative;
   aspect-ratio: 1 / 1.25;
-  background-color: #cbdcdfd1;
+  background-color: #ecececd1;
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);

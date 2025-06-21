@@ -65,7 +65,7 @@ export default function ComplaintsList() {
 
   return (
     <div className="cf-wrapper">
-      <button className="cf-back-link" onClick={() => navigate(-1)}>
+      <button className="back-link" onClick={() => navigate(-1)}>
         ←
       </button>
       <h1 className="cf-title">Customer Complaints & Returns</h1>

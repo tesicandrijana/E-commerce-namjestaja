@@ -203,7 +203,7 @@ const Home = () => {
           <div className="featured-products-grid">
             {featuredProducts.map((prod) => (
               <Link
-                to={`/products/${prod.id}`}
+                to={`/product-details/${prod.id}`}
                 key={prod.id}
                 className="product-card-home"
               >

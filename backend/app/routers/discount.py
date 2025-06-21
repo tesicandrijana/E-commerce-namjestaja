@@ -2,9 +2,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel  import Session, select
 from typing import List, Annotated
-from app.crud import discount
+from datetime import date
+from sqlalchemy import desc
 from app.schemas import discount as discount_schema
-from app.models.models import Discounts
+from app.schemas.product import ProductRead
+from app.models.models import Discounts, Product
 from app.services import discount_service
 from app.dependencies import get_db
 
@@ -37,3 +39,25 @@ def read_discounts(
 @router.put("/{discount_id}")
 def edit_discount(session: SessionDep,discount_id:int, discount_data:discount_schema.DiscountUpdate):
     return discount_service.edit_discount(session,discount_id,discount_data)
+
+
+@router.get("/discounted", response_model=List[ProductRead])
+def get_discounted_products(
+    session: Session = Depends(get_db),
+    limit: int = Query(12, ge=1),
+    offset: int = Query(0, ge=0)
+):
+    today = date.today()
+
+    statement = (
+        select(Product)
+        .join(Discounts, Discounts.product_id == Product.id)
+        .where(Discounts.start_date <= today)
+        .where(Discounts.end_date >= today)
+        .order_by(desc(Discounts.amount))
+        .offset(offset)
+        .limit(limit)
+    )
+
+    return session.exec(statement).all()
+
