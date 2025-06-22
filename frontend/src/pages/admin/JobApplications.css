@@ -45,7 +45,7 @@
 }
 
 .upcoming-table thead {
-  background: linear-gradient(90deg, #007bff, #00c6ff);
+  background: linear-gradient(90deg, #f5a811, #ffcc66); /* narandžaste nijanse */
   color: white;
   font-weight: 600;
 }
@@ -58,18 +58,15 @@
   font-size: 1rem;
 }
 
-/* Poslednji red bez donjeg bordera */
 .upcoming-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Redovi pri hover efektu */
 .upcoming-table tbody tr:hover {
-  background-color: #f1f8ff;
+  background-color: #fff8e678; /* svijetla narandžasta za hover */
   cursor: pointer;
 }
 
-/* Select polje u tabeli */
 .upcoming-table select {
   padding: 6px 8px;
   border-radius: 6px;
@@ -81,12 +78,10 @@
 
 .upcoming-table select:hover,
 .upcoming-table select:focus {
-  border-color: #007bff;
+  border-color: #f5a811;
   outline: none;
-  box-shadow: 0 0 5px rgba(0,123,255,0.4);
+  box-shadow: 0 0 5px rgba(245, 168, 17, 0.4); /* narandžasta sjenka */
 }
-
-/* Stilovi za ikonice i dugmad */
 
 .icon-button {
   background: none;
@@ -114,7 +109,6 @@
   color: #dc3545; /* crvena */
 }
 
-/* Responsive stilovi */
 @media (max-width: 768px) {
   .upcoming-interviews-description {
     max-width: 100%;

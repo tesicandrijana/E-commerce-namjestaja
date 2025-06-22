@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { formToJSON } from "axios";
 import ConfirmModal from '../../components/modals/ConfirmModal';
 import "./JobApplications.css";
+import { HiDocumentDownload } from "react-icons/hi";
+
 
 export default function UpcomingInterviewsTable() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -44,8 +45,7 @@ export default function UpcomingInterviewsTable() {
           : interview
       )
     );
-  };
-
+  }; 
   const anyEmailChecked = interviews.some((interview) => interview.sendEmail);
 
   const updateStatusOnServer = async (id, status) => {
@@ -90,6 +90,27 @@ export default function UpcomingInterviewsTable() {
     setIsModalOpen(false);
   };
 
+  const handleDownloadCv = async (id, fileName = "cv.pdf") => {
+  try {
+    const response = await axios.get(
+      `/job-application/${id}/download-cv`,
+      { responseType: "blob" }
+    );
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.error("Error downloading CV:", error);
+    alert("Failed to download CV.");
+  }
+};
+
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (interviews.length === 0) return <div>No upcoming interviews.</div>;
@@ -111,6 +132,7 @@ export default function UpcomingInterviewsTable() {
         <table className="upcoming-table">
           <thead>
             <tr>
+              <th>CV</th>
               <th>Candidate</th>
               <th>Email</th>
               <th>Position</th>
@@ -122,6 +144,17 @@ export default function UpcomingInterviewsTable() {
           <tbody>
             {interviews.map((interview) => (
               <tr key={interview.id}>
+              <td>
+                  <HiDocumentDownload
+                    onClick={() => handleDownloadCv(interview.id, `${interview.name}_CV.pdf`)}
+                    style={{
+                      cursor: "pointer",
+                      color: "#007bff",
+                      fontSize: "1.5rem"
+                    }}
+                    title="Download CV"
+                  />
+                </td>
                 <td>{interview.name}</td>
                 <td>{interview.email}</td>
                 <td>{interview.role}</td>

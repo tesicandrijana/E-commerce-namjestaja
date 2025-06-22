@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAsyncValue, useNavigate } from "react-router-dom";
 import Card from "../../components/dashboard/Card";
 import JobApplicationModal from "../../components/modals/JobApplicationModal";
 import "./AdminDashboard.css";
@@ -22,7 +22,6 @@ function AdminDashboard() {
         console.error("Error fetching applications:", error);
       });
   }, []);
-
   // Dohvati detalje za aplikaciju i otvori modal
   const openModal = (id) => {
     setLoadingDetails(true);
@@ -53,7 +52,7 @@ function AdminDashboard() {
         <div className="card-lista">
           <Card
             number="01"
-            bgColor="#0f82fc"
+            bgColor="#f5a811"
             imageSrc="/admin/newemployee.png"
             altText="New Employee"
             title="New Employee"
@@ -62,7 +61,7 @@ function AdminDashboard() {
           />
           <Card
             number="02"
-            bgColor="#66b2ff"
+            bgColor="#f5a811"
             imageSrc="/admin/allemployees.png"
             altText="All Employees"
             title="View Employees"
@@ -71,7 +70,7 @@ function AdminDashboard() {
           />
           <Card
             number="03"
-            bgColor="#0f82fc"
+            bgColor="#f5a811"
             imageSrc="/admin/statistic.png"
             altText="employee statistics"
             title="Employee statistics"
@@ -80,7 +79,7 @@ function AdminDashboard() {
           />
           <Card
             number="04"
-            bgColor="#66b2ff"
+            bgColor="#f5a811"
             imageSrc="/admin/archive.png"
             altText="Archived employees"
             title="View archived employees"

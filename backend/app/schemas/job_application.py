@@ -9,6 +9,8 @@ class JobApplicationCreate(BaseModel):
     phone: str
     address: Optional[str] = None
     role: str
+    cvUrl: Optional[str] = None
+
 
 
 class JobApplicationSchema(JobApplicationCreate):
