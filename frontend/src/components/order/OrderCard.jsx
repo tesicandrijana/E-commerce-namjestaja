@@ -38,11 +38,11 @@ function OrderCard({ order,status }) {
                     <h3>Order#{order?.id} 
                     </h3>
                     {status === "unassigned" ? null : <Chip label={status} color={color(status)} size="small" />}
-                    <p>{order?.customer_name}</p>
                     <p className="order-card-date">{formatted(order.date)}</p>
                 </div>
                 <div className='order-card-details'>
-                    <p>{order.address}, {order.city}, {order.postal_code}</p>
+                    <p className='text'>{order?.customer_name}, </p>
+                    <p className='text'>{order.address}, {order.city}, {order.postal_code}</p>
                 </div>
             </div>
         </div>

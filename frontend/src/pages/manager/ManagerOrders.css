@@ -11,13 +11,14 @@
     display:flex;
     flex-direction: row;
     gap: 5%;
+    overflow-x: scroll;
 }
 
 .order-column-container{
     display:flex;
     flex-direction:column;
     background-color: rgba(224, 213, 213, 0.6);
-    width:300px;
+    min-width:280px;
     height: 400px;
     padding: 1rem;
     border-radius: 12px;
