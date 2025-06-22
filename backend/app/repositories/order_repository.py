@@ -24,7 +24,6 @@ def update_order(session: Session, order: Order):
     session.refresh(order)
     return order
 
-
 def get_sorted_and_filtered_orders(
     session,
     offset: int = 0,

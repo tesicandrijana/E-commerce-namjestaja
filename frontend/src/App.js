@@ -64,6 +64,7 @@ import DeliveryDashboard from "./pages/delivery/DeliveryDashboard";
 import ManagerReviewsView from "./pages/manager/ManagerReviewsView";
 
 import { Outlet } from "react-router-dom";
+import DeliveryList from "./components/delivery/DeliveryList";
 
 // MainLayout component using Outlet for nested routes
 const MainLayout = () => (
@@ -163,6 +164,7 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={"delivery"} />}>
                 <Route element={<MainLayout />}>
                   <Route path="/delivery-dashboard" element={<DeliveryDashboard />} />
+                  <Route path="/deliveries" element={<DeliveryList/>} />
                 </Route>
               </Route>
             </Routes>

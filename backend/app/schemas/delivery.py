@@ -22,6 +22,7 @@ class Delivery(DeliveryBase):
         from_attributes = True
 
 class DeliveryIncludingOrder(SQLModel):
+    id:int
     order_id: int
     delivery_person_id: int |None = None
     status: str
