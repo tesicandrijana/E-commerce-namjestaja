@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { formToJSON } from "axios";
 import ConfirmModal from '../../components/modals/ConfirmModal';
 import "./JobApplications.css";
 import { HiDocumentDownload } from "react-icons/hi";
@@ -9,7 +9,6 @@ export default function UpcomingInterviewsTable() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -46,8 +45,7 @@ export default function UpcomingInterviewsTable() {
           : interview
       )
     );
-  };
-
+  }; 
   const anyEmailChecked = interviews.some((interview) => interview.sendEmail);
 
   const updateStatusOnServer = async (id, status) => {

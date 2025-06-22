@@ -46,7 +46,6 @@
   }
 }
 
-/* Close button stil */
 .modal-close-btn {
   position: absolute;
   top: 12px;
@@ -176,7 +175,7 @@
 }
 
 .modal-right {
-  flex: 1; /* manji deo */
+  flex: 1;
   border-left: 1px solid #ddd;
   padding-left: 20px;
   display: flex;

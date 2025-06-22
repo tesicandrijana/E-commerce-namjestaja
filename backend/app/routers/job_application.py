@@ -173,7 +173,8 @@ def get_upcoming_interviews(db: Session = Depends(get_db)):
         .order_by(JobApplication.interview_time)
         .all()
     )
-    return interviews
+    return interviews 
+
 
 @router.post("/{app_id}/approve")
 def approve_application(app_id: int, db: Session = Depends(get_db)):

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAsyncValue, useNavigate } from "react-router-dom";
 import Card from "../../components/dashboard/Card";
 import JobApplicationModal from "../../components/modals/JobApplicationModal";
 import "./AdminDashboard.css";
@@ -22,7 +22,6 @@ function AdminDashboard() {
         console.error("Error fetching applications:", error);
       });
   }, []);
-
   // Dohvati detalje za aplikaciju i otvori modal
   const openModal = (id) => {
     setLoadingDetails(true);
