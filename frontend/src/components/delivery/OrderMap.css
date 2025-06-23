@@ -1,0 +1,98 @@
+.order-map-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30,41,59,0.57);
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.order-map-modal {
+  background: rgba(245,248,255,0.97);
+  border-radius: 1.3rem;
+  padding: 2.2rem 1.6rem 1.4rem 1.6rem;
+  max-width: 520px;
+  width: 95vw;
+  box-shadow: 0 10px 48px 0 rgba(59,130,246,0.13), 0 2px 8px 0 rgba(0,0,0,0.09);
+  position: relative;
+  animation: mapFadeIn .28s;
+  backdrop-filter: blur(4.7px);
+  border: 1.5px solid #c7d2fe;
+}
+
+@keyframes mapFadeIn {
+  from { transform: scale(0.94); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.order-map-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.7rem;
+  background: #f3f4f6;
+  border: none;
+  cursor: pointer;
+  color: #2563eb;
+  font-weight: bold;
+  box-shadow: 0 1.5px 6px rgba(59,130,246,0.08);
+  transition: background 0.18s, color 0.2s, box-shadow 0.13s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-map-close-btn:hover {
+  background: #dbeafe;
+  color: #b91c1c;
+  box-shadow: 0 4px 12px rgba(185,28,28,0.10);
+}
+
+.order-map-title {
+  margin: 0 0 8px 0;
+  font-size: 1.29rem;
+  font-weight: 700;
+  color: #1e293b;
+  letter-spacing: 0.01em;
+}
+
+.order-map-subtitle {
+  margin: 0 0 20px 0;
+  color: #475569;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.order-map-error {
+  color: #e74c3c;
+  background: #fef2f2;
+  padding: 11px 0;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .order-map-modal {
+    max-width: 99vw;
+    padding: 1.15rem 0.45rem 1rem 0.45rem;
+    border-radius: 1.1rem;
+  }
+  .order-map-title {
+    font-size: 1.09rem;
+  }
+  .order-map-close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.22rem;
+    top: 10px;
+    right: 10px;
+  }
+}

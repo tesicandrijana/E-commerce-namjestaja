@@ -30,6 +30,7 @@ class OrderRead(OrderBase):
     date: datetime
     items: List[OrderItemRead] = []
     customer_name: str | None = None
+    customer_phone: str | None = None   # dodano za prikaz telefona kupca
     delivery_person_name: str | None = None
 
 
