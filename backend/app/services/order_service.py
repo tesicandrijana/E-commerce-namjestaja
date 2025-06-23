@@ -59,6 +59,7 @@ def get_sorted_and_filtered_orders(
             order_dict["delivery_person_name"] = None
 
         order_dict["customer_name"] = order.customer.name
+        order_dict["customer_phone"] = order.customer.phone  # dodano za prikaz telefona kupca dostavljacu
         
         order_dict["items"] = order.items
 
