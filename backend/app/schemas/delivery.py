@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from sqlmodel import SQLModel
 from typing import Optional
 from datetime import datetime
@@ -6,7 +5,7 @@ from app.schemas import order as order_schema
 from app.models.models import Order
 
 
-class DeliveryBase(BaseModel):
+class DeliveryBase(SQLModel):
     order_id: int
     delivery_person_id: int | None = None
     status: Optional[str] = "in_progress"

@@ -3,10 +3,10 @@ from typing import List,Annotated
 from sqlmodel import Session,select
 from sqlalchemy.orm import selectinload
 from decimal import Decimal, ROUND_HALF_UP
-from app.models.models import User, Order, OrderItem, Product
+from app.models.models import User, Order, OrderItem, Delivery
 from app.schemas.order import OrderCreate, OrderRead, OrdersWithCount
 from app.services.user_service import get_current_user
-from app.crud.order import get_orders, get_order_by_id, delete_order, get_orders_by_customer_id
+from app.crud.order import get_orders, get_order_by_id, delete_order
 from app.database import get_session, get_db
 from app.services import order_service
 router = APIRouter()
@@ -24,7 +24,7 @@ def get_my_orders(
     orders = session.exec(
         select(Order)
         .where(Order.customer_id == current_user.id)
-        .options(selectinload(Order.items).selectinload(OrderItem.product))  # <-- this line ensures product is included
+        .options(selectinload(Order.items).selectinload(OrderItem.product)) 
     ).all()
 
     if not orders:
@@ -43,8 +43,10 @@ def read_sorted_and_filtered_orders(
     search:  str |None = None):
     return order_service.get_sorted_and_filtered_orders(session, offset,limit,sort_by, sort_dir,status,search)
 
-@router.post("/", status_code=201)
+ 
+@router.post("/", response_model=OrderRead, status_code=201)
 def create_order(order_data: OrderCreate, session: Session = Depends(get_session)):
+    # Create the order
     order = Order(
         customer_id=order_data.customer_id,
         address=order_data.address,
@@ -59,19 +61,26 @@ def create_order(order_data: OrderCreate, session: Session = Depends(get_session
     session.commit()
     session.refresh(order)
 
-    # Save order items
     for item in order_data.items:
         order_item = OrderItem(
             order_id=order.id,
             product_id=item.product_id,
             quantity=item.quantity,
             price_per_unit=item.price_per_unit,
-            
         )
         session.add(order_item)
+
+    delivery = Delivery(
+        order_id=order.id,
+        status="unassigned" 
+    )
+    session.add(delivery)
+
     session.commit()
+    session.refresh(order)
 
     return order
+
 
 @router.get("/", response_model=List[OrderRead])
 def read_orders(
