@@ -12,6 +12,8 @@ def get_all_deliveries_assigned_to(
     for delivery in db_deliveries:
         order_dict = delivery.order.model_dump()
         order_dict["customer_name"] = delivery.order.customer.name  
+        order_dict["customer_phone"] = delivery.order.customer.phone
+
 
         deliveries.append({
             "id": delivery.id,
@@ -34,7 +36,10 @@ def read_deliveries_and_orders(
     for delivery in deliveries:
         order = order_service.get_order_by_id(session, delivery.order_id)
         order_dict = order.model_dump()
-        order_dict["customer_name"] = order.customer.name  
+        order_dict["customer_name"] = order.customer.name
+        order_dict["customer_phone"] = delivery.order.customer.phone
+
+
 
         deliveries_final.append({
             "id": delivery.id,

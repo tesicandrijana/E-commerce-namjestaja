@@ -11,9 +11,6 @@ from app.dependencies import get_db
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
-@router.post("/", response_model=delivery_schema.Delivery)
-def create_delivery(delivery: delivery_schema.DeliveryCreate, db: Session = Depends(get_db)):
-    return delivery.create_delivery(db, delivery)
 
 @router.get("/manager",response_model = list[delivery_schema.DeliveryIncludingOrder])
 def read_deliveries(session: SessionDep):

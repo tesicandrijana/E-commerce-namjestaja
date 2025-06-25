@@ -1,5 +1,3 @@
-# schemas/order.py
-# schemas/order.py
 from typing import Optional, List
 from sqlmodel import SQLModel, Field
 from datetime import datetime
@@ -30,6 +28,7 @@ class OrderRead(OrderBase):
     date: datetime
     items: List[OrderItemRead] = []
     customer_name: str | None = None
+    customer_phone: str | None = None   # dodano za prikaz telefona kupca
     delivery_person_name: str | None = None
 
 

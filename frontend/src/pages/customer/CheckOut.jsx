@@ -154,7 +154,7 @@ export default function Checkout() {
   cartItems.forEach((item) => {
     const name = productNames[item.product_id] || `Product #${item.product_id}`;
     const price = discountedPrices[item.product_id]?.toFixed(2) || "0.00";
-    doc.text(`${name} - : ${item.quantity} × $${price}`, 20, y);
+    doc.text(`${name}: ${item.quantity} × $${price}`, 20, y);
     y += 8;
   });
 

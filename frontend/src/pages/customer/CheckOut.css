@@ -14,7 +14,7 @@ button {
 
 .checkout-overlay {
   font-family: 'Poppins', sans-serif;
-  background-image: url('https://domkapa.com/wp-content/uploads/2024/02/edward-sofa-domkapa-2024-living-room.jpg'); /* Update path if needed */
+  background-image: url('https://domkapa.com/wp-content/uploads/2024/02/edward-sofa-domkapa-2024-living-room.jpg'); 
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
