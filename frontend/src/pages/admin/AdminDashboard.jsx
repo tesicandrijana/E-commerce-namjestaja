@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useAsyncValue, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Card from "../../components/dashboard/Card";
 import JobApplicationModal from "../../components/modals/JobApplicationModal";
 import "./AdminDashboard.css";
@@ -7,7 +7,7 @@ import "./AdminDashboard.css";
 function AdminDashboard() {
   const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
-  const [selectedApp, setSelectedApp] = useState(null); 
+  const [selectedApp, setSelectedApp] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,7 +22,7 @@ function AdminDashboard() {
         console.error("Error fetching applications:", error);
       });
   }, []);
-  // Dohvati detalje za aplikaciju i otvori modal
+
   const openModal = (id) => {
     setLoadingDetails(true);
     setError(null);
@@ -46,51 +46,69 @@ function AdminDashboard() {
     setError(null);
   };
 
-    return (
+  return (
     <div className="container">
-      <div className="left">
-        <div className="card-lista">
-          <Card
-            number="01"
-            bgColor="#f5a811"
-            imageSrc="/admin/newemployee.png"
-            altText="New Employee"
-            title="New Employee"
-            description="Click to add new employee"
-            onClick={() => navigate("/NewEmployee")}
-          />
-          <Card
-            number="02"
-            bgColor="#f5a811"
-            imageSrc="/admin/allemployees.png"
-            altText="All Employees"
-            title="View Employees"
-            description="Click to see a list of all employees"
-            onClick={() => navigate("/employees")}
-          />
-          <Card
-            number="03"
-            bgColor="#f5a811"
-            imageSrc="/admin/statistic.png"
-            altText="employee statistics"
-            title="Employee statistics"
-            description="Click to see employee statistics"
-            onClick={() => navigate("/EmployeeStatistics")}
-          />
-          <Card
-            number="04"
-            bgColor="#f5a811"
-            imageSrc="/admin/archive.png"
-            altText="Archived employees"
-            title="View archived employees"
-            description="Click to see a list of all archived employees"
-            onClick={() => navigate("/ArchivedEmployees")}
-          />
-        </div>
+      <div className="dashboard-title">
+        <h1>Admin Dashboard</h1>
+        <p>
+          Manage job applications, employees, and track statistics efficiently.
+        </p>
+        <p>
+          Stay in control of your team's growth — review, organize, and make
+          decisions with ease.
+        </p>
       </div>
 
-      <div className="right">
-        <h3>Lattest Job Applications</h3>
+      <div className="cards-section">
+        <Card
+          number="01"
+          bgColor="#f5a811"
+          imageSrc=""
+          altText="New Employee"
+          title="New Employee"
+          description="Click to add new employee"
+          onClick={() => navigate("/NewEmployee")}
+        />
+        <Card
+          number="02"
+          bgColor="#f5a811"
+          imageSrc=""
+          altText="All Employees"
+          title="All Employees"
+          description="Click to see a list of all employees"
+          onClick={() => navigate("/employees")}
+        />
+        <Card
+          number="03"
+          bgColor="#f5a811"
+          imageSrc=""
+          altText="employee statistics"
+          title="Employee statistics"
+          description="Click to see employee statistics"
+          onClick={() => navigate("/EmployeeStatistics")}
+        />
+        <Card
+          number="04"
+          bgColor="#f5a811"
+          imageSrc=""
+          altText="Archived employees"
+          title="Archived employees"
+          description="Click to see a list of all archived employees"
+          onClick={() => navigate("/ArchivedEmployees")}
+        />
+        <Card
+          number="05"
+          bgColor="#f5a811"
+          imageSrc=""
+          altText="Job Interwievs"
+          title="Job Interwievs"
+          description="Click to see a list of incomming job interwievs"
+          onClick={() => navigate("/JobApplications")}
+        />
+      </div>
+
+      <div className="applications-section">
+        <h3>Latest Job Applications</h3>
         <ul>
           {applications.length === 0 ? (
             <li>No applications found</li>
@@ -106,16 +124,6 @@ function AdminDashboard() {
             ))
           )}
         </ul>
-
-        <Card
-            number=""
-            bgColor=""
-            imageSrc=""
-            altText="Job Applications"
-            title="Job Applications"
-            description="Click to see a list of all job applications, scheduled interviews and more"
-            onClick={() => navigate("/JobApplications")}
-          />
       </div>
 
       <JobApplicationModal

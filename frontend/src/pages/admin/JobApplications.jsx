@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
-import axios, { formToJSON } from "axios";
+import axios from "axios";
 import ConfirmModal from '../../components/modals/ConfirmModal';
+import UniversalModal from '../../components/modals/UniversalModal';
 import "./JobApplications.css";
 import { HiDocumentDownload } from "react-icons/hi";
-
 
 export default function UpcomingInterviewsTable() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("success");
 
   useEffect(() => {
     async function fetchInterviews() {
@@ -45,7 +50,8 @@ export default function UpcomingInterviewsTable() {
           : interview
       )
     );
-  }; 
+  };
+
   const anyEmailChecked = interviews.some((interview) => interview.sendEmail);
 
   const updateStatusOnServer = async (id, status) => {
@@ -64,16 +70,28 @@ export default function UpcomingInterviewsTable() {
     try {
       for (const interview of toSend) {
         if (interview.status === "scheduled") {
-          alert(
-            `Candidate ${interview.name} status is Scheduled. Please change status before sending email.`
+          setModalType("error");
+          setModalTitle("Warning");
+          setModalMessage(
+            `Candidate ${interview.name} status is still Scheduled. Please change status before sending email.`
           );
+          setShowInfoModal(true);
           continue;
         }
         await updateStatusOnServer(interview.id, interview.status);
       }
-      alert(`Status updated and emails sent for ${toSend.length} candidates.`);
+
+      setModalType("success");
+      setModalTitle("Success");
+      setModalMessage(
+        `Status updated and emails sent for ${toSend.length} candidate${toSend.length !== 1 ? "s" : ""}.`
+      );
+      setShowInfoModal(true);
     } catch (error) {
-      alert("Error sending emails: " + error.message);
+      setModalType("error");
+      setModalTitle("Error");
+      setModalMessage("Error sending emails: " + error.message);
+      setShowInfoModal(true);
     }
   };
 
@@ -91,44 +109,46 @@ export default function UpcomingInterviewsTable() {
   };
 
   const handleDownloadCv = async (id, fileName = "cv.pdf") => {
-  try {
-    const response = await axios.get(
-      `/job-application/${id}/download-cv`,
-      { responseType: "blob" }
-    );
+    try {
+      const response = await axios.get(`/job-application/${id}/download-cv`, {
+        responseType: "blob",
+      });
 
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (error) {
-    console.error("Error downloading CV:", error);
-    alert("Failed to download CV.");
-  }
-};
-
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      setModalType("error");
+      setModalTitle("Error");
+      setModalMessage("Failed to download CV.");
+      setShowInfoModal(true);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-  if (interviews.length === 0) return <div>No upcoming interviews.</div>;
 
   return (
-    <>
-      <div className="upcoming-interviews-page">
-        <h1 className="upcoming-interviews-title">Scheduled Interviews Overview</h1>
-        <h5 className="upcoming-interviews-subtitle">
-          This table presents a comprehensive overview of all upcoming interviews
-          organized for candidates
-        </h5>
-        <p className="upcoming-interviews-description">
-          You can monitor the interview details including
-          candidate information, position applied for, and scheduled date and time.
-          Additionally, use the status dropdown to update the current state of each
-          interview, such as marking them as Accepted, Rejected, or still Scheduled.
+  <>
+    <div className="upcoming-interviews-page">
+      <h1 className="upcoming-interviews-title">Scheduled Interviews Overview</h1>
+      <h5 className="upcoming-interviews-subtitle">
+        This table presents a comprehensive overview of all upcoming interviews organized for candidates
+      </h5>
+      <p className="upcoming-interviews-description">
+        You can monitor the interview details including candidate information, position applied for, and scheduled date and time.
+        Additionally, use the status dropdown to update the current state of each interview, such as marking them as Accepted, Rejected, or still Scheduled.
+      </p>
+
+      {interviews.length === 0 ? (
+        <p class="no-intweviews">
+          No upcoming interviews.
         </p>
+      ) : (
         <table className="upcoming-table">
           <thead>
             <tr>
@@ -144,13 +164,13 @@ export default function UpcomingInterviewsTable() {
           <tbody>
             {interviews.map((interview) => (
               <tr key={interview.id}>
-              <td>
+                <td>
                   <HiDocumentDownload
                     onClick={() => handleDownloadCv(interview.id, `${interview.name}_CV.pdf`)}
                     style={{
                       cursor: "pointer",
                       color: "#007bff",
-                      fontSize: "1.5rem"
+                      fontSize: "1.5rem",
                     }}
                     title="Download CV"
                   />
@@ -180,32 +200,33 @@ export default function UpcomingInterviewsTable() {
             ))}
           </tbody>
         </table>
-      </div>
-
-      {anyEmailChecked && (
-        <button
-          onClick={handleSendEmailsClick}
-          style={{
-            position: "fixed",
-            bottom: "30px",
-            right: "30px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "30px",
-            padding: "15px 25px",
-            fontSize: "1rem",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-            zIndex: 1000,
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0056b3")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#007bff")}
-        >
-          Send Emails
-        </button>
       )}
+    </div>
+
+    {anyEmailChecked && (
+      <button
+        onClick={handleSendEmailsClick}
+        style={{
+          position: "fixed",
+          bottom: "30px",
+          right: "30px",
+          backgroundColor: "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "30px",
+          padding: "15px 25px",
+          fontSize: "1rem",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+          cursor: "pointer",
+          transition: "background-color 0.3s ease",
+          zIndex: 1000,
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0056b3")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#007bff")}
+      >
+        Send Emails
+      </button>
+    )}
 
       <ConfirmModal
         isOpen={isModalOpen}
@@ -216,6 +237,15 @@ export default function UpcomingInterviewsTable() {
         confirmText="Yes"
         cancelText="No"
       />
+
+      <UniversalModal
+        isOpen={showInfoModal}
+        onClose={() => setShowInfoModal(false)}
+        type={modalType}
+        title={modalTitle}
+        message={modalMessage}
+      />
     </>
   );
+
 }

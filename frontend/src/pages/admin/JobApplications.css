@@ -109,6 +109,16 @@
   color: #dc3545; /* crvena */
 }
 
+.no-intweviews {
+  font-style: italic;
+  margin-top: 20px;
+  color: #555;
+  border-bottom: 2px solid #f4a300;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+
 @media (max-width: 768px) {
   .upcoming-interviews-description {
     max-width: 100%;

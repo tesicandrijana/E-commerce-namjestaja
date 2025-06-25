@@ -1,0 +1,94 @@
+.custom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.custom-modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 30px 40px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.custom-modal-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.custom-modal-icon.success {
+  background-color: #ffe5c0;
+  color: #f4a300;
+}
+
+
+.custom-modal-icon.error {
+  background-color: #f8d7da;
+  color: #dc3545;
+}
+
+.custom-modal-content h2 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.custom-modal-content p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.custom-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cancel-btn {
+  background: white;
+  border-style: none;
+  padding: 8px 16px;
+
+}
+
+.cancel-btn:hover {
+  background: #f0f0f0;
+}
+
+.ok-btn {
+  background-color: #6f42c1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ok-btn:hover {
+  background-color: #5a32a3;
+}
+
+.deactivate-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deactivate-btn:hover {
+  background-color: #c82333;
+}

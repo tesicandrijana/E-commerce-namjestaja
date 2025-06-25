@@ -35,8 +35,8 @@
 
 .modal-buttons button {
   flex: 1;
-  padding: 10px 0;
-  font-size: 1rem;
+  padding: 8px 0;
+  font-size: 0.9rem;
   font-weight: 500;
   border: none;
   border-radius: 8px;
@@ -67,7 +67,6 @@
   box-shadow: 0 6px 16px rgba(97, 97, 97, 0.7);
 }
 
-/* Overlay styling for modal background */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -81,7 +80,6 @@
   z-index: 9999;
 }
 
-/* Animation */
 @keyframes fadeInScale {
   0% {
     opacity: 0;

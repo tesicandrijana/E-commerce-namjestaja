@@ -2,7 +2,6 @@ import smtplib
 from email.message import EmailMessage
 from app.core.config import settings
 
-# pravimo fju za slanje maila koristeci podatke uz .env
 def send_email(to: str, subject: str, body: str):
     msg = EmailMessage()
     msg["From"] = settings.EMAIL_SENDER
