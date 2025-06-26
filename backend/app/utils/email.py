@@ -49,3 +49,14 @@ def get_approval_email(app, generated_email, generated_password):
         f"Best regards,\nFurni Style Team"
     )
     return subject, body
+
+def status_change_email(customer, status: str):
+    subject = "Order Status Update"
+    body = (
+        f"Dear {customer.name}, \n\n"
+        f"Your order status has been updated to: {status}.\n\n"
+        f"If you have any questions, feel free to contact us.\n\n"
+        f"Best regards,\nFurni Style Team"
+    )
+
+    send_email(to=customer.email, subject=subject, body=body)
