@@ -1,4 +1,5 @@
 import os
+import random
 import shutil
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Response
 from typing import Annotated, List
@@ -149,7 +150,11 @@ def approve_application(app_id: int, db: Session = Depends(get_db)):
     generated_email = f"{clean_name}@furnystyle.{role_clean}.com"
 
     if db.query(User).filter(User.email == generated_email).first():
-        raise HTTPException(status_code=400, detail="Generated email already exists, please resolve manually.")
+        random_number = random.randint(1, 999)
+        generated_email = f"{clean_name}{random_number}@furnystyle.{role_clean}.com"
+
+        if db.query(User).filter(User.email == generated_email).first():
+            raise HTTPException(status_code=400, detail="Generated email already exists, please resolve manually.")
 
     generated_password = generate_random_password()
     hashed_password = hash_password(generated_password)

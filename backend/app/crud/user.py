@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from app.models.models import User, WorkerRequest   # assuming you have a WorkerRequest model
+from app.models.models import User, WorkerRequest   
 from fastapi import HTTPException
 from app.schemas.user import UserCreate
 from sqlalchemy import func
 from app.models.models import Order, Review
-from app.services.user_service import hash_password, validate_password_strength 
+from app.services.user_service import hash_password, validate_password_strength
 
 def create_user(db: Session, user: UserCreate):
     db_user = User(**user.dict())
@@ -29,11 +29,10 @@ def update_user(db: Session, user_id: int, updates: dict):
         raise HTTPException(status_code=404, detail="User not found")
 
     for key, value in updates.items():
-        if key == "password" and value:  # Samo ako nova lozinka poslana
-            # Heširanje nove lozinke
+        if key == "password" and value:  
             hashed = hash_password(value)
-            setattr(user, "password", hashed)  # Ažuriraj polje "password" sa heširanom lozinkom
-        elif key != "password" and value is not None:  # Ostaviti ostale podatke netaknutima
+            setattr(user, "password", hashed)  
+        elif key != "password" and value is not None:
             setattr(user, key, value)
 
     db.commit()

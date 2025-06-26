@@ -82,7 +82,7 @@ export default function UpcomingInterviewsTable() {
       }
 
       setModalType("success");
-      setModalTitle("Success");
+      setModalTitle("Email sent successfully");
       setModalMessage(
         `Status updated and emails sent for ${toSend.length} candidate${toSend.length !== 1 ? "s" : ""}.`
       );
@@ -130,7 +130,6 @@ export default function UpcomingInterviewsTable() {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
   <>
@@ -184,7 +183,7 @@ export default function UpcomingInterviewsTable() {
                     value={interview.status}
                     onChange={(e) => handleStatusChange(interview.id, e.target.value)}
                   >
-                    <option value="scheduled">Scheduled</option>
+                    <option>Select</option>
                     <option value="accepted">Accepted</option>
                     <option value="rejected">Rejected</option>
                   </select>
@@ -206,23 +205,7 @@ export default function UpcomingInterviewsTable() {
     {anyEmailChecked && (
       <button
         onClick={handleSendEmailsClick}
-        style={{
-          position: "fixed",
-          bottom: "30px",
-          right: "30px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "30px",
-          padding: "15px 25px",
-          fontSize: "1rem",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-          cursor: "pointer",
-          transition: "background-color 0.3s ease",
-          zIndex: 1000,
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0056b3")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#007bff")}
+        class ="send-email-btn"
       >
         Send Emails
       </button>

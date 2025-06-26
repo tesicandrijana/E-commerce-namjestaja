@@ -24,7 +24,6 @@ class UserUpdate(SQLModel):
     address: Optional[str] = None
     is_active: Optional[bool] = None
 
-
 class UserSchema(SQLModel):
     id: int
     name: str
@@ -52,3 +51,6 @@ class RegisterUser(SQLModel):
     password: str
     role: Optional[ValidRoles] = "customer"
     is_active: Optional[bool] = True
+
+class UserIdsRequest(SQLModel):
+    user_ids: list[int]

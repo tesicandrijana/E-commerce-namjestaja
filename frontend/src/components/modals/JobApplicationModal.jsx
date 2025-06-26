@@ -50,9 +50,9 @@ function JobApplicationModal({
             "Your application has been rejected. Thank you for your interest.",
         }
       );
-      setRejectMessage("Application rejected and email sent.");
       setConfirmRejectOpen(false);
-      closeModal();
+      setMessage("Application rejected and email sent.");
+      setConfirmOpen(true);
     } catch (error) {
       console.error("Error rejecting application:", error);
       setRejectMessage("Error rejecting application.");

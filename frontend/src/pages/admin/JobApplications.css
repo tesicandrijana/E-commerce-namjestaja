@@ -45,7 +45,7 @@
 }
 
 .upcoming-table thead {
-  background: linear-gradient(90deg, #f5a811, #ffcc66); /* narandžaste nijanse */
+  background: linear-gradient(90deg, #f5a811, #ffcc66); 
   color: white;
   font-weight: 600;
 }
@@ -63,51 +63,29 @@
 }
 
 .upcoming-table tbody tr:hover {
-  background-color: #fff8e678; /* svijetla narandžasta za hover */
+  background-color: #fff8e678; 
   cursor: pointer;
 }
 
 .upcoming-table select {
-  padding: 6px 8px;
-  border-radius: 6px;
+  font-style: italic;
+  padding: 8px 10px;
+  border-radius: 5px;
   border: 1px solid #ccc;
+  background-color: #fff;
   font-size: 1rem;
+  color: #2c3e50;
   cursor: pointer;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .upcoming-table select:hover,
 .upcoming-table select:focus {
   border-color: #f5a811;
+  box-shadow: 0 0 5px rgba(245, 168, 17, 0.4);
   outline: none;
-  box-shadow: 0 0 5px rgba(245, 168, 17, 0.4); /* narandžasta sjenka */
 }
 
-.icon-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s ease;
-}
-
-.icon-button:hover:not(:disabled) {
-  transform: scale(1.2);
-}
-
-.icon-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.icon-button.accepted {
-  color: #28a745; /* zelena */
-}
-
-.icon-button.rejected {
-  color: #dc3545; /* crvena */
-}
 
 .no-intweviews {
   font-style: italic;
@@ -118,6 +96,26 @@
   padding-bottom: 2px;
 }
 
+.send-email-btn {
+  position: fixed;
+  bottom: 130px;
+  right: 30px;
+  background-color: #f4a300;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.send-email-btn:hover {
+  background-color: #f9b01f;
+  transform: scale(1.05);
+}
 
 @media (max-width: 768px) {
   .upcoming-interviews-description {
