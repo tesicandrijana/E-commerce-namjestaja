@@ -1,5 +1,4 @@
 import os
-import random
 import shutil
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Response
 from typing import Annotated, List
@@ -9,43 +8,35 @@ from app.schemas.job_application import JobApplicationCreate, JobApplicationSche
 from app.models.models import JobApplication, User
 from fastapi.responses import FileResponse
 from datetime import datetime
-from app.utils.email import send_email
+from app.utils.email import send_email, get_schedule_email, get_rejection_email, get_approval_email
 from app.services.user_service import hash_password
 from app.utils.passwords import generate_random_password
+from app.utils.files import UPLOAD_DIR
+from app.services.job_application_service import generate_unique_email, generate_user_credentials
+from app.repositories import job_application_repository
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
-UPLOAD_DIR = "uploaded_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
-
 @router.get("/{job_app_id}", response_model=JobApplicationSchema)
 def get_job_application(job_app_id: int, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
     return job_app
 
-
 @router.get("/", response_model=List[JobApplicationSchema])
 def get_all_job_applications(db: Session = Depends(get_db)):
-    applications = db.query(JobApplication).filter(JobApplication.status == 'waiting').all()
-    return applications
-
+    return job_application_repository.get_all_waiting_applications(db)
 
 @router.post("/", response_model=JobApplicationSchema)
 def create_job_application(job_app: JobApplicationCreate, db: Session = Depends(get_db)):
     job_app_db = JobApplication(**job_app.dict())
-    db.add(job_app_db)
-    db.commit()
-    db.refresh(job_app_db)
-    return job_app_db
-
+    return job_application_repository.create_job_application(db, job_app_db)
 
 @router.post("/{job_app_id}/upload-cv", response_model=JobApplicationSchema)
 async def upload_cv_file(job_app_id: int, cv_file: UploadFile = File(...), db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
 
@@ -55,14 +46,11 @@ async def upload_cv_file(job_app_id: int, cv_file: UploadFile = File(...), db: S
         shutil.copyfileobj(cv_file.file, buffer)
 
     job_app.cv_file = filename
-    db.commit()
-    db.refresh(job_app)
-    return job_app
-
+    return job_application_repository.update_job_application(db, job_app)
 
 @router.get("/{job_app_id}/download-cv")
 def download_cv_file(job_app_id: int, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
 
@@ -76,27 +64,18 @@ def download_cv_file(job_app_id: int, db: Session = Depends(get_db)):
 
     return FileResponse(path=file_path, filename=job_app.cv_file, media_type="application/pdf")
 
-
 @router.post("/{job_app_id}/schedule")
 def schedule_interview(job_app_id: int, schedule: ScheduleRequest, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
 
     interview_dt = datetime.combine(schedule.date, schedule.time)
     job_app.status = "scheduled"
     job_app.interview_time = interview_dt
-    db.add(job_app)
-    db.commit()
-    db.refresh(job_app)
+    job_application_repository.update_job_application(db, job_app)
 
-    subject = "Interview Scheduled"
-    body = (
-        f"Dear {job_app.name},\n\n"
-        f"Your interview for the position of {job_app.role} has been scheduled on "
-        f"{interview_dt.strftime('%Y-%m-%d %H:%M')}.\n\n"
-        f"Best regards,\nFurni Style Team"
-    )
+    subject, body = get_schedule_email(job_app, interview_dt)
 
     try:
         send_email(job_app.email, subject, body)
@@ -104,60 +83,34 @@ def schedule_interview(job_app_id: int, schedule: ScheduleRequest, db: Session =
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
 
-
 @router.post("/{app_id}/reject")
 def reject_application(app_id: int, db: Session = Depends(get_db)):
-    app = db.query(JobApplication).filter(JobApplication.id == app_id).first()
+    app = job_application_repository.get_job_application_by_id(db, app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
 
-    subject = "Job Application Rejection"
-    body = (
-        f"Dear {app.name},\n\n"
-        f"We are sorry, but your job application for the position of {app.role} has been rejected. "
-        f"We hope you will have better luck next time.\n\n"
-        f"Best regards,\nFurni Style Team"
-    )
+    subject, body = get_rejection_email(app)
 
     try:
         send_email(app.email, subject, body)
-        db.delete(app)
-        db.commit()
+        job_application_repository.delete_job_application(db, app)
         return {"message": "Application rejected, email sent and application removed."}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
 
-
 @router.get("/interviews/upcoming", response_model=List[JobApplicationSchema])
 def get_upcoming_interviews(db: Session = Depends(get_db)):
-    return (
-        db.query(JobApplication)
-        .filter(JobApplication.status == "scheduled")
-        .order_by(JobApplication.interview_time)
-        .all()
-    )
-
+    return job_application_repository.get_upcoming_interviews(db)
 
 @router.post("/{app_id}/approve")
 def approve_application(app_id: int, db: Session = Depends(get_db)):
-    app = db.query(JobApplication).filter(JobApplication.id == app_id).first()
+    app = job_application_repository.get_job_application_by_id(db, app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
 
-    clean_name = app.name.lower().replace(" ", "")
-    role_clean = app.role.lower().replace(" ", "")
-    generated_email = f"{clean_name}@furnystyle.{role_clean}.com"
-
-    if db.query(User).filter(User.email == generated_email).first():
-        random_number = random.randint(1, 999)
-        generated_email = f"{clean_name}{random_number}@furnystyle.{role_clean}.com"
-
-        if db.query(User).filter(User.email == generated_email).first():
-            raise HTTPException(status_code=400, detail="Generated email already exists, please resolve manually.")
-
-    generated_password = generate_random_password()
-    hashed_password = hash_password(generated_password)
+    generated_email = generate_unique_email(app, db)
+    generated_password, hashed_password = generate_user_credentials()
 
     new_user = User(
         name=app.name,
@@ -173,20 +126,10 @@ def approve_application(app_id: int, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
-        subject = "Job Application Accepted - Account Created"
-        body = (
-            f"Dear {app.name},\n\n"
-            f"Congratulations! Your application for the position of {app.role} has been accepted.\n"
-            f"An account has been created for you with the following credentials:\n\n"
-            f"Email: {generated_email}\n"
-            f"Password: {generated_password}\n\n"
-            f"Please log in and change your password as soon as possible.\n\n"
-            f"Best regards,\nFurni Style Team"
-        )
+        subject, body = get_approval_email(app, generated_email, generated_password)
 
         send_email(app.email, subject, body)
-        db.delete(app)
-        db.commit()
+        job_application_repository.delete_job_application(db, app)
 
         return {"message": "Application approved, account created, email sent and application removed."}
     except Exception as e:
