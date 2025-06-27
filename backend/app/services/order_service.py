@@ -71,6 +71,26 @@ def get_sorted_and_filtered_orders(
         "total" : count
     }
 
+def orders_per_month(session: Session):
+    db_orders_per_month = order_repository.orders_per_month(session)
+
+    month_names = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ]
+
+    result = []
+
+    for row in db_orders_per_month:
+        month_number = int(row.month)
+        count = row.count
+
+        result.append({
+            "name": month_names[month_number - 1],
+            "orders": count
+        })
+
+    return result
 
 
 

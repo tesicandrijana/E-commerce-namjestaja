@@ -43,7 +43,7 @@ def create_discounts(session: Session, discounts: list[discount_schema.DiscountC
         if overlaps != []:
             raise HTTPException(
                 status_code=400,
-                detail="Couldn't create discounts due to overlap:\n" + "\n\n".join(overlaps)
+                detail="Couldn't create discounts due to:\n" + "\n\n".join(overlaps)
             )
         
     return added_discounts

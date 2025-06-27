@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react'
 import './ManagerReviewsView.css'
 import axios from 'axios'
 import Rating from '@mui/material/Rating';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import IconButton from '@mui/material/IconButton';
@@ -20,35 +18,38 @@ function ManagerReviewsView() {
     const [sortBy, setSortBy] = useState("rating");
     const [sortOrder, setSortOrder] = useState("asc");
     const [searchQuery, setSearchQuery] = useState();
-       const fetchReviews = async () => {
-            try {
-                const res = await axios.get("http://localhost:8000/reviews/manager", {
-                    params: {
-                        offset: 0,
-                        limit: 100,
-                        sort_by: sortBy || undefined,
-                        sort_dir: sortOrder || undefined,
-                        rating: ratingFilter || undefined,
-                        search: searchQuery || undefined
-                    }
+    const fetchReviews = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/reviews/manager", {
+                params: {
+                    offset: 0,
+                    limit: 100,
+                    sort_by: sortBy || undefined,
+                    sort_dir: sortOrder || undefined,
+                    rating: ratingFilter || undefined,
+                    search: searchQuery || undefined
+                }
 
-                });
-                setReviews(res.data);
-                console.log(res.data);
-            }
-            catch (e) {
-                console.error(e);
-            }
+            });
+            setReviews(res.data);
+            console.log(res.data);
         }
+        catch (e) {
+            console.error(e);
+        }
+    }
     useEffect(() => {
-         fetchReviews();
+        fetchReviews();
 
-    },[sortBy, sortOrder, searchQuery, ratingFilter])
+    }, [sortBy, sortOrder, searchQuery, ratingFilter])
 
     return (
         <div className='reviews-view-container'>
             <div className='reviews-view-title'>
-                <h2>Reviews</h2>
+                <h1 className='reviews-title'>Reviews</h1>
+                <h5>Read and manage customer feedback with ease</h5>
+                <p>Use filters or search to find specific reviews</p>
+                <p>Click on a review to view more product details or take action</p>
             </div>
 
             <div className='reviews-view-nav'>
@@ -79,17 +80,17 @@ function ManagerReviewsView() {
                     }}
                 />
 
-                <ProductSearchBar 
-                value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-          }}
-          />
+                <ProductSearchBar
+                    value={searchQuery}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                    }}
+                />
             </div>
 
             <div className='review-card-list'>
                 {reviews?.map((review) => (
-                    <ReviewCard key={review.id} review={review} fetchReviews={fetchReviews}/>
+                    <ReviewCard key={review.id} review={review} fetchReviews={fetchReviews} />
                 ))}
             </div>
         </div>

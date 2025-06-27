@@ -1,7 +1,7 @@
 from sqlmodel import Session, select
 from app.models.models import Order, Delivery, OrderItem
 from typing import Any
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func,extract
 from sqlalchemy.orm import joinedload
 
 
@@ -58,6 +58,13 @@ def count_orders(session: Session, filters: list[Any] = []):
         stmt = stmt.where(*filters)
     return session.exec(stmt).one()
 
+def orders_per_month(session: Session):
+    return session.exec(select(
+            extract("month", Order.date).label("month"),
+            func.count(Order.id).label("count")
+        )
+        .group_by("month")
+        .order_by("month")).all()
 
 
 # detalji narudzbe sa joinovima

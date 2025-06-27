@@ -52,8 +52,16 @@ def get_recent_products(
 
     return db.exec(statement).all()
 
+ 
+@router.get("/manager-dashboard-stats")
+def manager_dashboard_stats(session: SessionDep):
+    return product_service.get_manager_dashboard_stats(session)
 
+@router.get("/stock-alerts")
+def get_stock_alerts(session: SessionDep):
+    return product_service.get_stock_alerts(session)
 
+# returns total number of products, average rating, number of items that are out of stock
 @router.get("/best-sellers", response_model=list[ProductRead])
 def get_best_sellers(
     limit: int = Query(12, ge=1),
@@ -102,7 +110,6 @@ def read_products_search_filter_sort(
     ):
     return product_service.get_products_search_filter_sort(session, offset,limit, sort_by, sort_dir,out_of_stock,material_id, category_id, search)
 
-# returns total number of products, average rating, number of items that are out of stock
 @router.get("/stats")
 def product_stats(session: SessionDep):
     return product_service.products_stats(session)

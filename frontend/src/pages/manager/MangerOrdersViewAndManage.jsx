@@ -52,53 +52,56 @@ function MangerOrdersViewAndManage() {
   }, [page, rowsPerPage, sortColumn, sortOrder, status, searchQuery])
   return (
     <div className='orders-view-container'>
-      
+
 
       <div className='orders-view-title'>
-        <h2>View And Manage Orders</h2>
+        <h1 className="orders-title">View and Manage Orders</h1>
+        <h5>Switch between managing deliveries and reviewing all orders</h5>
+        <p>Use the search bar to find orders by Order ID, customer name, or delivery person</p>
+        <p>Assign deliveries easily using drag-and-drop</p>
       </div>
       <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)} centered>
         <Tab label="Manager Orders" />
         <Tab label="Order Table" />
       </Tabs>
 
-      { activeTab === 0 &&
+      {activeTab === 0 &&
         <div >
-        <ManagerOrders />
-      </div>}
-{activeTab===1 &&
-      <>
-      <div className='orders-table-nav'>
-        {/* <ProductFilter categories={categories} materials={materials} handleMaterialSelect={setSelectedMaterial} handleCategorySelect={setSelectedCategory} handleOutOfStockOnly={setOutOfStockOnly} />
+          <ManagerOrders />
+        </div>}
+      {activeTab === 1 &&
+        <>
+          <div className='orders-table-nav'>
+            {/* <ProductFilter categories={categories} materials={materials} handleMaterialSelect={setSelectedMaterial} handleCategorySelect={setSelectedCategory} handleOutOfStockOnly={setOutOfStockOnly} />
        */} <ProductSearchBar
-          placeholder={"Search by ID or name… "}
-       value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            setPage(0)
-          }
-          }
-        />
-      </div>
-      <OrderTable
-        orders={orders}
-        page={page}
-        handleChangePage={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        handleChangeRowsPerPage={handleChangeRowsPerPage}
+              placeholder={"Search by ID or name… "}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setPage(0)
+              }
+              }
+            />
+          </div>
+          <OrderTable
+            orders={orders}
+            page={page}
+            handleChangePage={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            handleChangeRowsPerPage={handleChangeRowsPerPage}
 
-        onSort={(columnId) => {
-          if (columnId === sortColumn) {
-            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-          } else {
-            setSortColumn(columnId);
-            setSortOrder('asc');
-          }
-        }}
-        sortColumn={sortColumn}
-        sortOrder={sortOrder}
-      />
-      </>}
+            onSort={(columnId) => {
+              if (columnId === sortColumn) {
+                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              } else {
+                setSortColumn(columnId);
+                setSortOrder('asc');
+              }
+            }}
+            sortColumn={sortColumn}
+            sortOrder={sortOrder}
+          />
+        </>}
     </div>
   )
 }

@@ -16,6 +16,11 @@ SessionDep = Annotated[Session, Depends(get_db)]
 def get_unassigned_orders(session: SessionDep):
     return order_service.get_unassigned_orders(session)
 
+
+@router.get("/orders-per-month")
+def orders_per_month(session: SessionDep):
+    return order_service.orders_per_month(session)
+
 @router.get("/myorders", response_model=List[OrderRead])
 def get_my_orders(
     session: Session = Depends(get_session),
@@ -131,10 +136,6 @@ def delete_existing_order(
         raise HTTPException(status_code=404, detail="Order not found")
 
 
-
-
-
-
 @router.patch("/cancel/{order_id}")
 def cancel_order(order_id: int, session: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     order = session.get(Order, order_id)
@@ -150,3 +151,4 @@ def cancel_order(order_id: int, session: Session = Depends(get_session), current
     session.commit()
     session.refresh(order)
     return {"message": "Order cancelled successfully", "order_id": order_id}
+

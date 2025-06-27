@@ -13,44 +13,46 @@ function ProductDetail({ id }) {
   const [discountedPrice, setDiscountedPrice] = useState(null);
   const { currentUser } = useAuth();
 
-  useEffect(() => {
-    const fetchProductAndDiscount = async () => {
-      try {
-        // Fetch product details
-        const productRes = await axios.get(`http://localhost:8000/products/${id}`);
-        const formattedImages = productRes.data.images.map(
-          (img) => `http://localhost:8000/static/product_images/${img.image_url}`
+  const fetchProductAndDiscount = async () => {
+    try {
+      // Fetch product details
+      const productRes = await axios.get(`http://localhost:8000/products/${id}`);
+      const formattedImages = productRes.data.images.map(
+        (img) => `http://localhost:8000/static/product_images/${img.image_url}`
+      );
+      const productData = {
+        ...productRes.data,
+        images: formattedImages,
+      };
+      setProduct(productData);
+
+      // Fetch material if available
+      if (productRes.data.material_id) {
+        const materialRes = await axios.get(
+          `http://localhost:8000/materials/${productRes.data.material_id}`
         );
-        const productData = {
-          ...productRes.data,
-          images: formattedImages,
-        };
-        setProduct(productData);
-
-        // Fetch material if available
-        if (productRes.data.material_id) {
-          const materialRes = await axios.get(
-            `http://localhost:8000/materials/${productRes.data.material_id}`
-          );
-          setMaterial(materialRes.data.name);
-        }
-
-        // Fetch discounted price per product
-        const discountRes = await axios.get(
-          `http://localhost:8000/products/${id}/discounted-price`
-        );
-        const discounted = parseFloat(discountRes.data.discounted_price);
-
-        // If discounted price is less than original price, store it; else, null
-        if (!isNaN(discounted) && discounted < productRes.data.price) {
-          setDiscountedPrice(discounted);
-        } else {
-          setDiscountedPrice(null);
-        }
-      } catch (e) {
-        console.error("Error fetching data:", e);
+        setMaterial(materialRes.data.name);
       }
-    };
+
+      // Fetch discounted price per product
+      const discountRes = await axios.get(
+        `http://localhost:8000/products/${id}/discounted-price`
+      );
+      const discounted = parseFloat(discountRes.data.discounted_price);
+
+      // If discounted price is less than original price, store it; else, null
+      if (!isNaN(discounted) && discounted < productRes.data.price) {
+        setDiscountedPrice(discounted);
+      } else {
+        setDiscountedPrice(null);
+      }
+    } catch (e) {
+      console.error("Error fetching data:", e);
+    }
+  };
+
+  useEffect(() => {
+
 
     fetchProductAndDiscount();
   }, [id]);
@@ -103,16 +105,16 @@ function ProductDetail({ id }) {
             )}
           </div>
 
-          
+
           <div className="action-buttons">{userRole && userRole !== "customer" && (
-            <ProductActions id={id} stock={product.quantity} />
+            <ProductActions id={id} stock={product.quantity} fetchProduct={fetchProductAndDiscount} />
           )}
 
-          <p>
-            {(!userRole || userRole === "customer") && (
-              <AddToCartButton productId={id} stock={product.quantity} />
-            )}
-          </p></div>
+            <p>
+              {(!userRole || userRole === "customer") && (
+                <AddToCartButton productId={id} stock={product.quantity} />
+              )}
+            </p></div>
         </div>
       </div>
     </div>
