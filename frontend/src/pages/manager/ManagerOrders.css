@@ -17,7 +17,7 @@
 .order-column-container{
     display:flex;
     flex-direction:column;
-    background-color: rgba(224, 213, 213, 0.6);
+    background-color: rgba(244, 163, 0, 0.1);
     min-width:280px;
     height: 400px;
     padding: 1rem;

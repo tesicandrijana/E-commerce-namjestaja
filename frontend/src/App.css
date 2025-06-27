@@ -9,6 +9,9 @@
   height: 40vmin;
   pointer-events: none;
 }
+.manager-pages{
+  background-color: burlywood;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

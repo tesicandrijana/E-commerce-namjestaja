@@ -6,14 +6,16 @@ import Dropzone from 'react-dropzone'
 import { Drawer } from '@mui/material';
 
 import axios from 'axios'
+import UniversalModal from '../modals/UniversalModal';
 
 function ProductForm({ mode, open, onClose, id }) {
     const [categories, setCategories] = useState()
     const [materials, setMaterials] = useState()
     const [pictures, setPictures] = useState()
     const [droppedFiles, setDroppedFiles] = useState([]);
-
-    const navigate = useNavigate()
+    const [messageModal, setMessageModal] = useState(false);
+    const [message, setMessage] = useState("");
+    const [messageType, setMessageType] = useState("");
 
     const { register, handleSubmit, reset } = useForm();
 
@@ -28,12 +30,16 @@ function ProductForm({ mode, open, onClose, id }) {
                 })
 
             setPictures([]);
+            setMessageType("success");
+            setMessage("New product added successfully!");
         }
         catch (e) {
-            console.log(e);
+            setMessageType("error")
+            setMessage("Failed to create product. Please try again.")
         }
         finally {
-            reset()
+            reset();
+            setMessageModal(true);
         }
     }
 
@@ -46,10 +52,18 @@ function ProductForm({ mode, open, onClose, id }) {
                         "Content-type": "multipart/form-data",
                     }
                 })
+            setMessageType("success");
+            setMessage("Product edited successfully!");
+            onClose();
 
         }
         catch (e) {
             console.log(e);
+            setMessageType("error")
+            setMessage("Failed to edit product. Please try again.")
+        }
+        finally {
+            setMessageModal(true);
         }
 
     }
@@ -144,17 +158,17 @@ function ProductForm({ mode, open, onClose, id }) {
             PaperProps={{
                 sx: {
                     width: {
-                        lg:'60%',
+                        lg: '60%',
                         xs: 300,
-                        md:'100%',
+                        md: '100%',
                     },
-                    height:{
-                        xs:'100%',
+                    height: {
+                        xs: '100%',
                         md: '100%',
                     },
                     padding: 0,
                     boxSizing: 'border-box',
-                    borderRadius:' 15px 0px 0px 15px '
+                    borderRadius: ' 15px 0px 0px 15px '
                 }
             }}
         >
@@ -252,9 +266,21 @@ function ProductForm({ mode, open, onClose, id }) {
                             <input type="submit" value="Submit" className="submit-btn" />
                         </div>
                     </section>
-                </div>
+                </div>"
 
             </form>
+
+            {messageModal && (
+                <UniversalModal
+                    isOpen={messageModal}
+                    onClose={() => setMessageModal(false)}
+                    title="New Product"
+                    message={message}
+                    type={messageType}
+                />
+            )}
+
+
         </Drawer>
     );
 }

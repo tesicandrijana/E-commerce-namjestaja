@@ -3,7 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import './RestockModal.css';
 
-function RestockModal({ id,onClose }) {
+function RestockModal({ id, onClose, fetchProduct, fetchProducts }) {
     const {
         register,
         handleSubmit,
@@ -14,6 +14,7 @@ function RestockModal({ id,onClose }) {
     const submitHandler = async (data) => {
         try {
             await axios.patch(`http://localhost:8000/products/${id}/restock`, data);
+            await fetchProduct();
             onClose();
         }
         catch (e) {

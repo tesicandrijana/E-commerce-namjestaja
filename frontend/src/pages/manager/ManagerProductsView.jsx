@@ -59,7 +59,7 @@ function ManagerProductsView() {
   const [formDrawerOpen, setFormDrawerOpen] = useState(false);
   const [detailDrawerOpen, setDetailDrawerOpen] = useState(false);
   const [productId, setProductId] = useState();
-  
+
   const openFormDrawer = () => {
     setFormDrawerOpen(true);
     setProductId(null);
@@ -121,10 +121,14 @@ function ManagerProductsView() {
 
       <div className='products-view-title'>
         <h2>View Products</h2>
+        <h5>Manage your product inventory effectively from this panel</h5>
+        <p>Use filters and search to quickly find products by category, material, or stock status</p>
+        <p>Click on column headers to sort, or select rows for bulk actions</p>
       </div>
       <div className="product-table-nav2">
         <ProductsStats stats={productStats} />
         <ProductTableActions
+          setSelectedIds={setSelectedIds}
           selectedIds={selectedIds}
           fetchProducts={fetchProducts}
           handleOpenDrawer={openFormDrawer}
@@ -164,7 +168,7 @@ function ManagerProductsView() {
       />
       <ProductForm open={formDrawerOpen} mode={'create'} onClose={closeDrawers} />
 
-      <ProductDetailDrawer id={productId} open={detailDrawerOpen} onClose={closeDrawers} />
+      <ProductDetailDrawer id={productId} open={detailDrawerOpen} onClose={closeDrawers} fetchProducts={fetchProducts} />
     </div>
   )
 }
