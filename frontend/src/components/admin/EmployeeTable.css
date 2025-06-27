@@ -10,7 +10,7 @@
 }
 
 .employees-table th {
- color: #007bff;
+  color: #f5a811;
   padding: 12px 15px;
   text-align: left;
   font-size: 1.1rem;
@@ -26,7 +26,7 @@
 }
 
 .employees-table tbody tr:hover {
-  background-color:#f0f4fa; /* blago svetlija nijansa na hover */
+  background-color: #fff8e6; /* blago svetlija narandžasta na hover */
 }
 
 /* Zaobljeni uglovi prve i poslednje ćelije */
@@ -45,9 +45,9 @@
 
 /* Dugme za edit */
 .edit-btn {
-  background-color: white; 
-  color: #007bff;     
-  border-style: none; 
+  background-color: white;
+  color: #f5a811;
+  border-style: none;
   font-size: 2rem;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -60,7 +60,7 @@
 }
 
 .edit-btn:hover {
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(245, 168, 17, 0.4); /* narandžasta senka */
 }
 
 .pagination {
@@ -73,7 +73,7 @@
 }
 
 .pagination button {
-  background-color: #007BFF;
+  background-color: #f5a811;
   border: none;
   color: white;
   padding: 8px 16px;
@@ -89,7 +89,7 @@
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: #d48806; /* tamnija nijansa narandžaste */
 }
 
 .pagination span {

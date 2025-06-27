@@ -2,6 +2,7 @@ from sqlmodel import Session
 from app.repositories import order_repository
 from app.models.models import Order, User,Delivery
 from app.services import delivery_service
+from fastapi import HTTPException
 from sqlalchemy import or_
 
 
@@ -68,4 +69,64 @@ def get_sorted_and_filtered_orders(
     return {
         "orders" : orders,
         "total" : count
+    }
+
+
+
+
+
+
+
+# prikaz za zaposlenika
+def get_all_orders_service(session, offset: int = 0, limit: int = 20):
+    orders = order_repository.get_sorted_and_filtered_orders(session, offset=offset, limit=limit)
+    result = []
+    for order in orders:
+        if order.customer:
+            result.append({
+                "id": order.id,
+                "status": order.status,
+                "total_price": order.total_price,
+                "created_at": order.date,
+                "customer": {
+                    "id": order.customer.id,
+                    "name": order.customer.name,
+                    "email": order.customer.email
+                }
+            })
+    return result
+
+
+def get_order_by_id_service(session, order_id: int):
+    order = order_repository.get_order_with_details(session, order_id)
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return {
+        "id": order.id,
+        "status": order.status,
+        "payment_method": order.payment_method,
+        "payment_status": order.payment_status,
+        "transaction_id": order.transaction_id,
+        "total_price": float(order.total_price or 0),
+        "created_at": order.date,
+        "address": order.address,
+        "city": order.city,
+        "postal_code": order.postal_code,
+        "customer": {
+            "id": order.customer.id,
+            "name": order.customer.name,
+            "email": order.customer.email,
+            "phone": order.customer.phone,
+            "address": order.customer.address
+        },
+        "items": [
+            {
+                "product_id": item.product_id,
+                "product_name": item.product.name if item.product else "N/A",
+                "quantity": item.quantity,
+                "price_per_unit": float(item.price_per_unit),
+                "total": float(item.price_per_unit * item.quantity),
+            }
+            for item in order.items
+        ]
     }

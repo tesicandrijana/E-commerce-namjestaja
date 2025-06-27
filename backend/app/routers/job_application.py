@@ -1,58 +1,42 @@
 import os
 import shutil
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile, Response
-from typing import Annotated,List
+from typing import Annotated, List
 from app.dependencies import get_db
 from sqlmodel import Session
 from app.schemas.job_application import JobApplicationCreate, JobApplicationSchema, ScheduleRequest
-from app.models.models import JobApplication
+from app.models.models import JobApplication, User
 from fastapi.responses import FileResponse
-from datetime import datetime,timedelta
-
-import smtplib
-from email.mime.text import MIMEText
-from app.models.models import User  
-
-
+from datetime import datetime
+from app.utils.email import send_email, get_schedule_email, get_rejection_email, get_approval_email
+from app.services.user_service import hash_password
+from app.utils.passwords import generate_random_password
+from app.utils.files import UPLOAD_DIR
+from app.services.job_application_service import generate_unique_email, generate_user_credentials
+from app.repositories import job_application_repository
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
-UPLOAD_DIR = "uploaded_files"
-os.makedirs(UPLOAD_DIR, exist_ok=True)  # kreira folder ako ne postoji
-
 @router.get("/{job_app_id}", response_model=JobApplicationSchema)
 def get_job_application(job_app_id: int, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
     return job_app
 
-
 @router.get("/", response_model=List[JobApplicationSchema])
 def get_all_job_applications(db: Session = Depends(get_db)):
-    applications = db.query(JobApplication).filter(JobApplication.status == 'waiting').all()
-    return applications
-
+    return job_application_repository.get_all_waiting_applications(db)
 
 @router.post("/", response_model=JobApplicationSchema)
-def create_job_application(
-    job_app: JobApplicationCreate,
-    db: Session = Depends(get_db)
-):
+def create_job_application(job_app: JobApplicationCreate, db: Session = Depends(get_db)):
     job_app_db = JobApplication(**job_app.dict())
-    db.add(job_app_db)
-    db.commit()
-    db.refresh(job_app_db)
-    return job_app_db
+    return job_application_repository.create_job_application(db, job_app_db)
 
 @router.post("/{job_app_id}/upload-cv", response_model=JobApplicationSchema)
-async def upload_cv_file(
-    job_app_id: int,
-    cv_file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+async def upload_cv_file(job_app_id: int, cv_file: UploadFile = File(...), db: Session = Depends(get_db)):
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
 
@@ -62,155 +46,92 @@ async def upload_cv_file(
         shutil.copyfileobj(cv_file.file, buffer)
 
     job_app.cv_file = filename
-    db.commit()
-    db.refresh(job_app)
-    return job_app
+    return job_application_repository.update_job_application(db, job_app)
 
 @router.get("/{job_app_id}/download-cv")
 def download_cv_file(job_app_id: int, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
-    if not job_app or not job_app.cv_file:
-        raise HTTPException(status_code=404, detail="CV file not found")
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
+    if not job_app:
+        raise HTTPException(status_code=404, detail="Job application not found")
+
+    if not job_app.cv_file:
+        raise HTTPException(status_code=404, detail="No CV file associated with this application")
 
     file_path = os.path.join(UPLOAD_DIR, job_app.cv_file)
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="File not found on server")
 
-    return FileResponse(
-        path=file_path,
-        filename=job_app.cv_file,
-        media_type="application/pdf"  
-    )
+    if not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="CV file not found on server")
+
+    return FileResponse(path=file_path, filename=job_app.cv_file, media_type="application/pdf")
 
 @router.post("/{job_app_id}/schedule")
 def schedule_interview(job_app_id: int, schedule: ScheduleRequest, db: Session = Depends(get_db)):
-    job_app = db.query(JobApplication).filter(JobApplication.id == job_app_id).first()
+    job_app = job_application_repository.get_job_application_by_id(db, job_app_id)
     if not job_app:
         raise HTTPException(status_code=404, detail="Job application not found")
 
     interview_dt = datetime.combine(schedule.date, schedule.time)
-
     job_app.status = "scheduled"
     job_app.interview_time = interview_dt
-    db.add(job_app)
-    db.commit()
-    db.refresh(job_app)
+    job_application_repository.update_job_application(db, job_app)
 
-    recipient_email = job_app.email
-    subject = "Interview Scheduled"
-    body = f"Dear {job_app.name},\n\nYour interview for the position of {job_app.role} has been scheduled on {interview_dt.strftime('%Y-%m-%d %H:%M')}.\n\nBest regards,\nFurni Style Team"
-
-    sender_email = "furnystyle@gmail.com"  
-    sender_password = "kxjz ozro eqib ipjm"           
-    smtp_server = "smtp.gmail.com"
-    smtp_port = 587
+    subject, body = get_schedule_email(job_app, interview_dt)
 
     try:
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = recipient_email
-
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, recipient_email, msg.as_string())
-
+        send_email(job_app.email, subject, body)
         return {"message": "Interview scheduled and email sent."}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
-    
+
 @router.post("/{app_id}/reject")
 def reject_application(app_id: int, db: Session = Depends(get_db)):
-    app = db.query(JobApplication).filter(JobApplication.id == app_id).first()
+    app = job_application_repository.get_job_application_by_id(db, app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
 
-    recipient_email = app.email
-    subject = "Job Application Rejection"
-    body = f"Dear {app.name},\n\nWe are sorry, but your job application for the position of {app.role} has been rejected. We hope you will have better luck next time.\n\nBest regards,\nFurni Style Team"
-
-    sender_email = "furnystyle@gmail.com"  
-    sender_password = "kxjz ozro eqib ipjm"           
-    smtp_server = "smtp.gmail.com"
-    smtp_port = 587
+    subject, body = get_rejection_email(app)
 
     try:
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = recipient_email
-
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, recipient_email, msg.as_string())
-
+        send_email(app.email, subject, body)
+        job_application_repository.delete_job_application(db, app)
+        return {"message": "Application rejected, email sent and application removed."}
     except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=f"Email sending failed: {str(e)}")
-    
-    db.delete(app)
-    db.commit()
-    
-    return {"message": "Application rejected, email sent and application removed."}
-
 
 @router.get("/interviews/upcoming", response_model=List[JobApplicationSchema])
 def get_upcoming_interviews(db: Session = Depends(get_db)):
-    today = datetime.now()
-    next_week = today + timedelta(days=7)
-
-    interviews = (
-        db.query(JobApplication)
-        .filter(
-            JobApplication.interview_time != None,
-            JobApplication.interview_time >= today,
-            JobApplication.interview_time <= next_week
-        )
-        .order_by(JobApplication.interview_time)
-        .all()
-    )
-    return interviews
+    return job_application_repository.get_upcoming_interviews(db)
 
 @router.post("/{app_id}/approve")
 def approve_application(app_id: int, db: Session = Depends(get_db)):
-    app = db.query(JobApplication).filter(JobApplication.id == app_id).first()
+    app = job_application_repository.get_job_application_by_id(db, app_id)
     if not app:
         raise HTTPException(status_code=404, detail="Application not found")
 
-    app.status = "accepted"
-    db.add(app)
+    generated_email = generate_unique_email(app, db)
+    generated_password, hashed_password = generate_user_credentials()
+
+    new_user = User(
+        name=app.name,
+        email=generated_email,
+        password=hashed_password,
+        role=app.role,
+        phone=app.phone,
+        address=app.address
+    )
+    db.add(new_user)
 
     try:
         db.commit()
-        db.refresh(app)
+        db.refresh(new_user)
 
-        recipient_email = app.email
-        subject = "Job Application Accepted"
-        body = f"Dear {app.name},\n\nCongratulations! Your job application for the position of {app.role} has been accepted. We will contact you soon with the next steps.\n\nBest regards,\nFurni Style Team"
+        subject, body = get_approval_email(app, generated_email, generated_password)
 
-        sender_email = "furnystyle@gmail.com"  
-        sender_password = "kxjz ozro eqib ipjm"           
-        smtp_server = "smtp.gmail.com"
-        smtp_port = 587
+        send_email(app.email, subject, body)
+        job_application_repository.delete_job_application(db, app)
 
-        msg = MIMEText(body)
-        msg["Subject"] = subject
-        msg["From"] = sender_email
-        msg["To"] = recipient_email
-
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, recipient_email, msg.as_string())
-
-    except smtplib.SMTPException as smtp_err:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Email sending failed: {smtp_err}")
-
+        return {"message": "Application approved, account created, email sent and application removed."}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {e}")
-
-    return {"message": "Application approved, acceptance email sent and status updated."}
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")

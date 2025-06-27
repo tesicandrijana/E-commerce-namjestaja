@@ -23,12 +23,14 @@ const SupportOrders = () => {
   if (error) return <p className="error-message">{error}</p>;
   if (!orders.length) return <p className="loading">No orders available.</p>;
 
+
   return (
+    <main className="orders-main">
     <div className="orders-container">
-      <button className="back-link" onClick={() => navigate(-1)}>
+      <button className="back-link" onClick={() => navigate("/support")}>
         ←
       </button>
-      <h1 className="title">Customer Orders</h1>
+      <h1 className="support-orders-title">Customer Orders</h1>
       <div className="orders-table-wrapper">
         <table className="orders-table">
           <thead>
@@ -66,6 +68,7 @@ const SupportOrders = () => {
         </table>
       </div>
     </div>
+  </main>
   );
 };
 

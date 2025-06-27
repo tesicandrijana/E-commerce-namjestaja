@@ -7,17 +7,17 @@ export default function ChatBox({ complaintId, currentUser }) {
   const socketRef = useRef(null);               // referenca za websocket
   const bottomRef = useRef(null);               // za automatski scroll
 
-  // Prikupi sve prethodne poruke kada se učita komponenta
+  // Prikupi sve prethodne poruke kada se ucita komponenta
   useEffect(() => {
     fetch(`http://localhost:8000/complaints/${complaintId}/messages`, {
-      credentials: "include", // da se šalju cookies
+      credentials: "include", // da se salju cookies
     })
       .then((res) => res.json())
       .then((data) => setMessages(data))
       .catch((err) => console.error("Greška pri dohvatu poruka:", err));
   }, [complaintId]);
 
-  // Otvaranje WebSocket konekcije
+  //otvaranje websocket konekcije
   useEffect(() => {
     const socket = new WebSocket(`ws://localhost:8000/ws/chat/${complaintId}`);
     socketRef.current = socket;
@@ -44,13 +44,15 @@ export default function ChatBox({ complaintId, currentUser }) {
     };
   }, [complaintId]);
 
-  // Scroll na kraj poruka nakon svake promjene
+  //scroll na kraj poruka nakon svake promjene
   useEffect(() => {
     const chatBox = bottomRef.current?.parentNode;
     if (chatBox) {
       chatBox.scrollTop = chatBox.scrollHeight;
     }
   }, [messages]);
+
+
 
   // Funkcija za slanje poruke
   const sendMessage = () => {
@@ -92,7 +94,7 @@ export default function ChatBox({ complaintId, currentUser }) {
         <input
           type="text"
           className="chat-input"
-          placeholder="Upišite poruku..."
+          placeholder="Send a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />

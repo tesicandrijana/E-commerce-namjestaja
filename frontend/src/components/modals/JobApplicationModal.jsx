@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
-import ConfirmModal from './ConfirmModal';
+import ConfirmModal from "./ConfirmModal";
+import UniversalModal from "./UniversalModal";
 import "./JobApplicationModal.css";
 
-function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal }) {
+function JobApplicationModal({
+  selectedApp,
+  loadingDetails,
+  error,
+  closeModal,
+}) {
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
   const [message, setMessage] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
-  
-  // Novi state za modal odbijanja
+
   const [confirmRejectOpen, setConfirmRejectOpen] = useState(false);
   const [rejectMessage, setRejectMessage] = useState("");
 
@@ -36,22 +41,42 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
     }
   };
 
-  // Funkcija za odbijanje zahteva
   const handleReject = async () => {
     try {
       await axios.post(
         `http://localhost:8000/job-application/${selectedApp.id}/reject`,
         {
-          message: "Your application has been rejected. Thank you for your interest."
+          message:
+            "Your application has been rejected. Thank you for your interest.",
         }
       );
-      setRejectMessage("Application rejected and email sent.");
       setConfirmRejectOpen(false);
-      closeModal(); // zatvori modal posle odbijanja
+      setMessage("Application rejected and email sent.");
+      setConfirmOpen(true);
     } catch (error) {
       console.error("Error rejecting application:", error);
       setRejectMessage("Error rejecting application.");
       setConfirmRejectOpen(false);
+    }
+  };
+
+  const handleDownloadCv = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/job-application/${selectedApp.id}/download-cv`,
+        { responseType: "blob" }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", selectedApp.cv_file || "cv.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error("Error downloading CV:", error);
+      alert("Failed to download CV.");
     }
   };
 
@@ -77,19 +102,20 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
             ) : (
               <>
                 <h2>{selectedApp.name}</h2>
-                <p><strong>Email:</strong> {selectedApp.email}</p>
-                <p><strong>Role:</strong> {selectedApp.role}</p>
+                <p>
+                  <strong>Email:</strong> {selectedApp.email}
+                </p>
+                <p>
+                  <strong>Role:</strong> {selectedApp.role}
+                </p>
 
                 <div className="modal-actions">
-                  <a
-                    href={selectedApp.cvUrl}
+                  <button
+                    onClick={handleDownloadCv}
                     className="download-cv-btn"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download
                   >
                     Download CV
-                  </a>
+                  </button>
                 </div>
               </>
             )}
@@ -126,7 +152,7 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
           <div className="reject-container">
             <button
               className="reject-btn"
-              onClick={() => setConfirmRejectOpen(true)} 
+              onClick={() => setConfirmRejectOpen(true)}
             >
               Reject the Request
             </button>
@@ -135,17 +161,15 @@ function JobApplicationModal({ selectedApp, loadingDetails, error, closeModal })
         </div>
       </div>
 
-      <ConfirmModal
+      <UniversalModal
         isOpen={confirmOpen}
-        title="Invitation for interview"
-        message="Interview scheduled and email sent successfully."
-        confirmText="OK"
-        cancelText="Cancel"
-        onConfirm={() => {
+        onClose={() => {
           setConfirmOpen(false);
           closeModal();
         }}
-        onCancel={() => setConfirmOpen(false)}
+        type="success"
+        title="Interview Scheduled"
+        message="Interview has been successfully scheduled and an email has been sent."
       />
 
       <ConfirmModal

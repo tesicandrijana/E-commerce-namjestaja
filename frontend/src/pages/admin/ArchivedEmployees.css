@@ -22,7 +22,7 @@ p {
 .restore-btn {
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: #007bff;
+  background-color: #f4a300;
   color: white;
   border: none;
   border-radius: 8px;
@@ -33,7 +33,7 @@ p {
 }
 
 .restore-btn:hover {
-  background-color: #0056b3;
+  background-color: rgba(234, 160, 33, 0.811);
 }
 
 .restore-btn:disabled {
@@ -53,7 +53,7 @@ p {
   width: 100%;
   justify-content: center;
   align-items: flex-start;
-  padding: 1rem; /* smanji padding ili skini */
+  padding: 1rem; 
   min-height: 100vh;
   box-sizing: border-box;
   background-image: url('/public/admin/archivedfiles.png');
@@ -63,8 +63,8 @@ p {
 }
 
 .left-content {
-  width: 90vw; /* 90% širine viewporta */
-  max-width: none; /* bez max širine */
+  width: 90vw; 
+  max-width: none; 
   background-color: rgba(255, 255, 255, 0.4);
   padding: 2rem;
   border-radius: 10px;

@@ -64,8 +64,9 @@ export default function ComplaintsList() {
   ).length;
 
   return (
+    <main className="complaints-list-main">
     <div className="cf-wrapper">
-      <button className="back-link" onClick={() => navigate(-1)}>
+      <button className="back-link" onClick={() => navigate("/support")}>
         ←
       </button>
       <h1 className="cf-title">Customer Complaints & Returns</h1>
@@ -172,5 +173,6 @@ export default function ComplaintsList() {
         ))}
       </div>
     </div>
+    </main>
   );
 }

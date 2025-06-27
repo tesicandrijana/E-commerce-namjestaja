@@ -25,16 +25,17 @@ const SupportOrderDetails = () => {
   if (!order) return <p className="loading">Loading order...</p>;
 
   return (
+    <main className="order-details-main">
     <div className="order-details-container">
       <button className="back-link" onClick={() => navigate(-1)}>
         ←
       </button>
 
-      <h1 className="title">Order Details #{order.id}</h1>
+      <h1 className="support-order-details-title">Order Details #{order.id}</h1>
 
-      <section className="order-section">
+      <section className="order-section-support">
         <h3>Status & Payment</h3>
-        <div className="order-info-grid">
+        <div className="order-info-grid-support">
           <p><strong>Status:</strong> {order.status}</p>
           <p><strong>Payment Method:</strong> {order.payment_method}</p>
           <p><strong>Payment Status:</strong> {order.payment_status}</p>
@@ -43,9 +44,11 @@ const SupportOrderDetails = () => {
         </div>
       </section>
 
-      <section className="order-section">
+
+
+      <section className="order-section-support">
         <h3>Customer Info</h3>
-        <div className="order-info-grid">
+        <div className="order-info-grid-support">
           <p><strong>Name:</strong> {order.customer.name}</p>
           <p><strong>Email:</strong> {order.customer.email}</p>
           <p><strong>Phone:</strong> {order.customer.phone || "N/A"}</p>
@@ -53,7 +56,7 @@ const SupportOrderDetails = () => {
         </div>
       </section>
 
-      <section className="order-section">
+      <section className="order-section-support">
         <h3>Items</h3>
         <div className="items-list">
           {order.items.map((item, index) => (
@@ -61,7 +64,7 @@ const SupportOrderDetails = () => {
               <div>
                 <p className="item-name">{item.product_name}</p>
                 <p className="item-meta">
-                  {item.quantity} × {item.price_per_unit} BAM
+                  {item.quantity} x {item.price_per_unit} BAM
                 </p>
               </div>
               <div className="item-total">{item.total.toFixed(2)} BAM</div>
@@ -70,6 +73,7 @@ const SupportOrderDetails = () => {
         </div>
       </section>
     </div>
+    </main>
   );
 };
 
