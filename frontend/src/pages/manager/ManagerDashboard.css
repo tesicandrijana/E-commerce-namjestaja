@@ -1,26 +1,95 @@
-.dashboard-container{
-    margin:auto;
-    width: 90%;
-    background-color: transparent;
-    display: flex;
+.pm-dashboard {
+  padding: 2rem;
+  background: #fffefc;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  overflow-x: hidden;
+}
+
+.welcome-card {
+  background: linear-gradient(to right, #fff9ec, #fff4e1);
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.welcome-text {
+  flex: 1;
+}
+
+.welcome-image img {
+  max-height: 120px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.action-cards {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+  width: 100%;
+  padding: 3%  10%;
+}
+.card{
+    width: 200px;
+}
+
+.chart-and-notifs {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.stats-box, .notif-box {
+  background: #fff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.stats-box h4,
+.notif-box h4 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.notif-box ul {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.notif-box li {
+  margin-bottom: 0.6rem;
+  list-style-type: disc;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .welcome-card {
     flex-direction: column;
-    justify-content: center;
-}
-.statistics-container{
-    width: 100%;
-    border-radius: 15px;
-    box-shadow: 0 7px 13px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    min-height: 300px;
+    text-align: center;
+    gap: 1rem;
+  }
 
-}
+  .stats-and-notifs {
+    grid-template-columns: 1fr;
+  }
 
-.card-list{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-self: center;
-    flex-wrap: wrap;
-    gap:2rem;
+  .welcome-image img {
+    max-height: 100px;
+  }
 }
-

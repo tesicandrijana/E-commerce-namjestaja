@@ -183,13 +183,33 @@ def count_products(session:Session):
 def products_stats(session:Session):
     avg_rating = product_repository.avg_rating(session)
     stats = {
-        "total": product_repository.count_filtered_products(session),
+        "total": product_repository.get_total_products(session),
         "out_of_stock_count": product_repository.count_filtered_products(session, [Product.quantity == 0]) ,
         "avg_rating": avg_rating if avg_rating else 0
     }
     return stats
 
-
 def bulk_delete(session:Session, req: ProductBulkDeleteReq):
     for id in req.ids:
         delete_product(session,id)
+
+def get_manager_dashboard_stats(session: Session):
+    return {
+        "total_products": product_repository.get_total_products(session),
+        "products_sold": product_repository.get_total_products_sold(session),
+        "discounted": product_repository.get_discounted_products(session),
+        "most_bought_this_month": product_repository.get_most_bought_this_month(session)
+    }     
+
+def get_stock_alerts(session: Session, low_stock_threshold: int = 5):
+    low_stock = product_repository.get_low_stock_products(session, threshold=low_stock_threshold)
+    out_of_stock = product_repository.get_out_of_stock_products(session)
+    messages = []
+
+    for product in low_stock:
+        messages.append(f"Product '{product.name}' is low on stock")
+
+    for product in out_of_stock:
+        messages.append(f"Product '{product.name}' is out of stock")
+
+    return {"messages": messages}

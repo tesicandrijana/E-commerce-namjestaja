@@ -52,7 +52,10 @@ function ManagerDiscountsView() {
     return (
         <div className="discounts-view-container">
             <div className='discounts-view-title'>
-                <h2>View Discounts</h2>
+                <h1>View Discounts</h1>
+                <h5>Manage and track all product discounts in one place</h5>
+                <p>Use the search bar to find discounts for specific products</p>
+                <p>Filter active discounts and sort columns to stay organized</p>
             </div>
             <div className='discounts-table-nav'>
                 <FormControlLabel
@@ -92,7 +95,7 @@ function ManagerDiscountsView() {
                         }
                     }}
                     editRowId={editRowId}
-                    setEditRowId={setEditRowId} 
+                    setEditRowId={setEditRowId}
                     fetchDiscounts={fetchDiscounts}
                     discountCount={discountCount}
                 />

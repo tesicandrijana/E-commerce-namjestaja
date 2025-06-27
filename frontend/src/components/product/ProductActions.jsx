@@ -7,7 +7,7 @@ import ConfirmModal from '../modals/ConfirmModal';
 import ProductForm from './ProductForm';
 import AddToCartButton from '../modals/AddToCartButton';
 
-function ProductActions({ id, stock }) {
+function ProductActions({ id, stock, fetchProduct, fetchProducts }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,15 +39,17 @@ function ProductActions({ id, stock }) {
       {isModalOpen && (
         <RestockModal
           id={id}
-          onClose={()=> setIsModalOpen(false)}
+          onClose={() => setIsModalOpen(false)}
+          fetchProduct={fetchProduct}
+          fetchProducts={fetchProducts}
         />
       )}
       {currentUser?.role === "manager" && (
 
         <>
           <button className="action-btn restock-btn" onClick={() => setIsModalOpen(true)}>Restock</button>
-          <button className="action-btn edit-product-btn" onClick={/* ()=> navigate(`/products/${id}/edit`) */openEditDrawer}>Edit</button>
-          <button className="action-btn delete-product-btn" onClick={()=> setIsConfirmModalOpen(true)}>Delete</button>
+          <button className="action-btn edit-product-btn" onClick={openEditDrawer}>Edit</button>
+          <button className="action-btn delete-product-btn" onClick={() => setIsConfirmModalOpen(true)}>Delete</button>
         </>
       )}
 
@@ -57,17 +59,17 @@ function ProductActions({ id, stock }) {
 
       {isConfirmModalOpen && (
         <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        title="Delete Confirmation"
-        message={`Are you sure you want to delete this product?`}
-        onConfirm={onDelete}
-        onCancel={() => setIsConfirmModalOpen(false)}
-        confirmText="Delete"
-        cancelText="Cancel"
-      />
+          isOpen={isConfirmModalOpen}
+          title="Delete Confirmation"
+          message={`Are you sure you want to delete this product?`}
+          onConfirm={onDelete}
+          onCancel={() => setIsConfirmModalOpen(false)}
+          confirmText="Delete"
+          cancelText="Cancel"
+        />
       )}
-      <ProductForm mode={"edit"} id={id} open={editFormDrawerOpen} onClose={()=>setIsEditFormDrawerOpen(false)} />
-      
+      <ProductForm mode={"edit"} id={id} open={editFormDrawerOpen} onClose={() => setIsEditFormDrawerOpen(false)} />
+
     </div>
   );
 }

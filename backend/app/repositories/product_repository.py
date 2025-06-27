@@ -1,5 +1,5 @@
 from sqlmodel import Session, select
-from app.models.models import Product, ProductImage,Review,OrderItem,Discounts
+from app.models.models import Product, ProductImage,Review,OrderItem,Discounts,Order
 from app.schemas import product as product_schema
 from sqlalchemy import func,desc,and_, case
 from typing import Any
@@ -8,7 +8,7 @@ from datetime import date
 def create_product(session: Session, product: Product) -> Product:
     session.add(product)
     session.commit()
-    session.refresh(product)
+    session.refresh(product) 
 
     return product
 
@@ -110,5 +110,50 @@ def count_filtered_products(session:Session,filters: list[Any] = []):
 def products_out_of_stock(session: Session):
     return session.exec(select(func.count(Product.id)).where(Product.quantity == 0)).one()
 
+def get_total_products(session: Session) -> int:
+    return session.exec(select(func.count()).select_from(Product)).one()
+
 def avg_rating(session: Session):
     return session.exec(select(func.avg(Review.rating))).one()
+
+def get_discounted_products(session: Session):
+    today = date.today()
+    return session.exec(
+        select(func.count()).select_from(Discounts).where(
+            Discounts.start_date <= today,
+            Discounts.end_date >= today
+    )).one()
+
+
+def get_total_products_sold(session: Session) -> int:
+    return session.exec(select(func.sum(OrderItem.quantity))).one() or 0
+
+
+def get_most_bought_this_month(session: Session) -> str:
+    now = date.today()
+    statement = (
+        select(OrderItem.product_id, func.sum(OrderItem.quantity).label("total"))
+        .join(Order, Order.id == OrderItem.order_id)
+        .where(func.extract("month", Order.date) == now.month)
+        .group_by(OrderItem.product_id)
+        .order_by(func.sum(OrderItem.quantity).desc())
+        .limit(1)
+    )
+
+    result = session.exec(statement).first()
+    
+    if result:
+        product = session.exec(
+            select(Product.name).where(Product.id == result.product_id)
+        ).first()
+        return product or "Unknown"
+    
+    return "No data"
+
+def get_low_stock_products(session: Session, threshold: int = 5):
+    stmt = select(Product).where(Product.quantity > 0, Product.quantity <= threshold)
+    return session.exec(stmt).all()
+
+def get_out_of_stock_products(session: Session):
+    stmt = select(Product).where(Product.quantity == 0)
+    return session.exec(stmt).all()

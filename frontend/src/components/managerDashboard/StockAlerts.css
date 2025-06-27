@@ -1,0 +1,20 @@
+.stock-alerts-box {
+  padding: 1rem;
+  overflow-y: scroll;
+  max-height: 300px;
+  margin-bottom:1rem;
+}
+
+.stock-alerts-box h4 {
+  margin-bottom: 0.5rem;
+  color: #ff8800;
+}
+
+.stock-alerts-box ul {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.stock-alerts-box li {
+  margin-bottom: 0.3rem;
+}
