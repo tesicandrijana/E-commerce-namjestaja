@@ -106,8 +106,8 @@ function LoginModal({ role = "customer", onClose }) {
       <div className="login-modal">
         <h2>
           {isLogin
-            ? `Log In as ${role.charAt(0).toUpperCase() + role.slice(1)}`
-            : `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
+            ? `Log In`
+            : `Sign Up`}
         </h2>
         <form onSubmit={handleSubmit}>
           {!isLogin && (
