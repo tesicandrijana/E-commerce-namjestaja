@@ -86,77 +86,107 @@ const ProductDetails = () => {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
-  if (loading) return <p>Loading product...</p>;
-  if (error) return <p>Error loading product: {error}</p>;
-  if (!product) return <p>Product not found.</p>;
+  const stringToColor = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 60%, 50%)`;
+  };
 
-  function stringToColor(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const hue = Math.abs(hash) % 360;
-  return `hsl(${hue}, 60%, 50%)`;
-}
+  if (loading)
+    return (
+      <div className="pd-background">
+        <div className="pd-container">
+          <p>Loading product...</p>
+        </div>
+      </div>
+    );
 
+  if (error)
+    return (
+      <div className="pd-background">
+        <div className="pd-container">
+          <p>Error loading product: {error}</p>
+        </div>
+      </div>
+    );
+
+  if (!product)
+    return (
+      <div className="pd-background">
+        <div className="pd-container">
+          <p>Product not found.</p>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="pd-container">
-      <ProductDetail id={product.id} product={product} rating={rating} reviewCount={reviewCount} />
-    <div className="review-rating-area">
-  {rating !== null && (
-    <div className="average-rating">
-      Rating : <span className="rating-value">{rating.toFixed(1)} / 5</span>
-      <span>({reviewCount} reviews)</span>
-    </div>
-  )}
+    <div className="pd-background">
+      <div className="pd-container">
+        <ProductDetail id={product.id} product={product} rating={rating} reviewCount={reviewCount} />
 
-  {submitError && <p className="error-message">{submitError}</p>}
-
-  <div className="reviews-section">
-    <h3>Customer Reviews</h3>
-    {reviews.length === 0 ? (
-      <p>No reviews yet.</p>
-    ) : (
-      <ul className="reviews-list">
-        {reviews.map((review) => (
-          <li key={review.id} className="review-item">
-            <div
-  className="profile-icon"
-  title={review.customer_name || "Anonymous"}
-  style={{ backgroundColor: stringToColor(review.customer_name || "Anonymous") }}
->
-  {getInitials(review.customer_name)}
-</div>
-
-
-            <div className="review-content">
-              <strong>{review.customer_name || "Anonymous"}</strong>
-              <div className="star-rating-wrapper">
-                <StarRating rating={review.rating} editable={false} size={18} justifyContent="left" />
-              </div>
-              <p className="review-comment">{review.comment}</p>
-              <small className="review-date">
-                {new Date(review.created_at).toLocaleDateString()}
-              </small>
+        <div className="review-rating-area">
+          {rating !== null && (
+            <div className="average-rating">
+              Rating: <span className="rating-value">{rating.toFixed(1)} / 5</span>
+              <span>({reviewCount} reviews)</span>
             </div>
-          </li>
-        ))}
-      </ul>
-    )}
-  </div>
+          )}
 
-  <button className="add-to-cart-btn" onClick={() => setShowModal(true)}>
-    Leave a Review
-  </button>
+          {submitError && <p className="error-message">{submitError}</p>}
 
-  <ReviewModal
-    productId={product.id}
-    isOpen={showModal}
-    onClose={() => setShowModal(false)}
-    onReviewSubmitted={handleReviewSubmitted}
-  />
-</div> </div>
+          <div className="reviews-section">
+            <h3>Customer Reviews</h3>
+            {reviews.length === 0 ? (
+              <p>No reviews yet.</p>
+            ) : (
+              <ul className="reviews-list">
+                {reviews.map((review) => (
+                  <li key={review.id} className="review-item">
+                    <div
+                      className="profile-icon"
+                      title={review.customer_name || "Anonymous"}
+                      style={{ backgroundColor: stringToColor(review.customer_name || "Anonymous") }}
+                    >
+                      {getInitials(review.customer_name)}
+                    </div>
+
+                    <div className="review-content">
+                      <strong>{review.customer_name || "Anonymous"}</strong>
+                      <div className="star-rating-wrapper">
+                        <StarRating
+                          rating={review.rating}
+                          editable={false}
+                          size={18}
+                          justifyContent="left"
+                        />
+                      </div>
+                      <p className="review-comment">{review.comment}</p>
+                      <small className="review-date">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </small>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <button className="add-to-cart-btn" onClick={() => setShowModal(true)}>
+            Leave a Review
+          </button>
+
+          <ReviewModal
+            productId={product.id}
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onReviewSubmitted={handleReviewSubmitted}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

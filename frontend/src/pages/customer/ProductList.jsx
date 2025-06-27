@@ -1,11 +1,15 @@
+import { useParams } from "react-router-dom";
 import ProductGridPage from "./ProductGridPage";
 
 export default function ProductList() {
+  const { categoryName } = useParams();
+
   return (
     <ProductGridPage
       title="Our Products"
-     /*description="Browse by category or search for anything"*/
       fetchUrl="http://localhost:8000/products/"
+      selectedCategoryName={categoryName} 
     />
   );
 }
+

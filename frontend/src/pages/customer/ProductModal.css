@@ -1,0 +1,99 @@
+.pm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.pm-modal {
+  background-color: #fff;
+  border-radius: 20px;
+  width: 800px;
+  max-width: 95%;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.pm-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  color: rgb(64, 64, 64);
+  border: none;
+  font-size: 1.2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.pm-close:hover {
+  background: #bcbcbc;
+}
+
+.pm-image {
+  width: 50%;
+  height: auto;
+  object-fit: cover;
+  border-right: 1px solid #e0e0e0;
+}
+
+.pm-content {
+  width: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.pm-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.pm-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.pm-price-block {
+  font-size: 1.1rem;
+  margin-top: auto;
+}
+
+.pm-price {
+  font-weight: bold;
+  color: #344a67;
+  font-size: 1.4rem;
+}
+
+.pm-price-original {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.pm-price-discounted {
+  color: #d32f2f;
+  font-weight: bold;
+  font-size: 1.4rem;
+}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import StarRatingOverall from "../../components/modals/StarRatingOverall";
 import AddToCartButton from "../../components/modals/AddToCartButton";
 
+
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
 
 export default function ProductCard({

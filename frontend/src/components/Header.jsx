@@ -122,15 +122,28 @@ export default function Header() {
 
             <div className="auth-buttons">
               {currentUser ? (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    navigate("/");
-                  }}
-                  className="btn login-btn"
-                >
-                  <FaSignOutAlt size={20} />
-                </button>
+                isCustomer ? (
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/");
+                    }}
+                    className="btn login-btn"
+                  >
+                    Logout 
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      navigate("/");
+                    }}
+                    className="btn login-btn"
+                    title="Logout"
+                  >
+                    <FaSignOutAlt size={20} />
+                  </button>
+                )
               ) : (
                 <>
                   <button
@@ -139,9 +152,18 @@ export default function Header() {
                   >
                     Login
                   </button>
-                  <Link to="/register" className="btn register-btn">
+                  <button
+                    onClick={() => {
+                      setRole("customer");
+                      setIsModalOpen(true);
+                      setTimeout(() => {
+                        document.dispatchEvent(new CustomEvent("open-signup"));
+                      }, 0);
+                    }}
+                    className="btn register-btn"
+                  >
                     Register
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
@@ -154,33 +176,32 @@ export default function Header() {
 
       {complaintModalOpen && (
         <div className="complaint-modal-backdrop" onClick={() => setComplaintModalOpen(false)}>
-  <div className="complaint-modal-box" onClick={(e) => e.stopPropagation()}>
-    <h3>Customer Support</h3>
-    <p className="complaint-modal-message">
-      You have active complaints that are being handled by our support team.
-      Would you like to view them and continue chatting with us?
-    </p>
+          <div className="complaint-modal-box" onClick={(e) => e.stopPropagation()}>
+            <h3>Customer Support</h3>
+            <p className="complaint-modal-message">
+              You have active complaints that are being handled by our support team.
+              Would you like to view them and continue chatting with us?
+            </p>
 
-    <div className="complaint-modal-buttons">
-      <button
-        className="btn complaint-view-btn"
-        onClick={() => {
-          navigate("/customer/complaints");
-          setComplaintModalOpen(false);
-        }}
-      >
-        View Complaints & Chat
-      </button>
-      <button
-        className="btn complaint-close-btn"
-        onClick={() => setComplaintModalOpen(false)}
-      >
-        Close
-      </button>
-    </div>
-  </div>
-</div>
-
+            <div className="complaint-modal-buttons">
+              <button
+                className="btn complaint-view-btn"
+                onClick={() => {
+                  navigate("/customer/complaints");
+                  setComplaintModalOpen(false);
+                }}
+              >
+                View Complaints & Chat
+              </button>
+              <button
+                className="btn complaint-close-btn"
+                onClick={() => setComplaintModalOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

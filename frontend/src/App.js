@@ -35,6 +35,7 @@ import Returns from "./pages/customer/FooterComponents/Returns";
 
 
 
+
 // Pages (Admin)
 import NewEmployee from "./pages/admin/NewEmployee";
 import Employees from "./pages/admin/Employees";
@@ -101,6 +102,7 @@ function App() {
             {/* Shared Pages */}
             <Route path="/" element={<Home />} />
             <Route path="/shop-products" element={<ProductList />} />
+            <Route path="/shop-products/:categoryName" element={<ProductList />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/product-details/:id" element={<ProductDetails />} />

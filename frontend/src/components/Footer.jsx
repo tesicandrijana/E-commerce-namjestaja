@@ -45,7 +45,7 @@ const Footer = () => {
 
           <div className="footer-contact">
             <h4>Contact Us</h4>
-            <p>1234 Street Name, City, Country</p>
+            <p>Maršala Tita 10, Sarajevo</p>
             <p>Email: furnystyle@gmail.com</p>
             <p>Phone: +1 (234) 567-890</p>
 

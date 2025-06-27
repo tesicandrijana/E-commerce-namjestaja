@@ -63,6 +63,8 @@ class ProductRead(ProductBase):
     category: Optional[CategoryRead] = None
     discount: Optional[DiscountRead] = None
     created_at: Optional[datetime] = None
+    units_sold: Optional[int] = None
+    average_rating: Optional[float] = None
 
     class Config:
         orm_mode = True

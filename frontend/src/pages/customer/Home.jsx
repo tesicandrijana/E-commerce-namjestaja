@@ -70,8 +70,8 @@ const Home = () => {
               Shop Now
             </Link>
           </div>
-          <div className="honeycomb-wrapper">
-            <div className="honeycomb border-layer">
+           <div className="honeycomb-wrapper">
+         {/*   <div className="honeycomb border-layer">
               <div className="column offset">
                 <div className="hex"></div>
                 <div className="hex"></div>
@@ -93,7 +93,7 @@ const Home = () => {
                 <div className="hex"></div>
                 <div className="hex"></div>
               </div>
-            </div>
+            </div>*/}
             <div className="honeycomb content-layer">
               <div className="column offset">
                 <div className="hex">
@@ -122,7 +122,7 @@ const Home = () => {
                 </div>
                 <div className="hex">
                   <img
-                    src="https://www.furniturechoice.co.uk/p/l/FS10001313/FS10001313.jpg"
+                    src="https://cdn.mos.cms.futurecdn.net/q5MyGFajusQxWMQvYSY5mH.jpg"
                     alt="Living Room Interior"
                     loading="lazy"
                   />
