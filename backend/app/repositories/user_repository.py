@@ -34,6 +34,20 @@ def update_user(db: Session, user_id: int, user_update: UserUpdate):
     db.refresh(db_user)
     return db_user
 
+# zaposlenik azurira profil
+def update_support_profile(session, user_id: int, name: str | None = None, password: str | None = None):
+    user = session.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    if name:
+        user.name = name
+    if password:
+        user.password = password  # (već hashirano u servisu)
+    session.commit()
+    session.refresh(user)
+    return user
+
+
 
 def delete_user(db: Session, user_id: int):
     db_user = db.get(User, user_id)

@@ -11,6 +11,7 @@ import re
 from app.models.models import User
 from app.repositories import user_repository
 from app.schemas.user import UserCreate, UserUpdate, Token
+from app.schemas.support import SupportProfileUpdate
 from app.core.config import settings
 from app.database import get_db
 
@@ -103,3 +104,41 @@ def restore_user(db: Session, user_id: int):
 
 def archive_user(db: Session, user_id: int):
     return user_repository.archive_user(db, user_id)
+
+
+
+# get profil zaposlenika
+def get_support_profile_service(session, user_id: int):
+    user = user_repository.get_user_by_id(session, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "id": user.id,
+        "email": user.email,
+        "name": user.name,
+        "role": user.role
+    }
+
+
+# zaposlenik azurira profil
+def update_support_profile_service(session, user_id: int, update_data: SupportProfileUpdate, current_user_id: int):
+    if current_user_id != user_id:
+        raise HTTPException(status_code=403, detail="Cannot edit another user's profile")
+    user = user_repository.get_user_by_id(session, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    name = update_data.name
+    password = update_data.password
+    if password:
+        validate_password_strength(password)
+        password = hash_password(password)
+    updated_user = user_repository.update_support_profile(session, user_id, name, password)
+    return {
+        "id": updated_user.id,
+        "email": updated_user.email,
+        "name": updated_user.name,
+        "role": updated_user.role
+    }
+
+
+
