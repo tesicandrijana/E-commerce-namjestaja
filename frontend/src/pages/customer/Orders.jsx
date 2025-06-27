@@ -13,17 +13,21 @@ export default function Orders() {
   const [showComplaint, setShowComplaint] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [preferredResolution, setPreferredResolution] = useState("");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); 
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showCancelled, setShowCancelled] = useState(false);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
   const [productsMap, setProductsMap] = useState({});
   const [expandedOrders, setExpandedOrders] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 4;
   const [modalProduct, setModalProduct] = useState(null);
 
+<<<<<<< HEAD
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("success");
   const [modalTitle, setModalTitle] = useState("");
@@ -35,6 +39,14 @@ export default function Orders() {
     setModalMessage(message);
     setModalOpen(true);
   };
+=======
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
 
   useEffect(() => {
     fetch("http://localhost:8000/orders/myorders", {
@@ -49,41 +61,28 @@ export default function Orders() {
         }
         return res.json();
       })
-      .then((data) => {
-        setOrders(data);
-      })
+      .then(setOrders)
       .catch((err) => setError(err.message));
   }, []);
 
   useEffect(() => {
     if (orders.length === 0) return;
-
     const productIds = [
       ...new Set(
-        orders.flatMap((order) =>
-          order.items?.map((item) => item.product_id) || []
-        )
+        orders.flatMap((order) => order.items?.map((item) => item.product_id) || [])
       ),
     ];
-
     async function fetchProducts() {
       try {
-        const promises = productIds.map((id) =>
-          fetch(`http://localhost:8000/products/${id}`).then((res) => {
-            if (!res.ok) throw new Error("Failed to fetch product " + id);
-            return res.json();
-          })
+        const products = await Promise.all(
+          productIds.map((id) =>
+            fetch(`http://localhost:8000/products/${id}`).then((res) => res.json())
+          )
         );
-
-        const products = await Promise.all(promises);
-
         const map = {};
         products.forEach((p) => {
           const formattedImages = p.images
-            ? p.images.map(
-                (img) =>
-                  `http://localhost:8000/static/product_images/${img.image_url}`
-              )
+            ? p.images.map((img) => `${IMAGE_BASE_URL}${img.image_url}`)
             : [];
           map[p.id] = { ...p, images: formattedImages };
         });
@@ -92,30 +91,24 @@ export default function Orders() {
         console.error(err);
       }
     }
-
     fetchProducts();
   }, [orders]);
 
   const getImageUrl = (product) => {
-    if (!product)
-      return "https://dummyimage.com/100x100/cccccc/000000&text=No+Image";
-    if (product.images && product.images.length > 0 && product.images[0])
-      return product.images[0];
+    if (!product) return "https://dummyimage.com/100x100/cccccc/000000&text=No+Image";
+    if (product.images?.[0]) return product.images[0];
     if (product.image) return IMAGE_BASE_URL + product.image;
     return "https://dummyimage.com/100x100/cccccc/000000&text=No+Image";
   };
 
-  const formatDateTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString(undefined, {
+  const formatDateTime = (dateString) =>
+    new Date(dateString).toLocaleString(undefined, {
       dateStyle: "medium",
       timeStyle: "short",
     });
-  };
 
   const cancelOrder = (orderId) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
-
     fetch(`http://localhost:8000/orders/cancel/${orderId}`, {
       method: "PATCH",
       credentials: "include",
@@ -128,14 +121,28 @@ export default function Orders() {
         }
         return res.json();
       })
-      .then(() => {
+      .then(() =>
         setOrders((prev) =>
+<<<<<<< HEAD
           prev.map((o) =>
             o.id === orderId ? { ...o, status: "cancelled" } : o
           )
         );
       })
       .catch((err) => showModal("error", "Error", err.message));
+=======
+          prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o))
+        )
+      )
+      .catch((err) =>
+        setModalState({
+          isOpen: true,
+          type: "error",
+          title: "Cancellation Failed",
+          message: err.message,
+        })
+      );
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
   };
 
   const removeOrder = (orderId) => {
@@ -150,7 +157,16 @@ export default function Orders() {
 
   const submitComplaint = () => {
     if (!preferredResolution || !message) {
+<<<<<<< HEAD
       showModal("error", "Missing Fields", "Please fill in both fields.");
+=======
+      setModalState({
+        isOpen: true,
+        type: "error",
+        title: "Missing Fields",
+        message: "Please fill in both resolution and message.",
+      });
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
       return;
     }
 
@@ -172,12 +188,32 @@ export default function Orders() {
         return res.json();
       })
       .then(() => {
+<<<<<<< HEAD
         showModal("success", "Complaint Sent", "Complaint submitted successfully.");
+=======
+        setModalState({
+          isOpen: true,
+          type: "success",
+          title: "Complaint Submitted",
+          message: "Your complaint has been submitted successfully.",
+        });
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
         setShowComplaint(false);
         setPreferredResolution("");
         setMessage("");
       })
+<<<<<<< HEAD
       .catch((err) => showModal("error", "Error", err.message));
+=======
+      .catch((err) =>
+        setModalState({
+          isOpen: true,
+          type: "error",
+          title: "Submission Failed",
+          message: err.message,
+        })
+      );
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
   };
 
   const openOrderDetails = (orderId) => {
@@ -189,15 +225,13 @@ export default function Orders() {
   const toggleExpand = (orderId) => {
     setExpandedOrders((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(orderId)) {
-        newSet.delete(orderId);
-      } else {
-        newSet.add(orderId);
-      }
+      if (newSet.has(orderId)) newSet.delete(orderId);
+      else newSet.add(orderId);
       return newSet;
     });
   };
 
+<<<<<<< HEAD
   if (error || (orders.length === 0 && !error)) {
     return (
       <div className="ot-track-background">
@@ -214,17 +248,24 @@ export default function Orders() {
     );
   }
 
+=======
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
   const filteredOrders = showCancelled
     ? orders
     : orders.filter((o) => o.status !== "cancelled");
-
   const reversedOrders = [...filteredOrders].sort(
     (a, b) => new Date(b.date) - new Date(a.date)
   );
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = reversedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const currentOrders = reversedOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder
+  );
   const totalPages = Math.ceil(reversedOrders.length / ordersPerPage);
 
   return (
@@ -239,7 +280,7 @@ export default function Orders() {
                 setShowCancelled((prev) => !prev);
                 setCurrentPage(1);
               }}
-            />{" "}
+            />
             Show Cancelled Orders
           </label>
         </div>
@@ -248,7 +289,6 @@ export default function Orders() {
           {currentOrders.map((order) => {
             const uniqueProducts = [];
             const seenIds = new Set();
-
             if (order.items) {
               for (const item of order.items) {
                 if (!seenIds.has(item.product_id)) {
@@ -257,10 +297,8 @@ export default function Orders() {
                 }
               }
             }
-
             const isExpanded = expandedOrders.has(order.id);
             const showThreeDots = uniqueProducts.length > 3;
-
             const productsToShow = isExpanded
               ? uniqueProducts
               : showThreeDots
@@ -268,31 +306,15 @@ export default function Orders() {
               : uniqueProducts;
 
             return (
-              <div
-                key={order.id}
-                className="ot-order-card"
-                title={`Order #${order.id}`}
-              >
+              <div key={order.id} className="ot-order-card">
                 <div className="ot-order-card-header">
-                  <h3 className="ot-order-id">Order #{order.id}</h3>
-                  <time className="ot-order-date">{formatDateTime(order.date)}</time>
+                  <h3>Order #{order.id}</h3>
+                  <time>{formatDateTime(order.date)}</time>
                 </div>
-                <div>
-                  Status:{" "}
-                  <span className={`ot-order-status ot-status-${order.status}`}>
-                    {order.status}
-                  </span>
-                </div>
-                <div>
-                  Total:{" "}
-                  {order.total_price ? order.total_price.toFixed(2) : "N/A"} KM
-                </div>
+                <div>Status: <span className={`ot-order-status ot-status-${order.status}`}>{order.status}</span></div>
+                <div>Total: {order.total_price?.toFixed(2) || "N/A"} KM</div>
 
-                <div
-                  className={`ot-order-products ${
-                    isExpanded ? "expanded" : "collapsed"
-                  }`}
-                >
+                <div className={`ot-order-products ${isExpanded ? "expanded" : "collapsed"}`}>
                   {productsToShow.map((product, i) => (
                     <img
                       key={i}
@@ -320,30 +342,18 @@ export default function Orders() {
 
                 <div className="ot-order-actions">
                   {order.status === "pending" && (
-                    <button
-                      className="ot-btn ot-btn-cancel"
-                      onClick={() => cancelOrder(order.id)}
-                    >
+                    <button onClick={() => cancelOrder(order.id)} className="ot-btn ot-btn-cancel">
                       Cancel Order
                     </button>
                   )}
-                  <button
-                    className="ot-btn ot-btn-details"
-                    onClick={() => openOrderDetails(order.id)}
-                  >
+                  <button onClick={() => openOrderDetails(order.id)} className="ot-btn ot-btn-details">
                     View Details
                   </button>
-                  <button
-                    className="ot-btn ot-btn-complaint"
-                    onClick={() => openComplaint(order.id)}
-                  >
+                  <button onClick={() => openComplaint(order.id)} className="ot-btn ot-btn-complaint">
                     Write Complaint
                   </button>
                   {showCancelled && order.status === "cancelled" && (
-                    <button
-                      className="ot-btn ot-btn-remove"
-                      onClick={() => removeOrder(order.id)}
-                    >
+                    <button onClick={() => removeOrder(order.id)} className="ot-btn ot-btn-remove">
                       Remove
                     </button>
                   )}
@@ -354,30 +364,17 @@ export default function Orders() {
         </div>
 
         <div className="ot-pagination">
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
+          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
             Prev
           </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
+          <span>Page {currentPage} of {totalPages}</span>
+          <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
             Next
           </button>
         </div>
 
         {showOrderDetails && selectedOrder && (
-          <OrderDetailsModal
-            order={selectedOrder}
-            onClose={() => setShowOrderDetails(false)}
-          />
+          <OrderDetailsModal order={selectedOrder} onClose={() => setShowOrderDetails(false)} />
         )}
 
         {showComplaint && (
@@ -397,13 +394,22 @@ export default function Orders() {
         )}
 
         <UniversalModal
+<<<<<<< HEAD
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           type={modalType}
           title={modalTitle}
           message={modalMessage}
+=======
+          isOpen={modalState.isOpen}
+          onClose={() => setModalState((prev) => ({ ...prev, isOpen: false }))}
+          type={modalState.type}
+          title={modalState.title}
+          message={modalState.message}
+>>>>>>> 5bc068cdd08fa457f6e4606093e67a1cb240286b
         />
       </section>
     </div>
   );
 }
+
