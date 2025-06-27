@@ -1,25 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import select
-from sqlalchemy.orm import Session, selectinload
-from typing import List, Annotated, Optional
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from typing import List, Annotated
 
-from app.models.models import Complaint, User, Order
-from app.schemas import complaint as complaint_schema
-from app.schemas.complaint import ComplaintWithCustomer
+from app.models.models import Complaint, User
+from app.schemas.complaint import ComplaintWithCustomer, ComplaintUpdate, ComplaintResponse, Complaint
 from app.schemas.support import SupportProfileUpdate
-from app.crud.user import get_user_by_id, update_user
-from app.dependencies import get_db 
-from app.services.user_service import role_check, hash_password, validate_password_strength
-
-from app.crud import complaint as complaint_crud
-from app.schemas.complaint import ComplaintUpdate
+from app.dependencies import get_db
+from app.services.user_service import role_check
+from app.services import complaint_service, user_service
 
 router = APIRouter()
 SessionDep = Annotated[Session, Depends(get_db)]
 
 
 #Dashboard
-@router.get("/", tags=["Support"])
+@router.get("/")
 def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     return {
         "id": current_user.id,
@@ -29,93 +24,38 @@ def support_dashboard(current_user: User = Depends(role_check(["support"]))):
     }
 
 # Profil zaposlenika
-@router.get("/profile/{user_id}", tags=["Support"])
+@router.get("/profile/{user_id}")
 def get_support_profile(
     user_id: int,
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    user = session.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return {
-        "id": user.id,
-        "email": user.email,
-        "name": user.name,
-        "role": user.role
-    }
+    return user_service.get_support_profile_service(session, user_id)
 
 
-@router.put("/profile/{user_id}", tags=["Support"])
+# Zaposlenik azurira profil
+@router.put("/profile/{user_id}")
 def update_support_profile(
     user_id: int,
     update_data: SupportProfileUpdate,
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    # samo svoj profil mozes uredit
-    if current_user.id != user_id:
-        raise HTTPException(status_code=403, detail="Cannot edit another user's profile")
+    return user_service.update_support_profile_service(session, user_id, update_data, current_user.id)
 
-    db_user = get_user_by_id(session, user_id)
-    if not db_user:
-        raise HTTPException(status_code=404, detail="User not found")
 
-    updates = {}
 
-    #ako je novo ime uneseno
-    if update_data.name:
-        updates["name"] = update_data.name
-
-    # ako je nova sifra unesena
-    if update_data.password:
-        # validate_password_strength(update_data.password)   PRAVI PROBLEM - ne radi s njom
-        updates["password"] = update_data.password  # hashira se unutar update_user()
-
-    # pozovi servis koji sve obrađuje i hashira ako treba
-    updated_user = update_user(session, user_id, updates)
-
-    return {
-        "id": updated_user.id,
-        "email": updated_user.email,
-        "name": updated_user.name,
-        "role": updated_user.role
-    }
-
+# ------------------------------------------------------------------------------------------------------------------------------------------------
+# DIO ZA COMPLAINTS
 
 
 #GET:Pregled svih reklamacija
 @router.get("/complaints", response_model=List[ComplaintWithCustomer])
 def get_all_complaints(
     session: SessionDep,
-    offset: int = 0,
-    limit: int = 100,
     current_user: User = Depends(role_check(["support"]))
 ): 
-
-    complaints = session.exec(select(Complaint).options(selectinload(Complaint.order).selectinload(Order.customer))).all()
-
-    result = []
-    for complaint in complaints:
-        customer_name = (
-            complaint.order.customer.name
-            if complaint.order and complaint.order.customer
-            else "Unknown"
-        )
-
-        result.append({
-            "id": complaint.id,
-            "status": complaint.status,
-            "description": complaint.description,
-            "preferred_resolution": complaint.preferred_resolution,
-            "final_resolution": complaint.final_resolution,
-            "assigned_to": complaint.assigned_to,
-            "created_at": complaint.created_at,
-            "order_id": complaint.order_id,
-            "customer_name": customer_name,
-        })
-
-    return result
+    return complaint_service.list_complaints(session)
 
 
 #Pregled pojedinacne reklamacije
@@ -125,80 +65,34 @@ def get_complaint_by_id(
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    complaint = session.exec(
-        select(Complaint)
-        .where(Complaint.id == complaint_id)
-        .options(selectinload(Complaint.order).selectinload(Order.customer))
-    ).first()
-
-    if not complaint:
-        raise HTTPException(status_code=404, detail="Complaint not found")
-
-    return {
-        "id": complaint.id,
-        "description": complaint.description,
-        "status": complaint.status,
-        "preferred_resolution": complaint.preferred_resolution,
-        "final_resolution": complaint.final_resolution,
-        "response_text": complaint.response_text,
-        "created_at": complaint.created_at,
-        "order_id": complaint.order_id,
-        "assigned_to": complaint.assigned_to,
-        "customer_name": complaint.order.customer.name if complaint.order and complaint.order.customer else "Unknown",
-        "response_text": complaint.response_text 
-    }
-
+    return complaint_service.get_complaint(session, complaint_id)
 
 # PUT: Azuriranje reklamacije (status, opis)
-@router.put("/complaints/{complaint_id}", response_model=complaint_schema.Complaint)
+@router.put("/complaints/{complaint_id}", response_model=Complaint)
 def update_complaint_status(
     complaint_id: int,
-    complaint_data: complaint_schema.ComplaintUpdate,
+    complaint_data: ComplaintUpdate,
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    db_complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
-    if not db_complaint:
-        raise HTTPException(status_code=404, detail="Complaint not found")
-
-    complaint_crud.update_complaint(session, complaint_id, complaint_data.dict(exclude_unset=True))
-    session.refresh(db_complaint)
-    return db_complaint
+    return complaint_service.update_complaint_status(session, complaint_id, complaint_data)
 
 # ODGOVOR ZAPOSLENIKA NA REKLAMACIJU TJ COMPLAINT
-@router.put("/complaints/{complaint_id}/respond", response_model=complaint_schema.Complaint)
+@router.put("/complaints/{complaint_id}/respond", response_model=Complaint)
 def respond_to_complaint(
     complaint_id: int,
-    response: complaint_schema.ComplaintResponse,
+    response: ComplaintResponse,
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    db_complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
-    if not db_complaint:
-        raise HTTPException(status_code=404, detail="Complaint not found")
-
-    db_complaint.response_text = response.response_text
-    session.commit()
-    session.refresh(db_complaint)
-    return db_complaint
+    return complaint_service.respond_to_complaint_service(session, complaint_id, response)
 
 
 # Dodjeljivanje complainta
-@router.put("/complaints/{complaint_id}/assign", response_model=complaint_schema.Complaint, tags=["Support"])
+@router.put("/complaints/{complaint_id}/assign", response_model=Complaint, tags=["Support"])
 def assign_complaint_to_self(
     complaint_id: int,
     session: SessionDep,
     current_user: User = Depends(role_check(["support"]))
 ):
-    complaint = session.query(Complaint).filter(Complaint.id == complaint_id).first()
-
-    if not complaint:
-        raise HTTPException(status_code=404, detail="Complaint not found")
-
-    if complaint.assigned_to is not None:
-        raise HTTPException(status_code=400, detail="Complaint already assigned")
-
-    complaint.assigned_to = current_user.id
-    session.commit()
-    session.refresh(complaint)
-    return complaint
+    return complaint_service.assign_to_self(session, complaint_id, current_user.id)

@@ -1,163 +1,67 @@
-from fastapi import WebSocket, WebSocketDisconnect, APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from fastapi import APIRouter, WebSocket, Depends
+from sqlmodel import Session
 from app.dependencies import get_db
-from app.models.models import Complaint, Message, User
-from app.services.user_service import get_user
+from app.services import chat_service
 from app.services.user_service import get_current_user
-import jwt
-from app.core.config import settings
+from app.models.models import User
+from app.repositories import notification_repository
 
 router = APIRouter()
-active_connections = {}  # complaint_id: [WebSocket, WebSocket]
 
+#websocket chat
 @router.websocket("/ws/chat/{complaint_id}")
-async def chat_endpoint(websocket: WebSocket, complaint_id: int, db: Session = Depends(get_db)):
-    await websocket.accept()
+async def chat_ws(websocket: WebSocket, complaint_id: int, db: Session = Depends(get_db)):
+    await chat_service.handle_chat_ws(websocket, complaint_id, db)
 
-    # Autentifikacija preko cookie
-    token = websocket.cookies.get("access_token")
-    if not token:
-        await websocket.close(code=1008)
-        return
-
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email = payload.get("sub")
-        user = get_user(db, email)
-        if not user:
-            raise Exception("User not found")
-    except Exception as e:
-        print("Auth error:", str(e))
-        await websocket.close(code=1008)
-        return
-
-    # Validacija da li korisnik ima pristup tom complaintu
-    complaint = db.exec(select(Complaint).where(Complaint.id == complaint_id)).first()
-    if not complaint or not complaint.order:
-        await websocket.close(code=1008)
-        return
-
-    is_customer = user.id == complaint.order.customer_id
-    is_support = user.id == complaint.assigned_to
-    if not (is_customer or is_support):
-        await websocket.close(code=1008)
-        return
-
-    # registruj konekciju
-    key = str(complaint_id)
-    if key not in active_connections:
-        active_connections[key] = []
-    active_connections[key].append(websocket)
-
-    try:
-        while True:
-            data = await websocket.receive_json()
-            content = data.get("message")
-
-            if not content:
-                continue
-
-            receiver_id = (
-                complaint.assigned_to if is_customer else complaint.order.customer_id
-            )
-
-            #spasi poruku u bazu
-            msg = Message(
-                sender_id=user.id,
-                receiver_id=receiver_id,
-                complaint_id=complaint.id,
-                content=content
-            )
-            db.add(msg)
-            db.commit()
-
-            # Pošalji svim aktivnim korisnicima na toj reklamaciji
-            for conn in active_connections[key]:
-                await conn.send_json({
-                    "from": user.name,
-                    "sender_id": user.id,
-                    "message": content,
-                    "timestamp": msg.timestamp.isoformat()
-                })
-            
-            #salje notif u globalni notification kanal??
-            notif_payload = {
-                "from": user.name,
-                "receiver_id": receiver_id,
-                "message": content,
-                "complaint_id": complaint.id,
-            }
-            for user_id, conn in notification_connections:   # posalji notif samo onom ko je receiver
-                if user_id == receiver_id:
-                    await conn.send_json(notif_payload)
-
-
-
-    except WebSocketDisconnect:
-        active_connections[key].remove(websocket)
-        print("Disconnected from chat:", key)
-
-notification_connections = []  #lista parova: (user_id, websocket)
-
+#notifikacije
 @router.websocket("/ws/notifications")
-async def notification_ws(websocket: WebSocket, db: Session = Depends(get_db)):
-    await websocket.accept()
-
-    #uzmi token iz cookija
-    token = websocket.cookies.get("access_token")
-    if not token:
-        await websocket.close(code=1008)
-        return
-
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        email = payload.get("sub")
-        user = get_user(db, email)
-        if not user:
-            raise Exception("User not found")
-    except Exception as e:
-        print("Auth error:", str(e))
-        await websocket.close(code=1008)
-        return
-
-    #dodaj u listu aktivnih slusalaca??
-    notification_connections.append((user.id, websocket))
-
-    try:
-        while True:
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        notification_connections.remove((user.id, websocket))
-
+async def notifications_ws(websocket: WebSocket, db: Session = Depends(get_db)):
+    await chat_service.handle_notifications_ws(websocket, db)
 
 # chat api
 
 @router.get("/complaints/{complaint_id}/messages")
-def get_messages(complaint_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
-    complaint = db.exec(select(Complaint).where(Complaint.id == complaint_id)).first()
+def get_messages(
+    complaint_id: int, 
+    db: Session = Depends(get_db), 
+    user: User = Depends(get_current_user)
+):
+    return chat_service.get_chat_messages(db, complaint_id, user)
 
-    if not complaint or not complaint.order:
-        raise HTTPException(status_code=404, detail="Reklamacija nije pronađena")
 
-    is_customer = user.id == complaint.order.customer_id
-    is_support = complaint.assigned_to is not None and user.id == complaint.assigned_to
+#oznaci sve kao procitane
+@router.post("/notifications/mark-read")
+def mark_notifications_read(
+    session: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    notification_repository.mark_all_as_read(session, current_user.id)
+    return {"message": "All notifications marked as read"}
 
-    if not (is_customer or is_support):
-        raise HTTPException(status_code=403, detail="Nemate pristup ovom razgovoru")
-
-    messages = db.exec(
-        select(Message).where(Message.complaint_id == complaint_id).order_by(Message.timestamp)
-    ).all()
-
-    #Uvjeri se da se sender može pristupiti, ili koristi .sender_id i ručno dohvaćaj ime
-    results = []
-    for msg in messages:
-        sender = db.exec(select(User).where(User.id == msg.sender_id)).first()
-        results.append({
-            "from": sender.name,
-            "sender_id": msg.sender_id,
-            "message": msg.content,
-            "timestamp": msg.timestamp.isoformat()
+#grupisane neprocitane notif
+@router.get("/notifications/unread")
+def get_grouped_unread_notifications(
+    session: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    notifs = notification_repository.get_unread_notifications_grouped(session, current_user.id)
+    result = []
+    for notif in notifs:
+        result.append({
+            "id": notif.id,
+            "message": notif.message,
+            "from": notif.message,
+            "complaint_id": notif.complaint_id,
+            "created_at": notif.created_at.isoformat(),
         })
-    return results
+    return result
 
+# oznaci notif za konkretan chat kao procitanu, kad korisinik klikne na notif
+@router.post("/notifications/{complaint_id}/mark-read")
+def mark_notification_read(
+    complaint_id: int,
+    session: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    notification_repository.mark_notification_as_read(session, current_user.id, complaint_id)
+    return {"message": "Notification marked as read"}

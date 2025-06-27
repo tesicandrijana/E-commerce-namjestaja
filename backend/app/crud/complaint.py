@@ -1,4 +1,4 @@
-# crud/complaint.py
+# ne koristi se
 from sqlalchemy.orm import Session
 from app.models.models import Complaint
 from app.schemas.complaint import ComplaintCreate
