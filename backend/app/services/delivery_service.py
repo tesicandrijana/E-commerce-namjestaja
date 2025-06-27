@@ -3,6 +3,7 @@ from app.models.models import Delivery
 from app.repositories import delivery_repository,order_repository
 from app.services import order_service
 from fastapi import HTTPException
+from app.utils.email import status_change_email
 
 def get_all_deliveries_assigned_to(
     session: Session, delivery_person_id: int, offset: int = 0, limit: int | None = 0
@@ -83,6 +84,8 @@ def change_delivery_status(session:Session, delivery_id: int, status: str):
         if db_order != None: 
             db_order.status = status
             order_repository.update_order(session, db_order)
+            status_change_email(db_order.customer, status)
+        
     else:
         raise HTTPException(status_code=404, detail="Delivery not found")
 
