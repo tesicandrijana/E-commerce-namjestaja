@@ -5,7 +5,7 @@ import "./Inquiries.css";
 
 function Inquiries() {
   const [inquiries, setInquiries] = useState([]);
-  const [activeTab, setActiveTab] = useState("unresponded"); // 'unresponded' or 'responded'
+  const [activeTab, setActiveTab] = useState("unresponded"); // 'unresponded' ili 'responded'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function Inquiries() {
 
   return (
     <div className="inquiries-wrapper">
-      <button className="back-link" onClick={() => navigate(-1)}>
+      <button className="back-link" onClick={() => navigate("/support")}>
         ←
       </button>
       <h1 className="inquiries-title">Customer Inquiries</h1>
@@ -66,15 +66,14 @@ function Inquiries() {
             // prikazi pomocu .map
             filteredInquiries.map((inquiry) => {
             return (
-                <div className="inquiry-card" key={inquiry.id}>
+                <div className="inquiry-card-support" key={inquiry.id}>
                 
-                <div className="inquiry-header">
+                <div className="inquiry-header-support">
                     <strong>#{inquiry.id}</strong>
                     <span>{new Date(inquiry.created_at).toLocaleDateString()}</span>
                 </div>
 
-                {/*kartica*/}
-                <div className="inquiry-body">
+                <div className="inquiry-body-support">
                     <p><strong>Name:</strong> {inquiry.name}</p>
                     <p><strong>Email:</strong> {inquiry.email}</p>
                     <p><strong>Message:</strong> {inquiry.message}</p>
@@ -85,7 +84,6 @@ function Inquiries() {
                     )}
                 </div>
 
-                {/*ako su unresponded dodaj dugme za odgovor*/}
                 {activeTab === "unresponded" && (
                     <div className="inquiry-actions">
                     <button

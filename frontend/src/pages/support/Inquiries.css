@@ -1,4 +1,3 @@
-/* Inquiries.css */
 .inquiries-wrapper {
   max-width: 1100px;
   margin: 2rem auto;
@@ -9,6 +8,7 @@
   font-family: "Poppins", sans-serif;
   animation: fadeIn 0.4s ease;
   min-height: 600px;
+  background-image: url("/public/support/pozadinadashboard.png");
 }
 
 .inquiries-title {
@@ -17,6 +17,7 @@
   color: #275a56;
   margin-bottom: 2rem;
   padding-left: 1rem;
+  text-align: center;
 }
 
 .inquiries-list {
@@ -25,7 +26,7 @@
   gap: 1.5rem;
 }
 
-.inquiry-card {
+.inquiry-card-support {
   background-color: #ffffff;
   border-radius: 14px;
   border: 1px solid #e5e7eb;
@@ -34,12 +35,12 @@
   transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
-.inquiry-card:hover {
+.inquiry-card-support:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
-.inquiry-header {
+.inquiry-header-support {
   display: flex;
   justify-content: space-between;
   font-weight: 600;
@@ -47,13 +48,15 @@
   margin-bottom: 1rem;
 }
 
-.inquiry-body p {
+.inquiry-body-support p {
   margin: 0.4rem 0;
   font-size: 0.95rem;
+  text-align: justify;
   color: #374151;
 }
 
 .inquiry-actions {
+  text-align: center;
   margin-top: 1rem;
 }
 
@@ -77,6 +80,7 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  justify-content: flex-end;
 }
 
 .tab {

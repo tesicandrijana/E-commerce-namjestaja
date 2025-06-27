@@ -1,3 +1,8 @@
+.complaint-details-main{
+  background-image: url("/public/support/pozadinadashboard.png");
+}
+
+
 .complaint-flex-okvir {
   display: flex;
   gap: 1rem;
@@ -48,11 +53,11 @@
   }
 }
 
-.title {
-  font-size: 2.2rem;
+.complaint-details-title {
+  font-size: 2rem;
   font-weight: 700;
   margin-bottom: 2rem;
-  border-left: 5px solid #3498db;
+  text-align: center;
   padding-left: 1rem;
   color: #2c3e50;
 }
@@ -68,7 +73,6 @@
   font-weight: 600;
   margin-bottom: 1.2rem;
   color: #1f2937;
-  border-left: 4px solid #3b82f6;
   padding-left: 0.6rem;
 }
 
@@ -79,13 +83,13 @@
   gap: 1rem;
 }
 
-.complaint-info-grid {
+.complaint-info-grid-support {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem 2rem;
 }
 
-.complaint-info-grid p {
+.complaint-info-grid-support p {
   margin: 0.3rem 0;
   line-height: 1.5;
   font-size: 1.05rem;
@@ -191,28 +195,19 @@ textarea {
 }
 
 .update-btn {
-  background-color: #3b82f6;
+  background-color: #79a7f1;
   color: white;
 }
 
 .update-btn:hover {
-  background-color: #2563eb;
+  background-color: #5772ac;
   transform: translateY(-2px);
 }
 
-.respond-btn {
-  background-color: #10b981;
-  color: white;
-}
-
-.respond-btn:hover {
-  background-color: #059669;
-  transform: translateY(-2px);
-}
 
 .status-btn,
 .order-btn {
-  background-color: #f59e0b;
+  background-color: #f59f0be5;
   color: #fff;
 }
 

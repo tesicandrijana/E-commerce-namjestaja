@@ -58,18 +58,20 @@ const SupportProfile = () => {
   return (
     <main className="support-profile-container">
       <div className="profile-card-wrapper">
-        <button className="back-link" onClick={() => navigate(-1)}>
+        <button className="back-link" onClick={() => navigate("/support")}>
         ←
       </button>
         <div className="profile-card-header">
-          <img
-            src="/support/avatar.png"
-            alt="Profile avatar"
-            className="profile-avatar"
-          />
-          <div className="profile-basic-info">
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
+          <div className="profile-avatar-info">
+            <img
+              src="/support/avatar.png"
+              alt="Profile avatar default"
+              className="profile-avatar"
+            />
+            <div className="profile-basic-info">
+              <h2>{user.name}</h2>
+              <p>{user.email}</p>
+            </div>
           </div>
           <button className="edit-button" onClick={handleEdit}>
             Edit Profile

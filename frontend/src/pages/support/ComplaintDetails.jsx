@@ -14,6 +14,9 @@ export default function ComplaintDetails() {
   const [showChat, setShowChat] =useState(false);    // za chat
   const [currentUser, setCurrentUser]= useState(null);
   const [hasMessages, setHasMessages] = useState(false);  //provjera jel chat ima poruka vec
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMsg, setPopupMsg] = useState("");
+
 
   useEffect(() => {
      axios.get(`http://localhost:8000/support/complaints/${id}`, {
@@ -49,9 +52,10 @@ export default function ComplaintDetails() {
         final_resolution: finalResolution,
       }, { withCredentials: true })
       .then((res) => {
-        console.log("Updates:", res.data);
-        alert("Resolution updated successfully!");
-        })
+        setPopupMsg("Resolution updated successfully!");
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 2000);
+      })
       .catch((err) => console.error(err));
   };
 
@@ -74,7 +78,11 @@ export default function ComplaintDetails() {
         { status },
         { withCredentials: true }
       )
-      .then(() => alert("Status updated successfully!"))
+      .then((res) => {
+        setPopupMsg("Status updated successfully!");
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 2000);
+      })
       .catch((err) => console.error("Status update failed:", err));
   };
 
@@ -91,13 +99,20 @@ export default function ComplaintDetails() {
   if (!complaint) return <p className="loading">Loading complaint...</p>;
 
   return (
+    <main className="complaint-details-main">
+    {showPopup && (
+    <div className="popup-success">
+      {popupMsg}
+    </div>
+  )}
+
     <div className="complaint-flex-okvir">
       <div className="sveOsimChata">
         <button className="back-link" onClick={() => navigate(-1)}>←</button>
-        <h1 className="title">Complaint #{complaint.id}</h1>
+        <h1 className="complaint-details-title">Complaint #{complaint.id}</h1>
         <div className="complaint-section">
           <h3>Complaint Info</h3>
-          <div className="complaint-info-grid">
+          <div className="complaint-info-grid-support">
             <p>
               <strong>Order ID:</strong> {complaint.order_id}
               <button
@@ -125,7 +140,7 @@ export default function ComplaintDetails() {
 
       
 
-        <div className="complaint-section">
+        <div className="complaint-section-support">
           <h3>Action Panel</h3>
 
           <div className="update-status">
@@ -183,21 +198,10 @@ export default function ComplaintDetails() {
           )}
       </div>
       )}
-      
-{/* 
-        <div className="form-card">
-          <label>Respond to Customer:</label>
-          <textarea
-            rows={5}
-            value={responseText}
-            onChange={(e) => setResponseText(e.target.value)}
-          />
-          <button className="respond-btn" onClick={handleRespond}>
-            Send Response
-          </button>
-        </div> */}  
+    
 
     </div>
+    </main>
     
   );
 }

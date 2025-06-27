@@ -8,6 +8,8 @@ function InquiryDetails() {
   const [inquiry, setInquiry] = useState(null); 
   const [responseText, setResponseText] = useState(""); 
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
+
 
   useEffect(() => {
     axios
@@ -19,7 +21,7 @@ function InquiryDetails() {
         setInquiry(found);
       })
       .catch((err) => {
-        console.error("Greška pri učitavanju upita", err);
+        console.error("Greska pri učitavanju upita", err);
       });
   }, [id]);
 
@@ -33,8 +35,8 @@ function InquiryDetails() {
         { withCredentials: true }
       )
       .then(() => {
-        alert("Response sent to Mail!");
-        navigate("/support/inquiries");
+        setShowPopup(true);
+        setTimeout(() => setShowPopup(false), 2000); // Popup nestaje nakon 2s
       })
       .catch((err) => {
         console.error("Error", err);
@@ -44,8 +46,17 @@ function InquiryDetails() {
   if (!inquiry) return <p>Učitavanje...</p>;
 
   return (
-    <div className="inquiry-details-wrapper">
-      <button onClick={() => navigate(-1)} className="back-btn">← Back</button>
+    
+
+    <main className="inquiry-details-main">
+
+      {showPopup && (
+      <div className="popup-success">
+        Response sent to Mail!
+      </div>
+    )}
+      <div className="inquiry-details-wrapper-support">
+      <button onClick={() => navigate(-1)} className="back-link">←</button>
       <h2>Inquiry Details #{inquiry.id}</h2>
       <p><strong>Name:</strong> {inquiry.name}</p>
       <p><strong>Email:</strong> {inquiry.email}</p>
@@ -71,6 +82,7 @@ function InquiryDetails() {
         </form>
       )}
     </div>
+    </main>
   );
 }
 
