@@ -1,4 +1,3 @@
-// SearchBar.jsx
 import React, { useState } from 'react';
 import './SearchBar.css';
 import axios from 'axios';
@@ -20,10 +19,10 @@ const SearchBar = ({ onSearch, onUserSelect, placeholder = "Search employees..."
     try {
       const token = localStorage.getItem('token');
       
-      // Dinamičan endpoint zavisno od props.archived
+      // Endpoint zavisi od toga da li su zaposleni arhivirani ili aktivni
       const endpoint = archived 
-        ? `http://localhost:8000/users/employees/archived/search` // za arhivirane
-        : `http://localhost:8000/users/employees/search`;         // za aktivne
+        ? `http://localhost:8000/users/archived-users/search` 
+        : `http://localhost:8000/users/employees/search`;
 
       const response = await axios.get(endpoint, {
         headers: {

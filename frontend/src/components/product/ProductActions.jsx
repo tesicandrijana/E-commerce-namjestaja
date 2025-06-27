@@ -51,6 +51,7 @@ function ProductActions({ id, stock, fetchProduct, fetchProducts }) {
           <button className="action-btn edit-product-btn" onClick={openEditDrawer}>Edit</button>
           <button className="action-btn delete-product-btn" onClick={() => setIsConfirmModalOpen(true)}>Delete</button>
         </>
+        
       )}
 
       {(currentUser?.role === "customer" || !currentUser) && (
@@ -68,8 +69,7 @@ function ProductActions({ id, stock, fetchProduct, fetchProducts }) {
           cancelText="Cancel"
         />
       )}
-      <ProductForm mode={"edit"} id={id} open={editFormDrawerOpen} onClose={() => setIsEditFormDrawerOpen(false)} />
-
+        <ProductForm mode={"edit"} id={id} open={editFormDrawerOpen} onClose={() => setIsEditFormDrawerOpen(false)} fetchProduct2={fetchProduct} />
     </div>
   );
 }

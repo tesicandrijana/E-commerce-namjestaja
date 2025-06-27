@@ -8,7 +8,7 @@ import { Drawer } from '@mui/material';
 import axios from 'axios'
 import UniversalModal from '../modals/UniversalModal';
 
-function ProductForm({ mode, open, onClose, id }) {
+function ProductForm({ mode, open, onClose, id, fetchProduct2 }) {
     const [categories, setCategories] = useState()
     const [materials, setMaterials] = useState()
     const [pictures, setPictures] = useState()
@@ -52,6 +52,7 @@ function ProductForm({ mode, open, onClose, id }) {
                         "Content-type": "multipart/form-data",
                     }
                 })
+            fetchProduct2();
             setMessageType("success");
             setMessage("Product edited successfully!");
             onClose();

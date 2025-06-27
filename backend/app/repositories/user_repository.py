@@ -114,8 +114,13 @@ def archive_user(db: Session, user_id: int):
     return user
 
 
-def search_employees(db: Session, search: str):
-    return db.query(User).filter(User.is_active == True, User.role != "customer", or_(User.name.ilike(f"%{search}%"), User.role.ilike(f"%{search}%"))).limit(10).all()
+def search_employees(db: Session, search: str, archived: bool = False):
+    query = db.query(User).filter(User.is_active != archived)  # Ako je archived True, pretražujemo arhivirane
+    
+    if search:
+        query = query.filter(or_(User.name.ilike(f"%{search}%"), User.role.ilike(f"%{search}%")))
+
+    return query.limit(10).all()
 
 
 def get_all_delivery(db: Session):

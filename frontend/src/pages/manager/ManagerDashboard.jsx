@@ -35,10 +35,10 @@ function ManagerDashboard() {
       </section>
 
       <section className="action-cards">
-        <Card number="01" bgColor="#fa9e35" title="View Products" description="See all products" onClick={() => navigate("/manager/products")} />
-        <Card number="02" bgColor="#f8a350" title="Manage Orders" description="Orders & deliveries" onClick={() => navigate("/manager/orders")} />
-        <Card number="03" bgColor="#ff8800" title="Reviews" description="View customer reviews" onClick={() => navigate("/manager/reviews")} />
-        <Card number="04" bgColor="#ff8801" title="Discounts" description="Manage discounts" onClick={() => navigate("/manager/discounts")} />
+        <Card number="01" bgColor="#FFD180" title="View Products" description="See all products" onClick={() => navigate("/manager/products")} />
+        <Card number="02" bgColor="#FFAB40" title="Manage Orders" description="Orders & deliveries" onClick={() => navigate("/manager/orders")} />
+        <Card number="03" bgColor="#FF9100" title="Reviews" description="View customer reviews" onClick={() => navigate("/manager/reviews")} />
+        <Card number="04" bgColor="#FF6D00" title="Discounts" description="Manage discounts" onClick={() => navigate("/manager/discounts")} />
       </section>
       <section className="chart-and-notifs">
         <Chart />

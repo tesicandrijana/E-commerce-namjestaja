@@ -10,7 +10,6 @@ const UniversalModal = ({ isOpen, onClose, type, title, message }) => {
   return (
     <div className="custom-modal-overlay">
       <div className="custom-modal-content">
-        
         <div className={`custom-modal-icon ${isSuccess ? "success" : "error"}`}>
           {isSuccess ? (
             <AiOutlineCheckCircle size={32} />
@@ -23,7 +22,9 @@ const UniversalModal = ({ isOpen, onClose, type, title, message }) => {
         <p>{message}</p>
 
         <div className="custom-modal-buttons">
-          <button className="cancel-btn" onClick={onClose}>Close</button>
+          <button className="cancel-btn" onClick={onClose}>
+            Close
+          </button>
         </div>
       </div>
     </div>

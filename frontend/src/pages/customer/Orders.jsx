@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ComplaintModal from "./ComplaintModal";
 import OrderDetailsModal from "./OrderDetailsModal";
 import ProductModal from "./ProductModal";
+import UniversalModal from "../../components/modals/UniversalModal";
 import "./OrdersTrack.css";
 
 const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
@@ -17,12 +18,23 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showCancelled, setShowCancelled] = useState(false);
 
-  const [productsMap, setProductsMap] = useState({}); // productId -> product details
+  const [productsMap, setProductsMap] = useState({});
   const [expandedOrders, setExpandedOrders] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 4;
-
   const [modalProduct, setModalProduct] = useState(null);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("success");
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+
+  const showModal = (type, title, message) => {
+    setModalType(type);
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     fetch("http://localhost:8000/orders/myorders", {
@@ -123,7 +135,7 @@ export default function Orders() {
           )
         );
       })
-      .catch((err) => alert(`Error: ${err.message}`));
+      .catch((err) => showModal("error", "Error", err.message));
   };
 
   const removeOrder = (orderId) => {
@@ -138,7 +150,7 @@ export default function Orders() {
 
   const submitComplaint = () => {
     if (!preferredResolution || !message) {
-      alert("Please fill in both fields.");
+      showModal("error", "Missing Fields", "Please fill in both fields.");
       return;
     }
 
@@ -160,12 +172,12 @@ export default function Orders() {
         return res.json();
       })
       .then(() => {
-        alert("Complaint submitted successfully.");
+        showModal("success", "Complaint Sent", "Complaint submitted successfully.");
         setShowComplaint(false);
         setPreferredResolution("");
         setMessage("");
       })
-      .catch((err) => alert(`Error: ${err.message}`));
+      .catch((err) => showModal("error", "Error", err.message));
   };
 
   const openOrderDetails = (orderId) => {
@@ -186,7 +198,6 @@ export default function Orders() {
     });
   };
 
-  // When error or empty orders, show centered message
   if (error || (orders.length === 0 && !error)) {
     return (
       <div className="ot-track-background">
@@ -211,7 +222,6 @@ export default function Orders() {
     (a, b) => new Date(b.date) - new Date(a.date)
   );
 
-  // Pagination calculation
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = reversedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
@@ -385,6 +395,14 @@ export default function Orders() {
         {modalProduct && (
           <ProductModal product={modalProduct} onClose={() => setModalProduct(null)} />
         )}
+
+        <UniversalModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          type={modalType}
+          title={modalTitle}
+          message={modalMessage}
+        />
       </section>
     </div>
   );

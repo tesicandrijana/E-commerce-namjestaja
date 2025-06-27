@@ -78,7 +78,11 @@ def archive_user(user_id: int, db: Session = Depends(get_db), current_user: User
 
 @router.get("/employees/search", response_model=List[UserSchema])
 def search_employees(search: str = '', db: Session = Depends(get_db), current_user: User = Depends(user_service.role_check(["admin"]))):
-    return user_repository.search_employees(db, search)
+    return user_repository.search_employees(db, search, archived=False)  # Pretraga aktivnih
+
+@router.get("/archived-users/search", response_model=List[UserSchema])
+def search_archived_users(search: str = '', db: Session = Depends(get_db), current_user: User = Depends(user_service.role_check(["admin"]))):
+    return user_repository.search_employees(db, search, archived=True)  # Pretraga arhiviranih
 
 
 @router.get("/me")
