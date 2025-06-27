@@ -5,6 +5,7 @@ from app.services import chat_service
 from app.services.user_service import get_current_user
 from app.models.models import User
 from app.repositories import notification_repository
+from app.repositories.notification_repository import get_sender_name_for_complaint
 
 router = APIRouter()
 
@@ -38,6 +39,7 @@ def mark_notifications_read(
     notification_repository.mark_all_as_read(session, current_user.id)
     return {"message": "All notifications marked as read"}
 
+
 #grupisane neprocitane notif
 @router.get("/notifications/unread")
 def get_grouped_unread_notifications(
@@ -47,10 +49,11 @@ def get_grouped_unread_notifications(
     notifs = notification_repository.get_unread_notifications_grouped(session, current_user.id)
     result = []
     for notif in notifs:
+        sender_name = get_sender_name_for_complaint(session, notif.complaint_id)
         result.append({
             "id": notif.id,
             "message": notif.message,
-            "from": notif.message,
+            "from": sender_name,
             "complaint_id": notif.complaint_id,
             "created_at": notif.created_at.isoformat(),
         })

@@ -1,8 +1,8 @@
-from app.models.models import Notification
+from app.models.models import Notification, Message, User
 from sqlmodel import Session, select
 
 def save_notification(db: Session, user_id: int, message: str, complaint_id: int = None):
-    #provjeri postoji li već neprocitana notifikacija za taj user_id i complaint_id
+    #provjeri postoji li vec neprocitana notifikacija za taj user_id i complaint_id
     from app.models.models import Notification
     existing = db.exec(
         select(Notification)
@@ -76,3 +76,16 @@ def mark_all_as_read(db: Session, user_id: int):
         notif.read = True
         db.add(notif)
     db.commit()
+
+
+def get_sender_name_for_complaint(db: Session, complaint_id: int):
+    last_msg = db.exec(
+        select(Message)
+        .where(Message.complaint_id == complaint_id)
+        .order_by(Message.timestamp.desc())
+    ).first()
+    if last_msg:
+        sender = db.exec(select(User).where(User.id == last_msg.sender_id)).first()
+        return sender.name if sender else "Unknown"
+    return "Unknown"
+
