@@ -27,6 +27,11 @@
   margin-bottom: 2rem;
 }
 
+.profile-avatar-info {
+  display: flex;
+}
+
+
 .profile-avatar {
   width: 100px;
   height: 100px;
