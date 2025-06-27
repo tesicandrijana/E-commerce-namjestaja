@@ -260,17 +260,17 @@ export default function Checkout() {
               {cartItems.map(item => (
                 <div key={item.id} className="checkout-summary-item">
                   <span>{productNames[item.product_id] || `Product #${item.product_id}`}</span>
-                  <span>{`${item.quantity} × $${(discountedPrices[item.product_id] || 0).toFixed(2)}`}</span>
+                  <span>{`${item.quantity} × ${(discountedPrices[item.product_id] || 0).toFixed(2)} KM`}</span>
                 </div>
               ))}
               <div className="checkout-summary-totals">
-                <div><span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span></div>
-                <div><span>Tax:</span> <span>+ ${tax.toFixed(2)}</span></div>
-                <div><span>Shipping:</span> <span>+ ${shipping.toFixed(2)}</span></div>
+                <div><span>Subtotal:</span> <span>{subtotal.toFixed(2)} KM</span></div>
+                <div><span>Tax:</span> <span>+ {tax.toFixed(2)} KM</span></div>
+                <div><span>Shipping:</span> <span>+ {shipping.toFixed(2)} KM</span></div>
               </div>
             </div>
             <div className="checkout-summary-total">
-              <strong>Total: ${total.toFixed(2)}</strong>
+              <strong>Total: {total.toFixed(2)} KM</strong>
             </div>
           </div>
 

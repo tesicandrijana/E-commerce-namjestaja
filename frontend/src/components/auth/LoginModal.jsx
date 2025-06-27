@@ -1,5 +1,4 @@
-// src/context/LoginModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "./AuthProvider";
 import { useCart } from "../../contexts/CartContext"; 
 import { useNavigate } from "react-router-dom";
@@ -26,6 +25,13 @@ function LoginModal({ role = "customer", onClose }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Switch to sign-up mode if Register button dispatches event
+  useEffect(() => {
+    const handleOpenSignup = () => setIsLogin(false);
+    document.addEventListener("open-signup", handleOpenSignup);
+    return () => document.removeEventListener("open-signup", handleOpenSignup);
+  }, []);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setErrorMessage("");
@@ -37,23 +43,22 @@ function LoginModal({ role = "customer", onClose }) {
           password: formData.password,
         });
 
-        // <-- IMPORTANT: fetch cart right after login to update cart badge
+        // Fetch cart after successful login
         await fetchCart();
 
         const userRole = response.role || role;
 
+        // Redirect based on role
         if (userRole === "admin") {
           navigate("/admin-dashboard");
         } else if (userRole === "manager") {
           navigate("/manager-dashboard");
         } else if (userRole === "support") {
-                            // ovdje necu dashboard za support!
-          navigate("/support");                     
+          navigate("/support"); // No dashboard for support
         } else if (userRole === "delivery") {
           navigate("/delivery-dashboard");
         } else {
-          //preusmjeri na pocetnu?
-          navigate("/");
+          navigate("/"); // Default: homepage
         }
 
         onClose();
@@ -62,6 +67,7 @@ function LoginModal({ role = "customer", onClose }) {
         console.log(err);
       }
     } else {
+      // Sign up
       const signupData = {
         name: formData.name,
         email: formData.email,
@@ -75,7 +81,7 @@ function LoginModal({ role = "customer", onClose }) {
       try {
         await axios.post("http://localhost:8000/users/signup", signupData);
         setErrorMessage("");
-        onClose();
+        onClose(); // Close modal after successful sign-up
       } catch (error) {
         const detail = error.response?.data?.detail;
         if (detail?.includes("Email already exists")) {

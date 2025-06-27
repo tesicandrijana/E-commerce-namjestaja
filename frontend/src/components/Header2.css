@@ -27,21 +27,20 @@
   align-items: center;
   gap: 16px; /* reduced from 24px */
 }
-
-/* ==== DROPDOWN BUTTON ==== */
+/* === DROPDOWN BUTTON === */
 .fs-dropdown-button {
   display: flex;
   align-items: center;
-  gap: 6px; /* reduced from 10px */
+  gap: 6px;
   background: linear-gradient(135deg, #ff914d, #ff6f61);
   color: #fff;
-  padding: 6px 14px; /* reduced from 12px 22px */
-  font-size: 13px; /* reduced from 15px */
+  padding: 6px 14px;
+  font-size: 13px;
   font-weight: 600;
   border: none;
-  border-radius: 10px; /* reduced from 12px */
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(255, 111, 97, 0.3); /* reduced from 0 4px 12px */
+  box-shadow: 0 3px 8px rgba(255, 111, 97, 0.3);
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -67,61 +66,64 @@
 
 .fs-dropdown-button:hover,
 .fs-dropdown-button.active {
-  transform: scale(1.02); /* slightly less scale */
-  box-shadow: 0 5px 14px rgba(255, 111, 97, 0.4); /* reduced shadow */
+  transform: scale(1.02);
+  box-shadow: 0 5px 14px rgba(255, 111, 97, 0.4);
 }
 
+/* === ICON, TEXT, CHEVRON === */
 .fs-icon svg {
-  width: 16px; /* reduced from 20px */
+  width: 16px;
   height: 16px;
   fill: white;
   z-index: 2;
+  display: block;
 }
 
 .fs-text {
-  font-size: 13px; /* reduced from 15px */
-  letter-spacing: 0.3px; /* slightly reduced */
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  font-weight: 600;
   z-index: 2;
 }
 
 .fs-chevron {
-  font-size: 10px; /* reduced from 12px */
-  transition: transform 0.3s ease;
+  font-size: 10px;
   z-index: 2;
   user-select: none;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
 .fs-chevron.rotate {
   transform: rotate(180deg);
 }
 
-/* ==== DROPDOWN WRAPPER ==== */
+/* === WRAPPER & PANEL === */
 .dropdown-wrapper {
   position: relative;
   display: inline-block;
 }
 
-/* ==== DROPDOWN PANEL ==== */
 .dropdown-panel {
   position: absolute;
   top: 100%;
   left: 0;
   display: flex;
-  background-color: #fff;
+  background: linear-gradient(rgba(255, 255, 255, 0.568), rgba(255, 255, 255, 0.947)), url('https://quadworkspace.co.uk/wp-content/uploads/2023/03/Oxford-Quad_Web-Res_DSC1574.jpg');
+  background-size: 100%;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   border-radius: 10px;
   overflow: hidden;
   margin-top: 10px;
-  min-width: 520px;
+  min-width: fit-content; 
   z-index: 10;
-
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* ==== CATEGORY LIST ==== */
+/* === CATEGORY LIST === */
 .category-list {
   width: 200px;
   background-color: #f9f9f9;
@@ -132,8 +134,8 @@
 }
 
 .category-item {
-  padding: 8px 14px; /* reduced from 10px 18px */
-  font-size: 13px; /* reduced from 14px */
+  padding: 8px 14px;
+  font-size: 13px;
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
@@ -148,47 +150,20 @@
   outline: none;
 }
 
-/* ==== SUBCATEGORY LIST ==== */
-.subcategory-list {
-  flex: 1;
-  padding: 10px 14px; /* reduced from 12px 16px */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px; /* reduced from 10px */
-  background-color: #fff;
-}
-
-.subcategory-item {
-  background-color: #f4f4f4;
-  padding: 6px 12px; /* reduced from 8px 14px */
-  border-radius: 8px;
-  font-size: 12px; /* reduced from 13px */
-  color: #444;
-  transition: background-color 0.2s, transform 0.2s;
-  cursor: pointer;
-  user-select: none;
-}
-
-.subcategory-item:hover {
-  background-color: #ffe0d1;
-  transform: translateY(-2px);
-  color: #c53d00;
-}
-
-/* ==== QUICK LINKS ==== */
+/* === QUICK LINKS === */
 .quick-links {
   display: flex;
-  gap: 12px; /* reduced from 18px */
-  margin-left: 16px; /* reduced from 24px */
-  font-size: 13px; /* reduced from 14px */
+  gap: 12px;
+  margin-left: 16px;
+  font-size: 13px;
 }
 
 .quick-link {
   text-decoration: none;
   color: #555;
   font-weight: 600;
-  padding: 6px 10px; /* reduced from 8px 12px */
-  border-radius: 10px; /* slightly smaller */
+  padding: 6px 10px;
+  border-radius: 10px;
   transition: background-color 0.3s, color 0.3s;
   user-select: none;
 }
@@ -198,11 +173,45 @@
   color: #d94d1a;
 }
 
-/* ==== RESPONSIVE ==== */
+/* === HIGHLIGHT PRODUCTS === */
+.highlight-products {
+  display: flex;
+  font-family: 'Poppins', 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  padding: 30px;
+}
+
+.highlight-item {
+  text-align: center;
+}
+
+.highlight-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.highlight-image {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.highlight-image.best-seller {
+  border-color: #67a35c90;
+}
+
+.highlight-image.top-rated {
+  border-color: rgba(255, 217, 0, 0.592);
+}
+
+/* === RESPONSIVE === */
 @media (max-width: 900px) {
   .fs-container {
     flex-wrap: wrap;
-    gap: 8px; /* reduced from 12px */
+    gap: 8px;
   }
 
   .quick-links {
@@ -230,13 +239,101 @@
 
   .category-item {
     flex: 1 0 auto;
-    padding: 8px 10px; /* reduced from 10px 12px */
+    padding: 8px 10px;
     text-align: center;
     white-space: nowrap;
   }
+}
+.highlight-item:not(:last-child) {
+  margin-right: 10px; /* Adjust the gap as needed */
+}
 
-  .subcategory-list {
-    padding: 8px; /* reduced from 10px */
-    gap: 6px; /* reduced from 8px */
+.top-rated-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.top-rated-star {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: gold; /* yellow star */
+  font-size: 26px;
+  font-weight: bold;
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.141);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: #ffffff84;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* === EXTRA RESPONSIVENESS === */
+
+/* For tablets and small laptops */
+@media (max-width: 768px) {
+  .fs-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .fs-dropdown-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .highlight-products {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .highlight-image {
+    width: 160px;
+    height: 160px;
+  }
+
+  .quick-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+  }
+}
+
+/* For very small phones */
+@media (max-width: 360px) {
+  .fs-dropdown-button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .fs-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .fs-text {
+    font-size: 12px;
+  }
+
+  .fs-chevron {
+    font-size: 9px;
+  }
+
+  .highlight-image {
+    width: 120px;
+    height: 120px;
+  }
+
+  .highlight-products {
+    padding: 16px;
   }
 }

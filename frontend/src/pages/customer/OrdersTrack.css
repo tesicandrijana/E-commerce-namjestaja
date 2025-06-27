@@ -1,10 +1,17 @@
 /* === Base Styles === */
 .ot-track-background {
-  background-color: #f4f6f9;
-  padding: 3rem 2rem;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  color: #2e2e2e;
+  font-family: 'Poppins', sans-serif;
+  /* Background image + gradient overlay */
+  background:
+    linear-gradient(to top right, rgba(247, 249, 252, 0.789),rgba(247, 249, 252, 0.789), rgba(255, 255, 255, 0.175)),
+    url('https://www.bing.com/images/blob?bcid=RLhzRk.u6Z8IqxcxoNWLuD9SqbotqVTdP.I');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
   min-height: 100vh;
+  padding: 3rem 1rem;
+  color: #2c3e50;
 }
 
 .ot-track-container {
@@ -12,110 +19,66 @@
   margin: auto;
 }
 
-/* === Toggle Section === */
 .ot-toggle {
-  text-align: right;
   margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  color: #444;
+  text-align: right;
+  font-size: 1rem;
+  color: #34495e;
 }
 
-.ot-toggle input[type="checkbox"] {
-  margin-right: 0.5rem;
+.ot-toggle input {
+  margin-right: 8px;
   transform: scale(1.1);
-  accent-color: #0057b8;
 }
 
-/* === Track Wrapper === */
-.ot-track-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.ot-track {
-  display: flex;
-  overflow-x: auto;
-  gap: 1rem;
-  padding: 1rem 0;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-}
-
-.ot-track::-webkit-scrollbar {
-  height: 6px;
-}
-.ot-track::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 3px;
-}
-
-/* === Scroll Buttons === */
-.ot-scroll-btn {
-  border: none;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
-  font-size: 1.5rem;
-  color: #333;
-  padding: 0.35rem 0.7rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.ot-scroll-btn:hover {
-  background-color: #f0f0f0;
-  transform: scale(1.05);
+/* === Order Cards Grid === */
+.ot-track-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* ⬅ Two cards per row */
+  gap: 2rem;
 }
 
 /* === Order Card === */
 .ot-order-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  min-width: 280px;
-  max-width: 320px;
-  padding: 1rem;
-  flex: 0 0 auto;
-  transition: box-shadow 0.3s, transform 0.2s;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
+  border: 1px solid #ecf0f1;
 }
 
-.ot-order-card:hover,
-.ot-order-card:focus {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transform: translateY(-3px);
-  outline: none;
+.ot-order-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
 }
 
 .ot-order-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .ot-order-id {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
 }
 
 .ot-order-date {
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.95rem;
+  color: #7f8c8d;
 }
 
-/* === Status Badge === */
+/* === Status Badges === */
 .ot-order-status {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
   text-transform: capitalize;
-  margin-top: 0.25rem;
 }
 
 .ot-status-pending {
@@ -123,12 +86,7 @@
   color: #856404;
 }
 
-.ot-status-shipped {
-  background-color: #d1ecf1;
-  color: #0c5460;
-}
-
-.ot-status-delivered {
+.ot-status-completed {
   background-color: #d4edda;
   color: #155724;
 }
@@ -138,74 +96,278 @@
   color: #721c24;
 }
 
-/* === Order Actions === */
+/* === Buttons === */
 .ot-order-actions {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
 }
 
 .ot-btn {
-  padding: 0.45rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 5px;
   border: none;
-  transition: background-color 0.2s, color 0.2s;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  text-align: center;
-}
-
-/* Button Types */
-.ot-btn-cancel {
-  background-color: #fbe9e7;
-  color: #c62828;
-}
-.ot-btn-details {
-  background-color: #e3f2fd;
-  color: #1565c0;
-}
-.ot-btn-complaint {
-  background-color: #fff8e1;
-  color: #ff8f00;
-}
-.ot-btn-remove {
-  background-color: #fce4ec;
-  color: #ad1457;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-size: 0.95rem;
+  text-shadow: none;
 }
 
 .ot-btn:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
-/* === Feedback & States === */
-.ot-error,
-.ot-empty {
+/* Specific button styles with beige palette */
+.ot-btn-cancel {
+  background-color: #d6bfa6; /* warm beige */
+  color: #6b4c3b; /* darker brown */
+  box-shadow: 0 2px 6px rgba(214,191,166,0.5);
+}
+.ot-btn-cancel:hover {
+  background-color: #b7997d;
+  color: #4a321d;
+  box-shadow: 0 4px 10px rgba(183,153,125,0.7);
+}
+
+.ot-btn-details {
+  background-color: #f5f0e6; /* very light beige */
+  color: #7a6f61; /* medium brown */
+  box-shadow: 0 2px 6px rgba(245,240,230,0.5);
+}
+.ot-btn-details:hover {
+  background-color: #e0d7c8;
+  color: #5d5143;
+  box-shadow: 0 4px 10px rgba(224,215,200,0.7);
+}
+
+.ot-btn-complaint {
+  background-color: #cce5ff;  /* light sky blue */
+  color: #3b5372;             /* medium bright blue */
+  box-shadow: 0 2px 6px rgba(204,229,255,0.6);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.ot-btn-complaint:hover {
+  background-color: #99ccff;  /* deeper blue */
+  color: #3f597c;             /* darker blue */
+  box-shadow: 0 4px 12px rgba(153,204,255,0.8);
+}
+
+.ot-btn-remove {
+  background-color: #ddd3c1; /* neutral beige/gray */
+  color: #5a4e3c;
+  box-shadow: 0 2px 6px rgba(221,211,193,0.5);
+}
+.ot-btn-remove:hover {
+  background-color: #bfb49c;
+  color: #3e3524;
+  box-shadow: 0 4px 10px rgba(191,180,156,0.7);
+}
+
+/* === Pagination === */
+.ot-pagination {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.ot-pagination button {
+  background-color: #34495e;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ot-pagination button:hover {
+  background-color: #2c3e50;
+}
+
+.ot-pagination button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* === Empty/Error States === */
+.ot-empty,
+.ot-error {
   text-align: center;
-  font-size: 1.1rem;
-  color: #999;
-  padding-top: 3rem;
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  padding: 2rem;
+  background: #ecf0f1;
+  border-radius: 12px;
+  margin-top: 2rem;
 }
 
-/* === Responsive Design === */
+/* === Responsive === */
 @media (max-width: 768px) {
-  .ot-track-wrapper {
+  .ot-order-actions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .ot-scroll-btn {
-    align-self: center;
-    margin: 0.5rem 0;
-  }
-
-  .ot-order-card {
-    min-width: 90%;
-    max-width: 100%;
-  }
-
-  .ot-order-actions {
+  .ot-order-card-header {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .ot-toggle {
+    text-align: left;
+  }
+
+  .ot-pagination {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .ot-track-grid {
+    grid-template-columns: 1fr;
   }
 }
+
+.ot-order-products {
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ot-product-thumb-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 8px rgba(0,0,0,0.12);
+  border: 2px solid #ddd;
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+
+.ot-product-thumb-circle:hover {
+  transform: scale(1.1);
+  border-color: #599ffb;
+}
+
+.ot-three-dots {
+  font-size: 28px;
+  line-height: 1;
+  color: #888;
+  margin-left: 8px;
+  user-select: none;
+}
+.ot-toggle {
+  margin-bottom: 1.5rem;
+  text-align: right;
+  font-size: 1rem;
+  color: #34495e;
+  user-select: none;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.ot-toggle label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border: 2px solid #d6bfa6; /* warm beige border */
+  border-radius: 12px;
+  background-color: #f7f5f0; /* very light beige */
+  box-shadow: 0 2px 8px rgba(214, 191, 166, 0.3);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  user-select: none;
+}
+
+.ot-toggle label:hover {
+  background-color: #e0d7c8;
+  border-color: #b7997d;
+}
+
+.ot-toggle input {
+  margin: 0;
+  transform: scale(1.3);
+  accent-color: #b7997d; /* beige tone for checkbox tick */
+  cursor: pointer;
+}
+
+.ot-track-background {
+  font-family: 'Poppins', sans-serif;
+  /* Background image + gradient overlay */
+  background:
+    linear-gradient(to top right, rgba(247, 249, 252, 0.789), rgba(247, 249, 252, 0.789), rgba(255, 255, 255, 0.175)),
+    url('https://www.bing.com/images/blob?bcid=RLhzRk.u6Z8IqxcxoNWLuD9SqbotqVTdP.I');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  min-height: 100vh;
+
+  /* Flex container to allow vertical centering */
+  display: flex;
+  flex-direction: column;
+}
+
+.ot-track-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 3rem 1rem;
+  flex-grow: 1; /* So it fills vertical space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Special container for empty/error message to center vertically/horizontally */
+.ot-empty-container {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Rest of your existing CSS, unchanged */
+
+.ot-toggle {
+  margin-bottom: 1.5rem;
+  text-align: right;
+  font-size: 1rem;
+  color: #34495e;
+  user-select: none;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.ot-toggle label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border: 2px solid #d6bfa6; /* warm beige border */
+  border-radius: 12px;
+  background-color: #f7f5f0; /* very light beige */
+  box-shadow: 0 2px 8px rgba(214, 191, 166, 0.3);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  user-select: none;
+}
+
+.ot-toggle label:hover {
+  background-color: #e0d7c8;
+  border-color: #b7997d;
+}
+
+.ot-toggle input {
+  margin: 0;
+  transform: scale(1.3);
+  accent-color: #b7997d; /* beige tone for checkbox tick */
+  cursor: pointer;
+}
+
+/* ... rest of your CSS remains unchanged ... */

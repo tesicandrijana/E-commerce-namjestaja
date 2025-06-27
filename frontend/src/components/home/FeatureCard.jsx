@@ -10,7 +10,7 @@ function FeatureCard({ feature }) {
         alt={feature.imgAlt || "Feature image"}
         onError={(e) => {
           e.target.onerror = null;
-          e.target.src = "/placeholder.jpg"; // fallback slika ako slika ne postoji
+          e.target.src = "/placeholder.jpg"; 
         }}
       />
       <h3>{feature.h1}</h3>

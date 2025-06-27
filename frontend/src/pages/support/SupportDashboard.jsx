@@ -55,7 +55,7 @@ const supportSections = [
 ];
   return (
     <main className="support-dashboard-container">
-      <div className="dashboard-hero">
+      <div className="dashboard-hero-support">
         <h1 className="support-dashboard-title">
           <span>Welcome, {userData.name}</span>
         </h1>
@@ -76,7 +76,7 @@ const supportSections = [
 
       <div className="support-info-section-okvir">
       <section className="support-info-section">
-        <div className="info-text">
+        <div className="info-text-support">
           <h2>Need Help?</h2>
           <p>
             If you have any questions about using the support panel, please contact your administrator

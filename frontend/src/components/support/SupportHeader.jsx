@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaSignOutAlt, FaClipboardList, FaUserCircle, FaBoxOpen, FaQuestionCircle } from "react-icons/fa";
+import { FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../auth/AuthProvider";
 import "./SupportHeader.css";
 import Notification from "../Notification";
@@ -19,7 +19,7 @@ const SupportHeader = () => {
       .then((res) => setCurrentUser(res.data))
       .catch((err) => {
         setCurrentUser(null);
-        console.error("Greška pri dohvaćanju korisnika:", err);
+        console.error("Greska pri dohvacanju korisnika:", err);
         })
   }, []);
 

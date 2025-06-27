@@ -1,6 +1,11 @@
+.orders-main{
+  background-color: rgb(253, 250, 246);
+  background-image: url("/public/support/pozadinadashboard.png");
+}
+
 .orders-container {
   max-width: 1080px;
-  margin: 2rem auto;
+  margin: auto auto;
   padding: 2.5rem;
   background: #ffffff;
   border-radius: 18px;
@@ -8,6 +13,7 @@
   font-family: "Poppins", sans-serif;
   color: #2f2f2f;
   animation: fadeIn 0.4s ease-out;
+  
 }
 
 .back-link {
@@ -42,11 +48,11 @@
   }
 }
 
-.title {
+.support-orders-title {
+  text-align: center;
   font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 2rem;
-  border-left: 5px solid #3498db;
+  margin-bottom: 2.5rem;
   padding-left: 1rem;
   color: #2c3e50;
 }
@@ -122,3 +128,4 @@
   margin-top: 3rem;
   color: #666;
 }
+

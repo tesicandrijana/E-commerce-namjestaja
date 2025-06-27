@@ -1,28 +1,67 @@
-import React, { useState, useEffect, useRef } from "react"; 
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import './Header2.css';
+import "./Header2.css";
 
-const furnitureCategories = [
-  { id: 1, name: "Living Room", subcategories: ["Sofas", "Coffee Tables", "TV Stands", "Armchairs"] },
-  { id: 2, name: "Bedroom", subcategories: ["Beds", "Nightstands", "Dressers", "Wardrobes"] },
-  { id: 3, name: "Dining Room", subcategories: ["Dining Tables", "Chairs", "Sideboards", "Bar Stools"] },
-  { id: 4, name: "Office", subcategories: ["Desks", "Office Chairs", "Bookcases", "Filing Cabinets"] },
-  { id: 5, name: "Kitchen", subcategories: ["Cabinets", "Kitchen Islands", "Stools", "Pantry Storage"] },
-  { id: 6, name: "Outdoor", subcategories: ["Patio Sets", "Lounge Chairs", "Grills", "Umbrellas"] },
-  { id: 7, name: "Bathroom", subcategories: ["Vanities", "Storage Cabinets", "Mirrors", "Shower Stools"] },
-  { id: 8, name: "Hallway", subcategories: ["Console Tables", "Shoe Racks", "Coat Stands", "Benches"] },
-  { id: 9, name: "Kids Room", subcategories: ["Bunk Beds", "Toy Storage", "Study Desks", "Bookshelves"] },
-  { id: 10, name: "Other", subcategories: ["Pet Furniture", "Gaming Furniture", "Accent Furniture"] }
-];
+const IMAGE_BASE_URL = "http://localhost:8000/static/product_images/";
 
 const Header2 = () => {
+  const [categories, setCategories] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState(null);
+  const [highlightProducts, setHighlightProducts] = useState({});
   const dropdownRef = useRef(null);
   const timeoutRef = useRef(null);
   const navigate = useNavigate();
 
- 
+  const getImageUrl = (product) => {
+    if (!product) return "https://via.placeholder.com/100?text=No+Image";
+    if (product.images && product.images.length > 0 && product.images[0].image_url) {
+      return IMAGE_BASE_URL + product.images[0].image_url;
+    }
+    if (product.image) {
+      return IMAGE_BASE_URL + product.image;
+    }
+    return "https://via.placeholder.com/100?text=No+Image";
+  };
+
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const res = await fetch("http://localhost:8000/categories");
+        if (!res.ok) throw new Error("Failed to fetch categories");
+        const data = await res.json();
+        setCategories(data);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const fetchCategoryHighlights = async (categoryId) => {
+    if (highlightProducts[categoryId]) return;
+
+    try {
+      const res = await fetch(`http://localhost:8000/categories/category-highlights/${categoryId}`);
+      if (!res.ok) throw new Error("Failed to fetch highlights");
+      const data = await res.json();
+
+      const filteredData = {
+        best_seller:
+          data.best_seller && data.best_seller.name !== "N/A" ? data.best_seller : null,
+        highest_rated:
+          data.highest_rated && data.highest_rated.name !== "N/A" ? data.highest_rated : null,
+      };
+
+      setHighlightProducts((prev) => ({
+        ...prev,
+        [categoryId]: filteredData,
+      }));
+    } catch (err) {
+      console.error("Failed to load highlight products", err);
+    }
+  };
+
   const showDropdown = () => {
     clearTimeout(timeoutRef.current);
     setDropdownVisible(true);
@@ -35,8 +74,8 @@ const Header2 = () => {
     }
   };
 
-  const handleCategoryClick = () => {
-    navigate(`/shop-products/`);
+  const handleCategoryClick = (categoryName) => {
+    navigate(`/shop-products/${categoryName}`);
     setDropdownVisible(false);
     setHoveredCategory(null);
   };
@@ -48,39 +87,31 @@ const Header2 = () => {
         setHoveredCategory(null);
       }
     }
-
     if (dropdownVisible) {
       document.addEventListener("mousedown", handleClickOutside);
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dropdownVisible]);
 
-
-
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
-const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(true);
 
-useEffect(() => {
-  const handleScroll = () => {
-    const currentScrollPos = window.pageYOffset;
-    const isScrollingUp = prevScrollPos > currentScrollPos;
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      const isScrollingUp = prevScrollPos > currentScrollPos;
 
-    setVisible(isScrollingUp || currentScrollPos < 100);
-    setPrevScrollPos(currentScrollPos);
-  };
+      setVisible(isScrollingUp || currentScrollPos < 100);
+      setPrevScrollPos(currentScrollPos);
+    };
 
-  window.addEventListener("scroll", handleScroll);
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, [prevScrollPos]);
-
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos]);
 
   return (
     <header className={`secondary-header ${visible ? "visible" : "hidden"}`}>
@@ -129,11 +160,14 @@ useEffect(() => {
           {dropdownVisible && (
             <div className="dropdown-panel" onMouseEnter={showDropdown}>
               <div className="category-list">
-                {furnitureCategories.map((cat) => (
+                {categories.map((cat) => (
                   <div
                     key={cat.id}
                     className={`category-item ${hoveredCategory === cat.id ? "hovered" : ""}`}
-                    onMouseEnter={() => setHoveredCategory(cat.id)}
+                    onMouseEnter={() => {
+                      setHoveredCategory(cat.id);
+                      fetchCategoryHighlights(cat.id);
+                    }}
                     onClick={() => handleCategoryClick(cat.name)}
                   >
                     {cat.name}
@@ -141,15 +175,63 @@ useEffect(() => {
                 ))}
               </div>
 
-              {hoveredCategory && (
-                <div className="subcategory-list">
-                  {furnitureCategories
-                    .find((cat) => cat.id === hoveredCategory)
-                    ?.subcategories.map((sub, i) => (
-                      <div className="subcategory-item" key={i}>
-                        {sub}
-                      </div>
-                    ))}
+              {hoveredCategory && highlightProducts[hoveredCategory] && (
+                <div className="highlight-products">
+                  {highlightProducts[hoveredCategory].best_seller && (
+                    <div className="highlight-item">
+                      <p className="highlight-title">Best Seller</p>
+                      <img
+                        src={getImageUrl(highlightProducts[hoveredCategory].best_seller)}
+                        alt={highlightProducts[hoveredCategory].best_seller.name}
+                        className="highlight-image best-seller"
+                        onClick={() =>
+                          navigate(
+                            `/product-details/${highlightProducts[hoveredCategory].best_seller.id}`
+                          )
+                        }
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = "https://via.placeholder.com/100?text=No+Image";
+                        }}
+                      />
+                      <p style={{ fontSize: "14px", marginTop: "6px", color: "#222" }}>
+                        Sold: {highlightProducts[hoveredCategory].best_seller.units_sold || 0}
+                      </p>
+                    </div>
+                  )}
+
+                  {highlightProducts[hoveredCategory].highest_rated &&
+                    highlightProducts[hoveredCategory].highest_rated.id !==
+                      highlightProducts[hoveredCategory].best_seller?.id && (
+                      <div className="highlight-item" style={{ marginLeft: "20px", position: "relative" }}>
+  <p className="highlight-title">Top Rated</p>
+  <div className="top-rated-wrapper">
+    <img
+      src={getImageUrl(highlightProducts[hoveredCategory].highest_rated)}
+      alt={highlightProducts[hoveredCategory].highest_rated.name}
+      className="highlight-image top-rated"
+      onClick={() =>
+        navigate(
+          `/product-details/${highlightProducts[hoveredCategory].highest_rated.id}`
+        )
+      }
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "https://via.placeholder.com/100?text=No+Image";
+      }}
+    />
+    <span className="top-rated-star">★</span>
+  </div>
+  <p style={{ fontSize: "14px", marginTop: "6px", color: "#222" }}>
+    Rating:{" "}
+    {highlightProducts[hoveredCategory].highest_rated.average_rating
+      ? highlightProducts[hoveredCategory].highest_rated.average_rating.toFixed(1)
+      : "N/A"}{" "}
+    ★
+  </p>
+</div>
+
+                    )}
                 </div>
               )}
             </div>
@@ -157,9 +239,16 @@ useEffect(() => {
         </div>
 
         <nav className="quick-links">
-          <a href="/offers" className="quick-link">Offers</a>
-          <a href="/new-arrivals" className="quick-link">New Arrivals</a>
-          <a href="/stores" className="quick-link">Stores</a>
+          <a href="/new-arrivals" className="quick-link">
+            New Arrivals
+          </a>
+          <a href="/best-sellers" className="quick-link">
+            Best Sellers
+          </a>
+          <a href="/discounts" className="quick-link">
+            Discounted products
+          </a>
+          
         </nav>
       </div>
     </header>

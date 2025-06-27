@@ -257,3 +257,14 @@ class JobApplication(SQLModel, table=True):
     interview_time: Optional[datetime] = None  
 
     cv_file: Optional[str] = None
+
+
+
+# notifikacije za chat
+class Notification(SQLModel, table=True):   
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int
+    message: str
+    complaint_id: Optional[int] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    read: bool = False

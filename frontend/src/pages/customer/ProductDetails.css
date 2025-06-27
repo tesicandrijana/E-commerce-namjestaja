@@ -1,10 +1,19 @@
-.pd-container {
-  max-width: 1100px;
-  margin: 50px auto;
-  padding: 20px;
-  font-family: "Poppins", sans-serif;
-  color: #333;
-  border-radius: 12px;
+
+/* Vertically center loading, error and no product states */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Your existing styles below */
+.reviews-section h3 {
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ddd;
 }
 
 .pd-info-wrapper {
@@ -20,10 +29,6 @@
 
 .review-rating-area {
   margin-top: 40px;
-}
-
-.review-rating-area {
-  margin-top: 12px;
   font-family: "Poppins", sans-serif;
   color: #333;
 }
@@ -34,11 +39,13 @@
   gap: 8px;
   font-weight: 600;
   margin-top: 12px;
+  padding-left: 30px;
 }
 
 .rating-value {
   font-weight: bold;
   color: #00897b;
+  
 }
 
 .error-message {
@@ -93,6 +100,7 @@
 
 .star-rating-wrapper {
   margin: 4px 0;
+  padding-left: 30px;
 }
 
 .review-comment {
@@ -106,4 +114,48 @@
 .review-date {
   color: #666;
   font-size: 12px;
+}
+
+
+.pd-background {
+  min-height: 100vh;
+  background-image: url("https://static.vecteezy.com/system/resources/previews/028/541/448/non_2x/empty-room-template-free-photo.jpg");
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.pd-container {
+  max-width: 1100px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.92);
+  padding-top: 0;
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  padding-inline: 50px;
+  padding-bottom: 50px;
+}
+
+
+.reviews-section {
+  margin-top: 40px;
+  padding: 20px 30px;  /* optional: subtle background */
+  border-radius: 12px;  
+  margin-bottom: 40px;     /* optional: rounded c\/* optional: soft shadow */
+}
+
+.review-item {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  padding-top: 12px;       /* ✅ extra spacing at the top */
+  padding-left: 8px;       /* optional: add padding inside */
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  gap: 12px;
 }

@@ -28,7 +28,7 @@ def get_sorted_and_filtered_orders(
     session,
     offset: int = 0,
     limit: int | None = None,
-    sort_by: str | None = "name",
+    sort_by: str | None = "id",
     sort_dir: str | None = "asc",
     filters: list[Any] = [],
 ):
@@ -65,3 +65,15 @@ def orders_per_month(session: Session):
         )
         .group_by("month")
         .order_by("month")).all()
+
+
+# detalji narudzbe sa joinovima
+def get_order_with_details(session: Session, order_id: int):
+    return session.exec(
+        select(Order)
+        .options(
+            joinedload(Order.customer),
+            joinedload(Order.items).joinedload(OrderItem.product)
+        )
+        .where(Order.id == order_id)
+    ).first()

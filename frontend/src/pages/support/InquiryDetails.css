@@ -1,21 +1,27 @@
-.inquiry-details-wrapper {
+.inquiry-details-main {
+  background-image: url("/public/support/pozadinadashboard.png")
+}
+
+.inquiry-details-wrapper-support {
   max-width: 700px;
-  margin: 8rem auto;
+  margin: 7rem auto;
   padding: 2rem;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
   font-family: 'Poppins', sans-serif;
+  text-align: left;
 }
+  
 
-.back-btn {
+/* .back-btn {
   margin-bottom: 1rem;
   background: none;
   border: none;
   color: #f4a300;
   font-weight: bold;
   cursor: pointer;
-}
+} */
 
 .response-form {
   margin-top: 2rem;
@@ -45,4 +51,20 @@
 
 .send-btn:hover {
   background-color: #d48e00;
+}
+
+
+.popup-success {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #58b6ab;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  z-index: 1000;
+  font-size: 1.1rem;
+  animation: fadeIn 0.3s;
 }

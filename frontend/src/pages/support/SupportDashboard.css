@@ -6,7 +6,7 @@
   padding-bottom: 0;
 }
 
-.dashboard-hero {
+.dashboard-hero-support {
   background-image: linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.45)),
     url('/public/support/support-dashboard.png');
   background-size: contain;
@@ -84,11 +84,16 @@
   flex-wrap: wrap; /* da se lijepo složi na manjim ekranima */
 }
 
-.support-info-section .info-text {
+.support-info-section .info-text-support {
   flex: 1 1 20%;
   min-width: 300px;
   text-align: justify;
 }
+
+.info-text-support p {
+  text-align: justify !important;
+}
+
 
 .support-info-section h2 {
   font-size: 2rem;
@@ -123,7 +128,7 @@
 
 
 @media (max-width: 768px) {
-  .dashboard-hero {
+  .dashboard-hero-support {
     padding: 3rem 1.5rem;
   }
 
